@@ -1,0 +1,64 @@
+#这里设置网页title布局
+- title: 首页
+  url: "/"
+  side: left
+
+- title: 程序猿
+  url: "/getting-started/"
+  side: left
+  dropdown:
+  - title: "并发编程"
+    url: "/design/grid/"
+  - title: "MySQL"
+    url: "/design/typography/"
+  - title: "Linux"
+    url: "/design/page/"
+  - title: "Solr"
+    url: "/design/post-left-sidebar/"
+ 
+
+- title: "产品汪"
+  url: "/design/"
+  side: left
+  dropdown:
+  - title: "Axure"
+    url: "/design/grid/"
+  - title: "Excel"
+    url: "/design/typography/"
+  - title: "产品概念"
+    url: "/design/page/"
+
+- title: "杂事"
+  url: "/headers/"
+  side: left
+  dropdown:
+  - title: "心情 "
+    url: "/design/header-full-width-image/"
+  - title: "吐槽"
+    url: "/design/header-image-pattern/"
+  - title: "杂记"
+    url: "/design/header-image-color/"
+
+- title: 娱乐
+  url: "/documentation/"
+  side: left
+  dropdown:
+  - title: 动漫
+    url: "/documentation/"
+  - title: "搞笑视频"
+    url: "/changelog/"
+  - title: "娱乐节目"
+    url: "/roadmap/"
+
+- title: 关于我俩
+  url: "/blog/"
+  side: left
+  dropdown:
+  - title: 何樑
+    url: "/blog/"
+  - title: "祝晓宇"
+    url: "/blog/archive/"
+
+- title: "给我留言咯"
+  url: "/contact/"
+  side: right
