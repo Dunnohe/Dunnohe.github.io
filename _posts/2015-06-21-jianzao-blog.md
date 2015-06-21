@@ -1,0 +1,49 @@
+##利用github/jekyll搭建自己的blog
+@(blog)[github|jekyll|Markdown|主题]
+<p>之前一直用云笔记去记录所学的东西，一直希望能有一个blog，能把自己的一些学习体会也发出来，让大家指正，同事给我推荐了jekyll+github来建造blog，正好放假有时间我就搭建了一个，把搭建经历分享一下。</p>
+
+[toc]
+###资料
+* github page 使用 https://pages.github.com/
+* jekyll安装  http://jekyllrb.com/	
+* jekyll的一些主题 http://jekyllthemes.org/
+* markdown 语法 http://wowubuntu.com/markdown/
+* markdown 工具 马克飞象 （可以云同步到印象笔记）
+* github page 使用帮助 https://help.github.com/categories/github-pages-basics/
+
+###步骤
+* 本地安装jekyll，非常简单，地址：http://jekyllrb.com/	
+<code> $ gem install jekyll
+~ $ jekyll new my-awesome-site
+~ $ cd my-awesome-site
+~/my-awesome-site $ jekyll serve
+ => Now browse to http://localhost:4000
+</code> 
+* 进入你的github
+	* 建立一个代码仓库
+	* 代码仓库的名字必须是<b>username.github.io</b>(比如我的用户名是Dunnohe,那么仓库必须叫Dunnohe.github.io)
+	* 把仓库clone到本地
+	<code>git clone https://github.com/username/username.github.io</code>	
+* 下载你喜欢的jekyll主题 http://jekyllthemes.org/
+* 然后把下好的主题的代码copy到你本地clone下来的仓库根目录
+	* 比如我的主题叫xx-theme, 仓库文件下路径在~/github
+	<code>cd ~/Downloads/xx-theme
+	sudo cp -r * ~/github/Dunnohe.github.io
+	</code>
+* 发布到github上
+	<code>git status
+	git add .
+	git commit -am "first edition"
+	git push origin master
+	</code>
+* 设置github，发布blog
+	* 进入到你的github username.github.io仓库
+	* 点击右边的setting按钮
+	* 点击<b>Automatic Page Generator</b>按钮
+	* 选择一个主题
+	* 然后点击<b>Publish page</b>按钮
+* 到此就设置完毕了，可以通过访问http://username.github.io来访问了
+* blog的编写是采用markdown语法，语法很简单，上面有链接，有很多支持markdown的编辑器，而且有些编辑器可以同步到云笔记，很方便。
+	
+ 
+	

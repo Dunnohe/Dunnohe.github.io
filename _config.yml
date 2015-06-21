@@ -1,8 +1,8 @@
 # Site wide configuration
 
-title:            Site Title
-locale:           en_US
-url:              
+title:            liang.he's blog
+locale:           zh_CN
+url:              http://dunnohe.github.io/
 
 
 # Jekyll configuration
@@ -28,7 +28,7 @@ kramdown:
 owner:
   name: liang.he
   avatar: protrait.png
-  bio: "Do not go gentle into that good night... /n"
+  bio: "Do not go gentle into that good night... "
   email: heliang05@meituan.com
   disqus-shortname: 
   twitter: #username
