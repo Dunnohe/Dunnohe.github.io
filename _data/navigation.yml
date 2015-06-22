@@ -6,14 +6,13 @@
 - title: 年轮
   url: /posts/
 
-- title: 技术
-  - title : 并发
-    url: /currency/
-  - title : mysql
-    url: /mysql/
+#- title: 并发
+#  url: /concurrency/
 
-- title: Theme Setup
-  url: /theme-setup/
+#- title : mysql
+#  url: /mysql/
+#- title: Theme Setup
+#url: /theme-setup/
 
-- title: Made Mistakes
-  url: http://mademistakes.com
+#- title: Made Mistakes
+#  url: http://mademistakes.com
