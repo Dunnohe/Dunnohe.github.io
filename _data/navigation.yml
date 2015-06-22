@@ -1,10 +1,16 @@
 # Site navigation links
 
-- title: About
+- title: 关于我
   url: /about/
 
-- title: Sample Posts
+- title: 年轮
   url: /posts/
+
+- title: 技术
+  - title : 并发
+    url: /currency/
+  - title : mysql
+    url: /mysql/
 
 - title: Theme Setup
   url: /theme-setup/

@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6f03f1dc-20a2-4689-85f7-d3567c27709a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_posts/2015-06-21-blog.md" afterPath="$PROJECT_DIR$/_posts/2015-06-21-blog.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2011-03-10-sample-post.md" afterPath="$PROJECT_DIR$/backup/2011-03-10-sample-post.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2012-05-22-readability-post.md" afterPath="$PROJECT_DIR$/backup/2012-05-22-readability-post.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2013-05-22-sample-post-images.md" afterPath="$PROJECT_DIR$/backup/2013-05-22-sample-post-images.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2013-05-23-readability-feature-post.md" afterPath="$PROJECT_DIR$/backup/2013-05-23-readability-feature-post.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2013-08-12-sample-link-post.md" afterPath="$PROJECT_DIR$/backup/2013-08-12-sample-link-post.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2013-08-16-code-highlighting-post.md" afterPath="$PROJECT_DIR$/backup/2013-08-16-code-highlighting-post.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2014-07-31-author-override.md" afterPath="$PROJECT_DIR$/backup/2014-07-31-author-override.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_data/navigation.yml" afterPath="$PROJECT_DIR$/_data/navigation.yml" />
     </list>
     <ignored path="Dunnohe.github.io.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,21 +59,41 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="2015-06-21-blog.md" pinned="false" current-in-tab="true">
+          <file leaf-file-name="2015-06-21-blog.md" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/_posts/2015-06-21-blog.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.2989011" vertical-offset="272" max-vertical-offset="1258">
+                <state vertical-scroll-proportion="-4.5333333" vertical-offset="272" max-vertical-offset="1258">
                   <caret line="24" column="3" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/_layouts/home.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-7.1923075" vertical-offset="238" max-vertical-offset="1105">
+                  <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="navigation.yml" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/_data/navigation.yml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.35051546" vertical-offset="0" max-vertical-offset="485">
+                  <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="2011-03-10-sample-post.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_posts/2011-03-10-sample-post.md">
+            <entry file="file://$PROJECT_DIR$/backup/2011-03-10-sample-post.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -79,7 +106,7 @@
             </entry>
           </file>
           <file leaf-file-name="2014-07-31-author-override.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_posts/2014-07-31-author-override.md">
+            <entry file="file://$PROJECT_DIR$/backup/2014-07-31-author-override.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -92,7 +119,7 @@
             </entry>
           </file>
           <file leaf-file-name="2013-08-16-code-highlighting-post.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_posts/2013-08-16-code-highlighting-post.md">
+            <entry file="file://$PROJECT_DIR$/backup/2013-08-16-code-highlighting-post.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -105,7 +132,7 @@
             </entry>
           </file>
           <file leaf-file-name="2012-05-22-readability-post.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_posts/2012-05-22-readability-post.md">
+            <entry file="file://$PROJECT_DIR$/backup/2012-05-22-readability-post.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -118,7 +145,7 @@
             </entry>
           </file>
           <file leaf-file-name="2013-05-22-sample-post-images.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_posts/2013-05-22-sample-post-images.md">
+            <entry file="file://$PROJECT_DIR$/backup/2013-05-22-sample-post-images.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -130,22 +157,12 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="_config.yml" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/_config.yml">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1122">
-                  <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
         </leaf>
       </split-first>
       <split-second>
         <leaf>
           <file leaf-file-name="2011-03-10-sample-post.md" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/_posts/2011-03-10-sample-post.md">
+            <entry file="file://$PROJECT_DIR$/backup/2011-03-10-sample-post.md">
               <provider editor-type-id="MarkdownPreviewEditor">
                 <state />
               </provider>
@@ -173,6 +190,7 @@
         <option value="$PROJECT_DIR$/_config.yml" />
         <option value="$PROJECT_DIR$/_posts/2015-06-31-blog.md" />
         <option value="$PROJECT_DIR$/_posts/2015-06-21-blog.md" />
+        <option value="$PROJECT_DIR$/_data/navigation.yml" />
       </list>
     </option>
   </component>
@@ -241,6 +259,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="backup" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Dunnohe.github.io" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Dunnohe.github.io" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="_posts" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -272,8 +304,8 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/images" />
       <recent name="$PROJECT_DIR$/backup" />
+      <recent name="$PROJECT_DIR$/images" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -552,12 +584,12 @@
       <workItem from="1434859513166" duration="363000" />
       <workItem from="1434860651095" duration="3147000" />
       <workItem from="1434872251429" duration="55000" />
-      <workItem from="1434873163373" duration="2599000" />
+      <workItem from="1434873163373" duration="3346000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6164000" />
+    <option name="totallyTimeSpent" value="6911000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="36" y="23" width="1404" height="877" extended-state="6" />
@@ -567,9 +599,9 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298292" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.325887" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.325887" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.325887" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.325887" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -693,7 +725,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2014-07-31-author-override.md">
+    <entry file="file://$PROJECT_DIR$/backup/2014-07-31-author-override.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
@@ -704,7 +736,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2013-08-16-code-highlighting-post.md">
+    <entry file="file://$PROJECT_DIR$/backup/2013-08-16-code-highlighting-post.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
@@ -715,7 +747,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2012-05-22-readability-post.md">
+    <entry file="file://$PROJECT_DIR$/backup/2012-05-22-readability-post.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
@@ -726,7 +758,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2013-05-22-sample-post-images.md">
+    <entry file="file://$PROJECT_DIR$/backup/2013-05-22-sample-post-images.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
@@ -737,7 +769,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2011-03-10-sample-post.md">
+    <entry file="file://$PROJECT_DIR$/backup/2011-03-10-sample-post.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
@@ -753,8 +785,24 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2989011" vertical-offset="272" max-vertical-offset="1258">
+        <state vertical-scroll-proportion="-4.5333333" vertical-offset="272" max-vertical-offset="1258">
           <caret line="24" column="3" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_layouts/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.1923075" vertical-offset="238" max-vertical-offset="1105">
+          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_data/navigation.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.35051546" vertical-offset="0" max-vertical-offset="485">
+          <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
           <folding />
         </state>
       </provider>
