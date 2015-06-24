@@ -1,18 +1,13 @@
 # Site navigation links
 
-- title: 关于我
+- title: About
   url: /about/
 
-- title: 年轮
+- title: Sample Posts
   url: /posts/
 
-#- title: 并发
-#  url: /concurrency/
-
-#- title : mysql
-#  url: /mysql/
 - title: Theme Setup
-url: /theme-setup/
+  url: /theme-setup/
 
 - title: Made Mistakes
   url: http://mademistakes.com
