@@ -11,8 +11,8 @@
 
 #- title : mysql
 #  url: /mysql/
-#- title: Theme Setup
-#url: /theme-setup/
+- title: Theme Setup
+url: /theme-setup/
 
-#- title: Made Mistakes
-#  url: http://mademistakes.com
+- title: Made Mistakes
+  url: http://mademistakes.com
