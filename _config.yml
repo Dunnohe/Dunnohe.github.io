@@ -1,7 +1,7 @@
 # Site wide configuration
 
 title:            liang.he's blog
-locale:           zh_CN
+locale:           en_US
 url:              http://dunnohe.github.io/
 
 
