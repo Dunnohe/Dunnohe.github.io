@@ -26,33 +26,29 @@ image:
 ### 正文
 JDK的安装包提供了很多辅助工具用来监测数据。
 #### jps
->**作用：**这个命令类似于linux下的ps命令，但它只能显示java的进程
->选项：
->- [ ] -q   只输出输出进程id
->- [ ] -m  输出用于传递java主函数的参数
->- [ ] -l    输出完整的应用程序主类包名或者应用程序jar的完整路径
->- [ ] -v   输出传给JVM的参数
-``` python
-jps -mlv
-```
+* 作用：这个命令类似于linux下的ps命令，但它只能显示java的进程
+* 选项：
+	* -q   只输出输出进程id
+	* -m  输出用于传递java主函数的参数
+	* -l    输出完整的应用程序主类包名或者应用程序jar的完整路径
+	* -v   输出传给JVM的参数
+<code>jps -mlv
+</code>
 #### jinfo
->**作用：**可以查看正在运行的java应用程序的拓展参数，甚至支持在运行时修改部分参数。
->- [ ] -flag < name > : 打印指定JVM的参数值  
->- [ ] -flag [+ | - ] < name > : 设置指定JVM的参数值
->- [ ] -flag < name > = < value > :  设置指定JVM的参数值
+* 作用：可以查看正在运行的java应用程序的拓展参数，甚至支持在运行时修改部分参数。
+	* -flag < name > : 打印指定JVM的参数值  
+	* -flag [+ | - ] < name > : 设置指定JVM的参数值
+	* -flag < name > = < value > :  设置指定JVM的参数值
 #### jmap
->**作用：**可以生成java应用程序的堆快照和对象的统计信息。
+* 作用：可以生成java应用程序的堆快照和对象的统计信息。
 这个命令很好用，就是靠他我们发现某几个实体对象数量特别多，再检查处理那块实体逻辑才发现bug的。
-``` python
-//显示pid为2972的java程序的统计信息
+<code>//显示pid为2972的java程序的统计信息
 jmap -histo 2972
-```
+</code>
 #### jstat
->**作用：**用于观察java运行时信息的工具。非常强大
->用法：jstat [ generalOption | outputOptions vmid [interval[s|ms] [count]] ]
->选项：
-> * generalOption 这项取值是一些帮助和选择就不说了，可以man jstat看一下
->  * - [ ] help --display help message
->  * - [ ] options --display help message
-
-	
+* 作用：用于观察java运行时信息的工具。非常强大
+* 用法：jstat [ generalOption | outputOptions vmid [interval[s|ms] [count]] ]
+* 选项：
+	* generalOption 这项取值是一些帮助和选择就不说了，可以man jstat看一下
+	* help --display help message
+	* options --display help message
