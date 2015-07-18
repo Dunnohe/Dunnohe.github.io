@@ -10,7 +10,6 @@ image:
   credit: WeGraphics
   creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
-#java一些常用的性能调优工具和命令
 <section id="table-of-contents" class="toc">
   <header>
     <h3>Overview</h3>
