@@ -10,16 +10,6 @@ image:
   credit: WeGraphics
   creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
-<section id="table-of-contents" class="toc">
-  <header>
-    <h3>目录</h3>
-  </header>
-<div id="drawer" markdown="1">
-*  Auto generated table of contents
-{:toc}
-</div>
-</section><!-- /#table-of-contents -->
-
 ### 背景
 <p>最近的工作中，和带我的到时一起做了一个项目，加载所有数据到内存，然后做分片访问，在发布几个版本之后，监控发现内存泄露了，我感觉这种问题十分难以定位，但是同事用各种监控的命令发现泄漏的地方，我感觉很有必要总结学习一下</p>
 
