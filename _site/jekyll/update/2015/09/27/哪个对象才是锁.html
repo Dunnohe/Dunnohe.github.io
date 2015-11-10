@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>哪个对象才是锁</title>
+  <meta name="description" content="哪个对象才是锁">
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:600' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://yourdomain.com/jekyll/update/2015/09/27/%E5%93%AA%E4%B8%AA%E5%AF%B9%E8%B1%A1%E6%89%8D%E6%98%AF%E9%94%81.html">
+  <link rel="alternate" type="application/rss+xml" title="Dunno_he" href="http://yourdomain.com/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Dunno_he</a>
+
+    <nav class="site-nav">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">哪个对象才是锁</h1>
+    <p class="post-meta">Sep 27, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <h1 id="section">哪个对象才是锁</h1>
+
+<p>首先回顾背景知识：</p>
+
+<ul>
+  <li>对于实例同步方法，锁是当前实例对象。</li>
+  <li>对于静态同步方法，锁是当前对象的Class对象。</li>
+  <li>对于同步方法块，锁是Synchonized括号里配置的对象。</li>
+</ul>
+
+<pre>Class A{ 
+	public static synchronized void write(boolean b){
+  		isTrue = b;
+	}
+	public static synchronized boolean read(){
+  	return isTrue;
+	}
+}</pre>
+
+<ol>
+  <li>线程1访问A.write(true)方法时，线程2能访问A.read()方法吗？</li>
+  <li>线程1访问new A().write(false)方法时，线程2能访问new A().read()方法吗？</li>
+  <li>线程1访问A.write(false)方法时，线程2能访问new A().read()方法吗？</li>
+</ol>
+
+<pre>
+public synchronized void write(boolean b){
+  isTrue = b;
+}
+
+public synchronized boolean read(){
+  return isTrue;
+}
+</pre>
+
+<ol>
+  <li>A a=new A(); 线程1访问a.write(false)方法，线程2能访问a.read()方法吗？</li>
+  <li>A a=new A(); A b=new A();线程1访问a.write(false)方法，线程2能访问b.read()方法吗？</li>
+</ol>
+
+<p>线程1访问A.write()方法时，线程2能访问A.read()方法吗？不能，因为静态方法的锁都是A.Class对象,线程1拿到锁之后，线程2就拿不到锁了。</p>
+
+<p>线程1访问new A().write()方法时，线程2能访问new A().read()方法吗？不能，原因同上。</p>
+
+<p>线程1访问A.write()方法时，线程2能访问new A().read()方法吗？不能，原因同上</p>
+
+<p>A a=new A(); 线程1访问a.write()方法，线程2能访问a.read()方法吗？不能，因为这两个方法的锁都是对象a，线程1拿到了锁，线程2就不能访问了。</p>
+
+<p>A a=new A(); A b=new A();线程1访问a.write()方法，线程2能访问b.read()方法吗？可以，因为线程1拿到的是锁是 a,而线程2访问b.read()需要的是锁是b。</p>
+
+<p>现在你应该明白了这句话，对于实例同步方法，锁是当前实例对象。对于静态同步方法，锁是当前对象的Class对象。</p>
+
+
+  </article>
+
+</div>
+
+    </div>
+
+  </body>
+
+</html>

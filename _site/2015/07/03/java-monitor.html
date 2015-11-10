@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>java一些常用的性能调优工具和命令</title>
+  <meta name="description" content="介绍一些java性能调休的工具和命令">
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:600' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://yourdomain.com/2015/07/03/java-monitor.html">
+  <link rel="alternate" type="application/rss+xml" title="Dunno_he" href="http://yourdomain.com/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Dunno_he</a>
+
+    <nav class="site-nav">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">java一些常用的性能调优工具和命令</h1>
+    <p class="post-meta">Jul 3, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <h3 id="section">背景</h3>
+<p>最近的工作中，和带我的到时一起做了一个项目，加载所有数据到内存，然后做分片访问，在发布几个版本之后，监控发现内存泄露了，我感觉这种问题十分难以定位，但是同事用各种监控的命令发现泄漏的地方，我感觉很有必要总结学习一下</p>
+
+<h3 id="section-1">正文</h3>
+<p>JDK的安装包提供了很多辅助工具用来监测数据。</p>
+
+<h4 id="jps">jps</h4>
+
+<ul>
+  <li>作用：这个命令类似于linux下的ps命令，但它只能显示java的进程</li>
+  <li>选项：
+    <ul>
+      <li>-q   只输出输出进程id</li>
+      <li>-m  输出用于传递java主函数的参数</li>
+      <li>-l    输出完整的应用程序主类包名或者应用程序jar的完整路径</li>
+      <li>-v   输出传给JVM的参数</li>
+    </ul>
+  </li>
+</ul>
+
+<p><code>jps -mlv</code></p>
+
+<h4 id="jinfo">jinfo</h4>
+
+<ul>
+  <li>作用：可以查看正在运行的java应用程序的拓展参数，甚至支持在运行时修改部分参数。
+    <ul>
+      <li>-flag <name> : 打印指定JVM的参数值</name></li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>-flag [+</td>
+              <td>-] <name> : 设置指定JVM的参数值</name></td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li>-flag <name> = <value> :  设置指定JVM的参数值</value></name></li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="jmap">jmap</h4>
+
+<ul>
+  <li>作用：可以生成java应用程序的堆快照和对象的统计信息。</li>
+</ul>
+
+<p>这个命令很好用，就是靠他我们发现某几个实体对象数量特别多，再检查处理那块实体逻辑才发现bug的。</p>
+
+<p><code>
+//显示pid为2972的java程序的统计信息
+jmap -histo 2972
+</code></p>
+
+<h4 id="jstat">jstat</h4>
+
+<ul>
+  <li>作用：用于观察java运行时信息的工具。非常强大</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>用法：jstat[generalOption</td>
+          <td>outputOptions vmid [interval[s</td>
+          <td>ms] [count]]]</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>选项：
+    <ul>
+      <li>generalOption 这项取值是一些帮助和选择就不说了，可以man jstat看一下</li>
+      <li>help –display help message</li>
+      <li>options –display help message</li>
+    </ul>
+  </li>
+</ul>
+
+  </article>
+
+</div>
+
+    </div>
+
+  </body>
+
+</html>

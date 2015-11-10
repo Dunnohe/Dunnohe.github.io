@@ -2,7 +2,7 @@
 title: Dunno_he
 email: dunno_he@163.com
 description: > # this means to ignore newlines until "baseurl:"
-  一个爱装逼的程序员，喜欢动漫，游泳...
+  一个普通的程序员，喜欢动漫，游泳...
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://yourdomain.com" # the base hostname & protocol for your site
 twitter_username: jekyllrb
