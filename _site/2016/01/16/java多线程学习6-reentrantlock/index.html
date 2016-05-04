@@ -12,7 +12,7 @@
 
     <title>Java多线程学习系列 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/">
+    <link rel="canonical" href="http://dunnohe.github.io//2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -79,7 +79,7 @@
                     </li>
                     
                     <li>
-                        <a href="/about/">About Me</a>
+                        <a href="/about/">About</a>
                     </li>
                     
                     <li>
@@ -146,9 +146,9 @@
                     <h1>Java多线程学习系列</h1>
                     
                     
-                    <h2 class="subheading"> "3-守护线程的创建和执行"</h2>
+                    <h2 class="subheading"> "1,创建线程"</h2>
                     
-                    <span class="meta">Posted by Dunno on January 24, 2016</span>
+                    <span class="meta">Posted by Dunno on January 16, 2016</span>
                 </div>
             </div>
         </div>
@@ -166,77 +166,47 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="section">守护线程的创建和执行</h1>
-<p>## 介绍
-java有一种线程叫守护线程：</p>
+				<h1 id="java6-reentrantlock">Java多线程学习6-ReentrantLock(可重入锁)</h1>
+<p>[toc]
+# 介绍
+重入锁</p>
 
 <ul>
-  <li>这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。</li>
-  <li>通过调用setDaemon(true);将该线程设置成守护线程。</li>
+  <li>一个ReentrantLock的拥有者是最近一次使用该锁lock了却还没有unlock的线程。</li>
+  <li>如果一个线程成功的lock了，方法会成功返回，同时该线程会获得锁。如果该线程已经拥有该锁，再调用lock方法，lock方法会立马返回。</li>
+  <li></li>
 </ul>
 
-<p>##Demo
-验证一下1</p>
-<pre>
-public class TestDaemonThread {
+<p>重要的方法</p>
 
-	public static void main(String[] args) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 2;
+<p>public void lock()</p>
 
-				while ( sleep &gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
+<ul>
+  <li>获得锁
+    <ul>
+      <li>如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。</li>
+      <li>如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。</li>
+      <li>如果该锁已经被其他线程持有，那么当前线程将会block直到获得该锁。获得的那个时候lock hold count（锁持有数）会被设置成1。（可以说明该锁是“独占的”，不同线程只能有一个线程占有）</li>
+    </ul>
+  </li>
+</ul>
 
-				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
-			}
-		});
-		thread.setName("not daemon thread ");
+<p>public void lockInterruptibly() throws InterruptedException</p>
 
-		Thread thread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 5;
-
-				while ( sleep &gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
-
-				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
-			}
-		});
-		thread2.setName("daemon thread ");
-		thread2.setDaemon(true);
-
-		thread.start();
-		thread2.start();
-
-		try {
-			thread2.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println(thread.getName() + "pro " + thread.getPriority());
-		System.out.println(thread2.getName() + "pro " + thread2.getPriority());
-
-	}
-}
-</pre>
-<p>上面代码中，我们执行两个线程，一个普通线程，sleep2秒，另一个线程是守护线程，sleep5秒，根据上面的例子，我们预测一下，普通线程执行2秒后，主线程就退出了。</p>
+<ul>
+  <li>获得锁除非当前线程被打断
+    <ul>
+      <li>如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。</li>
+      <li>如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。</li>
+      <li>如果这个锁已经被其他线程持有，那么当前线程将不会被线程调度，同时当前线程会进入休眠状态直到以下两种情况之一发生：
+        <ul>
+          <li>当前线程获得锁</li>
+          <li>当前线程被Interrupt</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 
 
@@ -247,17 +217,17 @@ public class TestDaemonThread {
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="/2016/01/24/java多线程学习3-守护线程"
+                    data-thread-key="/2016/01/16/java多线程学习6-reentrantlock"
                     data-title="Java多线程学习系列"
-                    data-url="http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/"
+                    data-url="http://dunnohe.github.io//2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/"
                     data-images="http://dunnohe.github.io//img/post-bg-2015.jpg"
-                    data-content="守护线程的创建和执行
-## 介绍
-java有一种线程叫守护线程：
+                    data-content="Java多线程学习6-ReentrantLock(可重入锁)
+[toc]
+# 介绍
+重入锁
 
 
-  这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。
-  通过调... | Dunno Blog " >
+  一个ReentrantLock的拥有者是最近一次使用该... | Dunno Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -277,12 +247,12 @@ java有一种线程叫守护线程：
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">&larr; Previous Post</a>
+                        <a href="/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">Next Post &rarr;</a>
+                        <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -292,9 +262,9 @@ java有一种线程叫守护线程：
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="/2016/01/24/java多线程学习3-守护线程"
+                        data-thread-key="/2016/01/16/java多线程学习6-reentrantlock"
                         data-title="Java多线程学习系列"
-                        data-url="http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/" >
+                        data-url="http://dunnohe.github.io//2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->

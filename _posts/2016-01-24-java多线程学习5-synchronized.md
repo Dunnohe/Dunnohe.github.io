@@ -1,9 +1,25 @@
-# Java多线程学习5-synchronized
+---
+layout:     post
+title:      "Java多线程学习系列"
+subtitle:   " \"5-synchronized\""
+date:       2016-01-24 12:00:00
+author:     "Dunno"
+header-img: "img/post-bg-2015.jpg"
+tags:
+    - java多线程
+---
+# synchronized
 ## 先来看看jsr133中lock的语义
 
 <p>There are multiple mechanisms for communicating between threads. The most basic of these methods is synchronization, which is implemented using monitors. Each object is associated with a monitor, which a thread can lock or unlock. Only one thread at a time may hold a lock on a monitor. Any other threads attempting to lock that monitor are blocked until they can obtain a lock on that monitor.</p>
-<p>A thread t may lock a particular monitor multiple times; each unlock reverses the effect of one lock operation.</p>
-<p>The synchronized statement computes a reference to an object; it then attempts to perform a lock action on that object’s monitor and does not proceed further until the lock action has successfully completed. After the lock action has been performed, the body of the synchronized statement is executed. If execution of the body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.A synchronized method automatically performs a lock action when it is invoked; its body is not executed until the lock action has successfully completed. If the method is an instance method, it locks the monitor associated with the instance for which it was invoked (that is, the object that will be known as this during execution of the body of the method). If the method is static, it locks the monitor associated with the Class object that represents the class in which the method is defined. If execution of the method’s body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.</p><p>The semantics neither prevents nor requires detection of deadlock conditions. Programs where threads hold (directly or indirectly) locks on multiple objects should use conventional techniques for deadlock avoidance, creating higher-level locking primitives that don’t deadlock, if necessary.</p><p>Other mechanisms, such as reads and writes of volatile variables and classes provided in the java.util.concurrent package, provide alternative mechanisms for synchronization.</p>
+<p>A thread t may lock a particular monitor multiple times; each unlock reverses the effect of one lock operation.</p>
+<p>The synchronized statement computes a reference to an object; it then attempts to perform a lock action on that object’s monitor and does not proceed further until the lock action has successfully completed. After the lock action has been performed, the body of the synchronized statement is executed. If execution of the body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.
+A synchronized method automatically performs a lock action when it is invoked; its body is not executed until the lock action has successfully completed. If the method is an instance method, it locks the monitor associated with the instance for which it was invoked (that is, the object that will be known as this during execution of the body of the method). If the method is static, it locks the monitor associated with the Class object that represents the class in which the method is defined. If execution of the method’s body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.</p>
+
+<p>The semantics neither prevents nor requires detection of deadlock conditions. Programs where threads hold (directly or indirectly) locks on multiple objects should use conventional techniques for deadlock avoidance, creating higher-level locking primitives that don’t deadlock, if necessary.</p>
+
+<p>Other mechanisms, such as reads and writes of volatile variables and classes provided in the java.util.concurrent package, provide alternative mechanisms for synchronization.</p>
+
 ## demo
 <pre>
 package com.github.dunno.concurrent.sync;

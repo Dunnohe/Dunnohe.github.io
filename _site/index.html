@@ -79,7 +79,7 @@
                     </li>
                     
                     <li>
-                        <a href="/about/">About</a>
+                        <a href="/about/">About Me</a>
                     </li>
                     
                     <li>
@@ -156,12 +156,15 @@
 <div class="post-preview">
     <a href="/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/">
         <h2 class="post-title">
-            Java多线程学习6 Reentrantlock
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "6-ReentrantLock(可重入锁)"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习6-ReentrantLock(可重入锁)
-[toc]
+            ReentrantLock(可重入锁)
 # 介绍
 重入锁
 
@@ -173,11 +176,16 @@
 
 重要的方法
 
-public void lock(...
+public void lock()
+
+
+  获得锁
+    
+  ...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 27, 2016
+        Posted by Dunno on January 27, 2016
     </p>
 </div>
 <hr>
@@ -185,18 +193,22 @@ public void lock(...
 <div class="post-preview">
     <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/">
         <h2 class="post-title">
-            Java多线程学习5 Synchronized
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "5-synchronized"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习5-synchronized
+            synchronized
 ## 先来看看jsr133中lock的语义
 
-There are multiple mechanisms for communicating between threads. The most basic of these methods is synchronization, which is implemented using monito...
+There are multiple mechanisms for communicating between threads. The most basic of these methods is synchronization, which is implemented using monitors. Each ob...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 24, 2016
+        Posted by Dunno on January 24, 2016
     </p>
 </div>
 <hr>
@@ -204,11 +216,15 @@ There are multiple mechanisms for communicating between threads. The most basic 
 <div class="post-preview">
     <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/">
         <h2 class="post-title">
-            Java多线程学习4 线程的等待&让步&唤醒
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "4-线程的睡眠&等待&让步&唤醒"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习4-线程的睡眠&amp;等待&amp;让步&amp;唤醒
+            线程的睡眠&amp;等待&amp;让步&amp;唤醒
 
 
   yield()
@@ -218,11 +234,13 @@ There are multiple mechanisms for communicating between threads. The most basic 
       D大调
     
   
-  sleep(long mi...
+  sleep(long millis)
+    
+...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 24, 2016
+        Posted by Dunno on January 24, 2016
     </p>
 </div>
 <hr>
@@ -230,11 +248,15 @@ There are multiple mechanisms for communicating between threads. The most basic 
 <div class="post-preview">
     <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/">
         <h2 class="post-title">
-            Java多线程学习3 守护线程
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "3-守护线程的创建和执行"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习3-守护线程的创建和执行
+            守护线程的创建和执行
 ## 介绍
 java有一种线程叫守护线程：
 
@@ -248,11 +270,11 @@ java有一种线程叫守护线程：
 
 public class TestDaemonThread {
 
-	public static void main(Strin...
+	public static void main(String[] args) {...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 24, 2016
+        Posted by Dunno on January 24, 2016
     </p>
 </div>
 <hr>
@@ -260,11 +282,15 @@ public class TestDaemonThread {
 <div class="post-preview">
     <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/">
         <h2 class="post-title">
-            Java多线程学习2 打断线程
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "2-打断线程&等待线程的终止"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习2-打断线程&amp;等待线程的终止
+            打断线程&amp;等待线程的终止
 ##打断线程demo
 
 /**
@@ -276,11 +302,12 @@ public class TestInterruptThread extends Thread{
 	private boolean flag = true;
 
 	@Override
-	public vo...
+	public void run() {
+...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 23, 2016
+        Posted by Dunno on January 23, 2016
     </p>
 </div>
 <hr>
@@ -288,12 +315,15 @@ public class TestInterruptThread extends Thread{
 <div class="post-preview">
     <a href="/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/">
         <h2 class="post-title">
-            Java多线程学习1 创建线程
+            Java多线程学习系列
         </h2>
         
+        <h3 class="post-subtitle">
+             "1-创建线程"
+        </h3>
+        
         <div class="post-content-preview">
-            Java多线程学习1-创建线程
-[toc]
+            创建线程
 
 创建一个线程
 
@@ -304,11 +334,14 @@ public class TestInterruptThread extends Thread{
       public void run() {
       }
   }
-  new Thread(new TestRunnable()).star...
+  new Thread(new TestRunnable()).start();
+  
+  
+  继承Th...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno Blog on January 16, 2016
+        Posted by Dunno on January 16, 2016
     </p>
 </div>
 <hr>
@@ -333,6 +366,12 @@ public class TestInterruptThread extends Thread{
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                         
+                            
+                                <a href="/tags/#java多线程" title="java多线程" rel="6">
+                                    java多线程
+                                </a>
+                            
+                        
                     </div>
                 </section>
                 
@@ -342,7 +381,7 @@ public class TestInterruptThread extends Thread{
                     <hr><h5><a href="/about/">ABOUT ME</a></h5>
                     <div class="short-about">
                         
-                            <img src="img/protrait.jpg" />
+                            <img src="/img/protrait.jpg" />
                         
                         
                             <p>今天努力的赚钱就是为了明天的好吃懒做...</p>

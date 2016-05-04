@@ -1,5 +1,14 @@
-# Java多线程学习6-ReentrantLock(可重入锁)
-[toc]
+---
+layout:     post
+title:      "Java多线程学习系列"
+subtitle:   " \"6-ReentrantLock(可重入锁)\""
+date:       2016-01-27 12:00:00
+author:     "Dunno"
+header-img: "img/post-bg-2015.jpg"
+tags:
+    - java多线程
+---
+# ReentrantLock(可重入锁)
 # 介绍
 重入锁
 	
