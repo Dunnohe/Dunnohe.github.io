@@ -6,7 +6,7 @@ email: mr.he.email@gmail.com
 description: "Do not go gentle into that good night.Rage, rage against the dying of the light."
 keyword: "java | linux "
 url: "http://dunnohe.github.io/"              # your host, for absolute URL
-baseurl: "/index"         # for example, '/blog' if your blog hosted on 'host/blog'
+baseurl: ""         # for example, '/blog' if your blog hosted on 'host/blog'
 
 
 
