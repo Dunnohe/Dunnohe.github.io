@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Dunno Blog</title>
+    <title>linux下文件查看技巧 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io//">
+    <link rel="canonical" href="http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -123,357 +123,246 @@
 </script>
 
 
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/index_bg.jpg')">
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-2015.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-2015.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>Dunno Blog</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">一些对技术的总结和积累,对java和linux感兴趣</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                    </div>
+                    <h1>linux下文件查看技巧</h1>
+                    
+                    
+                    <h2 class="subheading"> "2-了解正则表达式"</h2>
+                    
+                    <span class="meta">Posted by Dunno on May 9, 2016</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
-	<div class="row">
-        
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
-    		<div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-    			
-<div class="post-preview">
-    <a href="/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/">
-        <h2 class="post-title">
-            linux下文件查看技巧
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "2-了解正则表达式"
-        </h3>
-        
-        <div class="post-content-preview">
-            背景
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h1 id="section">背景</h1>
+<p>在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。</p>
+<p>之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重的东西，就是正则表达式。我们先来了解一些正则表达式的语法。</p>
+
+<h1 id="section-1">操作系统字符分类</h1>
+<table>
+<tr>
+	<th>特殊符号</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>[:alnum:]</td><td>代表英文大小写字符及数字,亦即0-9, A-Z, a-z</td>
+</tr>
+<tr>
+	<td>[:alpha:]</td><td>代表任何英文大小写字符,亦即 A-Z, a-z</td>
+</tr>
+<tr>
+	<td>[:blank:]</td><td>代表空格键与[Tab]按键两者</td>
+</tr>
+<tr>
+	<td>[:cntrl:]</td><td>代表键盘上面的控制按键,亦即包括 CR, LF, Tab, Del.. 等等</td>
+</tr>
+<tr>
+	<td>[:digit:]</td><td>代表数字，即0-9</td>
+</tr>
+<tr>
+	<td>[:graph:]</td><td>除了空格符 (空格键不 [Tab] 按键) 外的其他所有按键</td>
+</tr>
+<tr>
+	<td>[:lower:]</td><td>代表小写字符,亦即 a-z</td>
+</tr>
+<tr>
+	<td>[:print:]</td><td>代表任何可以被打印出来的字符</td>
+</tr>
+<tr>
+	<td>[:punct:]</td><td>代表标点符号,亦即:" ' ? ! ; : # $...</td>
+</tr>   
+<tr>
+	<td>[:upper:]</td><td>代表大写字符,亦即 A-Z</td>
+</tr>  
+<tr>
+	<td>[:space:]</td><td>任何会产生空白的字符,包括空格键, [Tab], CR 等等</td>
+</tr>  
+<tr>
+	<td>[:xdigit:]</td><td>代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符</td>
+</tr>  
+</table>
+<p># 字符类别</p>
+<table>
+<tr>
+	<th>字符类别</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>\c</td><td>控制字符</td>
+</tr>
+<tr>
+	<td>\s</td><td>代表空格</td>
+</tr>
+<tr>
+	<td>\S</td><td>代表不是空格</td>
+</tr>
+<tr>
+	<td>\d</td><td>代表数字</td>
+</tr>
+<tr>
+	<td>\D</td><td>代表不是数字</td>
+</tr>
+<tr>
+	<td>\w</td><td>代表是单词</td>
+</tr>
+<tr>
+	<td>\W</td><td>代表不是单词</td>
+</tr>
+<tr>
+	<td>\xhh</td><td>代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符</td>
+</tr>
+<tr>
+	<td>\Oxxx</td><td>代表八进制的字符,亦即0-7</td>
+</tr>
+</table>
+<p># 锚标记</p>
+<table>
+<tr>
+	<th>锚标记</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>^</td><td>行首</td>
+</tr>
+<tr>
+	<td>\A</td><td>字符串的开始</td>
+</tr>
+<tr>
+	<td>$</td><td>行尾</td>
+</tr>
+<tr>
+	<td>\Z</td><td>字符串的结束</td>
+</tr>
+<tr>
+	<td>\b</td><td>单词的边界</td>
+</tr>
+<tr>
+	<td>\B</td><td>不是单词的边界</td>
+</tr>
+<tr>
+	<td>\&lt;</td><td>单词的开头</td>
+</tr>
+<tr>
+	<td>\&gt;</td><td>单词的结尾</td>
+</tr>
+</table>
+
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="/2016/05/09/文件查看技巧2"
+                    data-title="linux下文件查看技巧"
+                    data-url="http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/"
+                    data-images="http://dunnohe.github.io//img/post-bg-2015.jpg"
+                    data-content="背景
 在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。
-之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重的东西，就是正则表达式。我们先来了解一些正则表达式的语法。
-
-操作系统字符分类
-
-
-	特殊符号代表意义
-
-
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on May 9, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/">
-        <h2 class="post-title">
-            linux下文件查看技巧
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "1-常用的查看文件命令"
-        </h3>
-        
-        <div class="post-content-preview">
-            背景
-在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。
+之前介绍... | Dunno Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
 
 
-筛选命令
-
-cut命令
-
-功能：截取结果
-选项参数：
--d :后面接分隔字符。与 -f 一起使用;
--f :依据 -d 的分隔字符将一段讯息分割成为数段,用 -f 取出第几段的意思; 
--c :以字符 (characters) 的单位取出固定字...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on May 9, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "6-ReentrantLock(可重入锁)"
-        </h3>
-        
-        <div class="post-content-preview">
-            ReentrantLock(可重入锁)
-# 介绍
-重入锁
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
 
 
-  一个ReentrantLock的拥有者是最近一次使用该锁lock了却还没有unlock的线程。
-  如果一个线程成功的lock了，方法会成功返回，同时该线程会获得锁。如果该线程已经拥有该锁，再调用lock方法，lock方法会立马返回。
-  
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2016/05/09/文件查看技巧2"
+                        data-title="linux下文件查看技巧"
+                        data-url="http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
 
+                
 
-重要的方法
+            </div>
 
-public void lock()
-
-
-  获得锁
-    
-  ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 27, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "5-synchronized"
-        </h3>
-        
-        <div class="post-content-preview">
-            synchronized
-## 先来看看jsr133中lock的语义
-
-There are multiple mechanisms for communicating between threads. The most basic of these methods is synchronization, which is implemented using monitors. Each ob...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 24, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "4-线程的睡眠&等待&让步&唤醒"
-        </h3>
-        
-        <div class="post-content-preview">
-            线程的睡眠&amp;等待&amp;让步&amp;唤醒
-
-
-  yield()
-    
-      发送请求告诉调度器“当前线程”让出当前对处理器资源的占用。调度器可以忽略该请求。
-      很少场景会使用到这个方法，该方法可能对于debug或者出于测试的目的的场景有些用处（就是没有什么卵用的意思）。
-      D大调
-    
-  
-  sleep(long millis)
-    
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 24, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "3-守护线程的创建和执行"
-        </h3>
-        
-        <div class="post-content-preview">
-            守护线程的创建和执行
-## 介绍
-java有一种线程叫守护线程：
-
-
-  这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。
-  通过调用setDaemon(true);将该线程设置成守护线程。
-
-
-##Demo
-验证一下1
-
-public class TestDaemonThread {
-
-	public static void main(String[] args) {...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 24, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "2-打断线程&等待线程的终止"
-        </h3>
-        
-        <div class="post-content-preview">
-            打断线程&amp;等待线程的终止
-##打断线程demo
-
-/**
- * Created by liang.he on 16/1/12.
- * 测试打断一个线程
- */
-public class TestInterruptThread extends Thread{
-
-	private boolean flag = true;
-
-	@Override
-	public void run() {
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 23, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "1-创建线程"
-        </h3>
-        
-        <div class="post-content-preview">
-            创建线程
-
-创建一个线程
-
-  实现Runnable接口
-    
-  public TestRunnable implements implements Runnable {
-      @Override
-      public void run() {
-      }
-  }
-  new Thread(new TestRunnable()).start();
-  
-  
-  继承Th...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 16, 2016
-    </p>
-</div>
-<hr>
-
-
-<!-- Pager -->
-
-
-    		</div>
     <!-- Sidebar Container -->
             <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
+        				
                             
-                                <a href="/tags/#java多线程" title="java多线程" rel="6">
+                				<a href="/tags/#java多线程" title="java多线程" rel="6">
                                     java多线程
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#Linux" title="Linux" rel="2">
+                				<a href="/tags/#Linux" title="Linux" rel="2">
                                     Linux
                                 </a>
                             
-                        
-                    </div>
+        				
+        			</div>
                 </section>
                 
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-                        
-                            <img src="/img/protrait.jpg" />
-                        
-                        
-                            <p>今天努力的赚钱就是为了明天的好吃懒做...</p>
-                        
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                            
-                            
-                            
-                            
-                            <li>
-                                <a target="_blank" href="https://github.com/Dunnohe">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </section>
                 <!-- Friends Blog -->
                 
                 <hr>
@@ -490,10 +379,70 @@ public class TestInterruptThread extends Thread{
                     
                 </ul>
                 
-    		</div>
-        
-	</div>
-</div>
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'dunno';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->

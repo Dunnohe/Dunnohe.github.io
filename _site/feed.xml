@@ -5,9 +5,276 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io//</link>
     <atom:link href="http://dunnohe.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 04 May 2016 14:48:05 +0800</pubDate>
-    <lastBuildDate>Wed, 04 May 2016 14:48:05 +0800</lastBuildDate>
+    <pubDate>Wed, 11 May 2016 10:08:50 +0800</pubDate>
+    <lastBuildDate>Wed, 11 May 2016 10:08:50 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>linux下文件查看技巧</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;背景&lt;/h1&gt;
+&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
+&lt;p&gt;之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重的东西，就是正则表达式。我们先来了解一些正则表达式的语法。&lt;/p&gt;
+
+&lt;h1 id=&quot;section-1&quot;&gt;操作系统字符分类&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;特殊符号&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:alnum:]&lt;/td&gt;&lt;td&gt;代表英文大小写字符及数字,亦即0-9, A-Z, a-z&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:alpha:]&lt;/td&gt;&lt;td&gt;代表任何英文大小写字符,亦即 A-Z, a-z&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:blank:]&lt;/td&gt;&lt;td&gt;代表空格键与[Tab]按键两者&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:cntrl:]&lt;/td&gt;&lt;td&gt;代表键盘上面的控制按键,亦即包括 CR, LF, Tab, Del.. 等等&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:digit:]&lt;/td&gt;&lt;td&gt;代表数字，即0-9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:graph:]&lt;/td&gt;&lt;td&gt;除了空格符 (空格键不 [Tab] 按键) 外的其他所有按键&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:lower:]&lt;/td&gt;&lt;td&gt;代表小写字符,亦即 a-z&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:print:]&lt;/td&gt;&lt;td&gt;代表任何可以被打印出来的字符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[:punct:]&lt;/td&gt;&lt;td&gt;代表标点符号,亦即:&quot; &#39; ? ! ; : # $...&lt;/td&gt;
+&lt;/tr&gt;   
+&lt;tr&gt;
+	&lt;td&gt;[:upper:]&lt;/td&gt;&lt;td&gt;代表大写字符,亦即 A-Z&lt;/td&gt;
+&lt;/tr&gt;  
+&lt;tr&gt;
+	&lt;td&gt;[:space:]&lt;/td&gt;&lt;td&gt;任何会产生空白的字符,包括空格键, [Tab], CR 等等&lt;/td&gt;
+&lt;/tr&gt;  
+&lt;tr&gt;
+	&lt;td&gt;[:xdigit:]&lt;/td&gt;&lt;td&gt;代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符&lt;/td&gt;
+&lt;/tr&gt;  
+&lt;/table&gt;
+&lt;p&gt;# 字符类别&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;字符类别&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\c&lt;/td&gt;&lt;td&gt;控制字符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\s&lt;/td&gt;&lt;td&gt;代表空格&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\S&lt;/td&gt;&lt;td&gt;代表不是空格&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\d&lt;/td&gt;&lt;td&gt;代表数字&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\D&lt;/td&gt;&lt;td&gt;代表不是数字&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\w&lt;/td&gt;&lt;td&gt;代表是单词&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\W&lt;/td&gt;&lt;td&gt;代表不是单词&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\xhh&lt;/td&gt;&lt;td&gt;代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\Oxxx&lt;/td&gt;&lt;td&gt;代表八进制的字符,亦即0-7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;# 锚标记&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;锚标记&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;^&lt;/td&gt;&lt;td&gt;行首&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\A&lt;/td&gt;&lt;td&gt;字符串的开始&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;$&lt;/td&gt;&lt;td&gt;行尾&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\Z&lt;/td&gt;&lt;td&gt;字符串的结束&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\b&lt;/td&gt;&lt;td&gt;单词的边界&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\B&lt;/td&gt;&lt;td&gt;不是单词的边界&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\&amp;lt;&lt;/td&gt;&lt;td&gt;单词的开头&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;\&amp;gt;&lt;/td&gt;&lt;td&gt;单词的结尾&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+</description>
+        <pubDate>Mon, 09 May 2016 21:00:00 +0800</pubDate>
+        <link>http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>linux下文件查看技巧</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;背景&lt;/h1&gt;
+&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。
+&lt;/p&gt;
+
+&lt;h1 id=&quot;section-1&quot;&gt;筛选命令&lt;/h1&gt;
+
+&lt;h2 id=&quot;cut&quot;&gt;cut命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：截取结果
+选项参数：
+-d :后面接分隔字符。与 -f 一起使用;
+-f :依据 -d 的分隔字符将一段讯息分割成为数段,用 -f 取出第几段的意思; 
+-c :以字符 (characters) 的单位取出固定字符区间;
+
+eg:
+cut -d&#39;分隔字符&#39; -f fields &amp;lt;==用与有特定分隔字符
+cut -c 字符区间 &amp;lt;==用亍排列整齐的讯息
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;grep&quot;&gt;grep命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：筛选结果
+选项参数：
+-A num 	把每处匹配的后面num几行打出来
+-B num  把每处匹配的前面几行打出来
+-C num  等效于 -A num -B num
+-c 把匹配的个数打出来
+--color=auto 把匹配部分的颜色打出来
+-e pattern pattern是正则表达式，符合的打出来
+-i 不考虑大小写来匹配
+-m num 最大匹配次数
+-n 把行号打印出来
+-v 反向匹配
+-o 正则
+eg:
+grep -nC 2 -i -m 3 -color=auto &quot;exception&quot; error.log 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;sort&quot;&gt;sort命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：排序
+选项参数:
+-b 忽略开头的空格
+-d 按照字典顺序排序
+-f 忽略大小写
+-g 一般的数字排序
+-i 只考虑能被打印出的字符
+-M 按照月份排序
+-n 根据数字string类型排序
+-r 结果反向
+-c 检测input是不是已经排序了，如果是就不再排序了
+eg:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;# 统计命令
+## uniq命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：结果去重
+选项参数:
+-c 打印出每项对应的数目
+-d 仅仅输出input中重复的行
+-u 仅仅打印出input没有重复的行
+-i 忽略大小写字符的不同
+eg:
+cat testsort | uniq
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;wc&quot;&gt;wc命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：统计个数
+选项参数:
+-c 统计打印出来的字节个数
+-l 统计打印出来的行数
+-m 统计打印出来的字符个数
+-w 统计打印出来的单词个数
+eg:
+cat testsort | wc -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;tee&quot;&gt;tee命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能：打印输出时同时把结果写入文件中
+选项参数:
+-a 通过append的方式追加到文件中
+eg:
+cat testsort| sort -g | uniq | wc -m | tee -a test 结果会打印出来
+cat test 就可以看到结果
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;section-2&quot;&gt;字符串替换命令&lt;/h1&gt;
+
+&lt;h2 id=&quot;tr&quot;&gt;tr命令&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+功能:替换字符
+语法:
+tr [-Ccsu] string1 string2
+tr [-Ccu] -d string1
+tr [-Ccu] -s string1
+tr [-Ccu] -ds string1 string2
+选项参数:
+-c 统计打印出来的字节个数
+-l 统计打印出来的行数
+-m 统计打印出来的字符个数
+-w 统计打印出来的单词个数
+eg:
+把如下输出
+1
+2
+3
+转化成 1,2,3
+echo &quot;1\n2\n3&quot; | tr &quot;\r\n&quot; &quot;,&quot; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;xargs&quot;&gt;xargs命令&lt;/h2&gt;
+&lt;p&gt;将管道前面的内容作为xargs后面命令的参数,如果xargs后面没有跟命令,那么默认是echo。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+功能:将管道前面的内容作为xargs后面命令的参数,如果xargs后面没有跟命令,那么默认是echo。
+语法:
+xargs [-0epn] command
+选项参数:
+-0 :如果输入的 stdin 含有特殊字符,例如 `, \, 空格键等等字符时,这个 -0 参数可以将
+他还原成一般字符。这个参数可以用于特殊状态!
+-e :这个是 EOF (end of file) 的意思。后面可以接一个字符串,当 xargs分析到这个字符串时,就会停止继续工作!
+-p :在执行每个指令的argument 时,都会询问使用者是否执行该命令，输入y执行，输入n不执行;
+-n :后面接次数,每次 command 指令执行时,要使用几个参数的意思。
+eg:
+echo &quot;1\n2\n3&quot; | xargs
+echo &quot;1\n2\n3\n\\&quot;  | xargs  #打印不出\字符
+echo &quot;1\n2\n3\n\\&quot;  | xargs -0  #打印的出\字符
+echo &quot;1\n2\n3&quot; | xargs -E 2  #因为2作为终结符，所以只会打印出1
+echo &quot;1\n2\n3\n\\&quot;  | xargs  -n 2 #按照2个参数一组依次执行
+echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个数字
+&lt;/code&gt;&lt;/pre&gt;
+
+</description>
+        <pubDate>Mon, 09 May 2016 20:00:00 +0800</pubDate>
+        <link>http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>Java多线程学习系列</title>
