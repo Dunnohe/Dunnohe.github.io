@@ -12,7 +12,7 @@
 
     <title>linux下文件查看技巧 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -212,7 +212,7 @@
 	<td>[:xdigit:]</td><td>代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符</td>
 </tr>  
 </table>
-<p># 字符类别</p>
+<p># 转义符号</p>
 <table>
 <tr>
 	<th>字符类别</th><th>代表意义</th>
@@ -245,7 +245,7 @@
 	<td>\Oxxx</td><td>代表八进制的字符,亦即0-7</td>
 </tr>
 </table>
-<p># 锚标记</p>
+<p># 定位点</p>
 <table>
 <tr>
 	<th>锚标记</th><th>代表意义</th>
@@ -276,6 +276,150 @@
 </tr>
 </table>
 
+<h1 id="section-2">限定符（修饰数量）</h1>
+
+<table>
+<tr>
+	<th>量词</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>{3}</td><td>只出现3次</td>
+</tr>
+<tr>
+	<td>{3,}</td><td>出现3次以上</td>
+</tr>
+<tr>
+	<td>{3,5}</td><td>出现3次,4次或者5次</td>
+</tr>
+<tr>
+	<td>{3,5}?</td><td>单词的开头</td>
+</tr>
+<tr>
+	<td>?</td><td>等效于{0,1}</td>
+</tr>
+<tr>
+	<td>??</td><td>?的非贪心模式</td>
+</tr>
+<tr>
+	<td>*</td><td>出现0次或者多次,等价于{0,}</td>
+</tr>
+<tr>
+	<td>*?</td><td>*的非贪心模式</td>
+</tr>
+<tr>
+	<td>+</td><td>出现1次或者多次,等价于{1,}</td>
+</tr>
+<tr>
+	<td>+?</td><td>+的非贪心模式</td>
+</tr>
+</table>
+<p>我们看到表中有几行解释是飞贪心模式，什么是非贪心模式呢？</p>
+<p>当 ? 紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。</p>
+
+<h1 id="section-3">范围修饰</h1>
+<table>
+<tr>
+	<th>范围</th><th>代表意义</th>
+</tr>
+<tr>
+	<td> . </td><td>代表任何字符除开换行符(\n)</td>
+</tr>
+<tr>
+	<td>(a|b)</td><td>a或者b</td>
+</tr>
+<tr>
+	<td>(...)</td><td></td>
+</tr>
+<tr>
+	<td>(?:...)</td><td></td>
+</tr>
+<tr>
+	<td>[abc]</td><td>a或者b或者c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[^abc]</td><td>不是a或者不是b或者不是c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[a-q]</td><td>代表小写字母a~q,只出现一次</td>
+</tr>
+<tr>
+	<td>[A-Q]</td><td>代表大写字母A~Q,只出现一次</td>
+</tr>
+<tr>
+	<td>[0-7]</td><td>代表数字0~7,只出现一次</td>
+</tr>
+</table>
+
+<h1 id="section-4">非打印字符</h1>
+<table>
+<tr>
+	<th>范围</th><th>代表意义</th>
+</tr>
+<tr>
+	<td> . </td><td>代表任何字符除开换行符(\n)</td>
+</tr>
+<tr>
+	<td>(a|b)</td><td>a或者b</td>
+</tr>
+<tr>
+	<td>(...)</td><td></td>
+</tr>
+<tr>
+	<td>(?:...)</td><td></td>
+</tr>
+<tr>
+	<td>[abc]</td><td>a或者b或者c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[^abc]</td><td>不是a或者不是b或者不是c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[a-q]</td><td>代表小写字母a~q,只出现一次</td>
+</tr>
+<tr>
+	<td>[A-Q]</td><td>代表大写字母A~Q,只出现一次</td>
+</tr>
+<tr>
+	<td>[0-7]</td><td>代表数字0~7,只出现一次</td>
+</tr>
+</table>
+
+<h1 id="section-5">模式匹配</h1>
+
+<table>
+	<tr><th>模式匹配</th><th>代表意义</th></tr>
+	<tr><td>(?:模式)</td><td>	
+与模式 匹配，但不保存匹配项；即不会存储匹配项以备将来之用。 这对于用“or”字符 (|) 组合模式部件的情况很有用。</td></tr>
+	<tr><td>(?=模式)</td><td>	
+正预测先行。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。</td></tr>
+	<tr><td>(?!模式)</td><td>	
+负预测先行。 匹配与模式 不匹配的搜索字符串。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。</td></tr>
+</table>
+
+<h1 id="section-6">优先级顺序</h1>
+<p>正则表达式的计算方式与算术表达式非常类似；即从左到右进行计算，并遵循优先级顺序。
+下表按从高到低的顺序包含了正则表达式运算符的优先级顺序。</p>
+<table>
+<tr>
+	<th>运算符</th><th>说明</th>
+</tr>
+<tr>
+	<td> \ </td><td>转义符</td>
+</tr>
+<tr>
+	<td>(), (?:), (?=), []</td><td>括号和中括号</td>
+</tr>
+<tr>
+	<td>*、+、?、{n}、{n,}、{n,m}</td><td>限定符</td>
+</tr>
+<tr>
+	<td>^、$、\任何元字符</td><td>定位点和序列</td>
+</tr>
+<tr>
+	<td>|</td><td>替换</td>
+</tr>
+</table>
+
 
 
                 <hr>
@@ -295,12 +439,6 @@
 
                 
 
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -358,21 +496,6 @@
 
 
 
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "lianghe";
-    var disqus_identifier = "/2016/05/09/文件查看技巧2";
-    var disqus_url = "http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 

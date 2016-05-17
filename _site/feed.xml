@@ -3,10 +3,10 @@
   <channel>
     <title>Dunno Blog</title>
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
-    <link>http://dunnohe.github.io//</link>
-    <atom:link href="http://dunnohe.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 11 May 2016 10:21:56 +0800</pubDate>
-    <lastBuildDate>Wed, 11 May 2016 10:21:56 +0800</lastBuildDate>
+    <link>http://dunnohe.github.io/</link>
+    <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Mon, 16 May 2016 20:24:27 +0800</pubDate>
+    <lastBuildDate>Mon, 16 May 2016 20:24:27 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
     
       <item>
@@ -57,7 +57,7 @@
 	&lt;td&gt;[:xdigit:]&lt;/td&gt;&lt;td&gt;代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符&lt;/td&gt;
 &lt;/tr&gt;  
 &lt;/table&gt;
-&lt;p&gt;# 字符类别&lt;/p&gt;
+&lt;p&gt;# 转义符号&lt;/p&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;字符类别&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -90,7 +90,7 @@
 	&lt;td&gt;\Oxxx&lt;/td&gt;&lt;td&gt;代表八进制的字符,亦即0-7&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-&lt;p&gt;# 锚标记&lt;/p&gt;
+&lt;p&gt;# 定位点&lt;/p&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;锚标记&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -121,10 +121,154 @@
 &lt;/tr&gt;
 &lt;/table&gt;
 
+&lt;h1 id=&quot;section-2&quot;&gt;限定符（修饰数量）&lt;/h1&gt;
+
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;量词&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;{3}&lt;/td&gt;&lt;td&gt;只出现3次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;{3,}&lt;/td&gt;&lt;td&gt;出现3次以上&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;{3,5}&lt;/td&gt;&lt;td&gt;出现3次,4次或者5次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;{3,5}?&lt;/td&gt;&lt;td&gt;单词的开头&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;?&lt;/td&gt;&lt;td&gt;等效于{0,1}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;??&lt;/td&gt;&lt;td&gt;?的非贪心模式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;*&lt;/td&gt;&lt;td&gt;出现0次或者多次,等价于{0,}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;*?&lt;/td&gt;&lt;td&gt;*的非贪心模式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;+&lt;/td&gt;&lt;td&gt;出现1次或者多次,等价于{1,}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;+?&lt;/td&gt;&lt;td&gt;+的非贪心模式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;我们看到表中有几行解释是飞贪心模式，什么是非贪心模式呢？&lt;/p&gt;
+&lt;p&gt;当 ? 紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。&lt;/p&gt;
+
+&lt;h1 id=&quot;section-3&quot;&gt;范围修饰&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt; . &lt;/td&gt;&lt;td&gt;代表任何字符除开换行符(\n)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(a|b)&lt;/td&gt;&lt;td&gt;a或者b&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(?:...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[abc]&lt;/td&gt;&lt;td&gt;a或者b或者c，只能匹配其中一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[^abc]&lt;/td&gt;&lt;td&gt;不是a或者不是b或者不是c，只能匹配其中一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[a-q]&lt;/td&gt;&lt;td&gt;代表小写字母a~q,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[A-Q]&lt;/td&gt;&lt;td&gt;代表大写字母A~Q,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[0-7]&lt;/td&gt;&lt;td&gt;代表数字0~7,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;section-4&quot;&gt;非打印字符&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt; . &lt;/td&gt;&lt;td&gt;代表任何字符除开换行符(\n)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(a|b)&lt;/td&gt;&lt;td&gt;a或者b&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(?:...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[abc]&lt;/td&gt;&lt;td&gt;a或者b或者c，只能匹配其中一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[^abc]&lt;/td&gt;&lt;td&gt;不是a或者不是b或者不是c，只能匹配其中一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[a-q]&lt;/td&gt;&lt;td&gt;代表小写字母a~q,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[A-Q]&lt;/td&gt;&lt;td&gt;代表大写字母A~Q,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;[0-7]&lt;/td&gt;&lt;td&gt;代表数字0~7,只出现一次&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;section-5&quot;&gt;模式匹配&lt;/h1&gt;
+
+&lt;table&gt;
+	&lt;tr&gt;&lt;th&gt;模式匹配&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;(?:模式)&lt;/td&gt;&lt;td&gt;	
+与模式 匹配，但不保存匹配项；即不会存储匹配项以备将来之用。 这对于用“or”字符 (|) 组合模式部件的情况很有用。&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;(?=模式)&lt;/td&gt;&lt;td&gt;	
+正预测先行。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;(?!模式)&lt;/td&gt;&lt;td&gt;	
+负预测先行。 匹配与模式 不匹配的搜索字符串。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;section-6&quot;&gt;优先级顺序&lt;/h1&gt;
+&lt;p&gt;正则表达式的计算方式与算术表达式非常类似；即从左到右进行计算，并遵循优先级顺序。
+下表按从高到低的顺序包含了正则表达式运算符的优先级顺序。&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;
+	&lt;th&gt;运算符&lt;/th&gt;&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt; \ &lt;/td&gt;&lt;td&gt;转义符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;(), (?:), (?=), []&lt;/td&gt;&lt;td&gt;括号和中括号&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;*、+、?、{n}、{n,}、{n,m}&lt;/td&gt;&lt;td&gt;限定符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;^、$、\任何元字符&lt;/td&gt;&lt;td&gt;定位点和序列&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;|&lt;/td&gt;&lt;td&gt;替换&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
 </description>
         <pubDate>Mon, 09 May 2016 21:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
+        <link>http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
         
         <category>Linux</category>
         
@@ -268,8 +412,8 @@ echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个�
 
 </description>
         <pubDate>Mon, 09 May 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
+        <link>http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
         
         <category>Linux</category>
         
@@ -321,8 +465,8 @@ echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个�
 
 </description>
         <pubDate>Wed, 27 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</guid>
+        <link>http://dunnohe.github.io/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</guid>
         
         <category>java多线程</category>
         
@@ -595,8 +739,8 @@ public class TestSync {
 &lt;/pre&gt;
 </description>
         <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</guid>
+        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</guid>
         
         <category>java多线程</category>
         
@@ -665,8 +809,8 @@ public class TestSync {
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</guid>
+        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</guid>
         
         <category>java多线程</category>
         
@@ -749,8 +893,8 @@ public class TestDaemonThread {
 
 </description>
         <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</guid>
+        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</guid>
         
         <category>java多线程</category>
         
@@ -799,8 +943,8 @@ public class TestInterruptThread extends Thread{
 &lt;p&gt;调用线程的join()方法。&lt;/p&gt;
 </description>
         <pubDate>Sat, 23 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</guid>
+        <link>http://dunnohe.github.io/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</guid>
         
         <category>java多线程</category>
         
@@ -948,8 +1092,8 @@ public class TestInterruptThread extends Thread{
 &lt;/p&gt;&lt;/pre&gt;&lt;/p&gt;&lt;/p&gt;&lt;/pre&gt;
 </description>
         <pubDate>Sat, 16 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io//2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io//2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</guid>
+        <link>http://dunnohe.github.io/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</guid>
         
         <category>java多线程</category>
         

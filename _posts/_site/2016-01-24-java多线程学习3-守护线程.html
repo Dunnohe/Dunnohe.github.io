@@ -1,0 +1,72 @@
+<h1 id="section">守护线程的创建和执行</h1>
+<p>## 介绍
+java有一种线程叫守护线程：</p>
+
+<ul>
+  <li>这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。</li>
+  <li>通过调用setDaemon(true);将该线程设置成守护线程。</li>
+</ul>
+
+<p>##Demo
+验证一下1</p>
+<pre>
+public class TestDaemonThread {
+
+	public static void main(String[] args) {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int sleep = 2;
+
+				while ( sleep &gt; 0) {
+					try {
+						Thread.sleep(1000);
+						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					sleep --;
+				}
+
+				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
+			}
+		});
+		thread.setName("not daemon thread ");
+
+		Thread thread2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int sleep = 5;
+
+				while ( sleep &gt; 0) {
+					try {
+						Thread.sleep(1000);
+						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					sleep --;
+				}
+
+				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
+			}
+		});
+		thread2.setName("daemon thread ");
+		thread2.setDaemon(true);
+
+		thread.start();
+		thread2.start();
+
+		try {
+			thread2.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println(thread.getName() + "pro " + thread.getPriority());
+		System.out.println(thread2.getName() + "pro " + thread2.getPriority());
+
+	}
+}
+</pre>
+<p>上面代码中，我们执行两个线程，一个普通线程，sleep2秒，另一个线程是守护线程，sleep5秒，根据上面的例子，我们预测一下，普通线程执行2秒后，主线程就退出了。</p>
+

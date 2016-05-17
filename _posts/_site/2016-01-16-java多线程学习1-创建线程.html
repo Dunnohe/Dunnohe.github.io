@@ -1,0 +1,137 @@
+<h1 id="section">创建线程</h1>
+
+<h2 id="section-1">创建一个线程</h2>
+<ul>
+  <li>实现Runnable接口
+    <pre>
+  public TestRunnable implements implements Runnable {
+      @Override
+      public void run() {
+      }
+  }
+  new Thread(new TestRunnable()).start();
+  </pre>
+  </li>
+  <li>继承Thread类
+    <pre>
+  public class TestThread extends Thread {
+      @Override
+      public void run() {
+      }
+  }
+  new TestThread().start();
+  </pre>
+  </li>
+</ul>
+
+<h2 id="section-2">启动一个线程</h2>
+<ul>
+  <li>启动一个线程
+    <pre>
+  new Thread().start();
+  </pre>
+  </li>
+</ul>
+
+<h2 id="section-3">线程的状态</h2>
+<ul>
+  <li>NEW 当线程创建之后但是还没有调用start方法时会是这个状态。</li>
+  <li>RUNNABLE 当线程正在JVM中执行时（但实际也有可能正在等待操作系统的其他资源，比如处理器资源），线程会被标记成该状态</li>
+  <li>BOLCKED 线程正在等待一个监视器锁或者进入同步块/方法，或者在调用Object.wait()方法之后重进入同步块/方法</li>
+  <li>WAITING 线程正在等待另一个线程执行完一个特定的动作时会标记成该状态，比如：一个线程被调用了Object.wait()会使它处于WAITING状态直到另一个线程调用了Object.notify()或者Object.notifyAll()唤醒该线程；或者该线程被调用了Object.join()等待另一个线程的终止时会处于WAITING状态。</li>
+  <li>TIMED_WAITING 在特定的时间内等待另一个线程。以下方法会产生该作用：
+    <ul>
+      <li>Thread.sleep</li>
+      <li>Object.wait with timeout</li>
+      <li>Thread.join with timeout</li>
+      <li>LockSupport.parkNanos</li>
+      <li>LockSupport.parkUntil</li>
+    </ul>
+  </li>
+  <li>TERMINATED 线程的终止状态，当线程完成它的执行时标记成该状态。</li>
+</ul>
+
+<h2 id="startrun">start和run的区别</h2>
+
+<ul>
+  <li>start的实现</li>
+</ul>
+<pre>
+/**
+     * Causes this thread to begin execution; the Java Virtual Machine
+     * calls the <code>run</code> method of this thread.
+     * <p>
+     * The result is that two threads are running concurrently: the
+     * current thread (which returns from the call to the
+     * <code>start</code> method) and the other thread (which executes its
+     * <code>run</code> method).
+     * <p>
+     * It is never legal to start a thread more than once.
+     * In particular, a thread may not be restarted once it has completed
+     * execution.
+     *
+     * @exception  IllegalThreadStateException  if the thread was already
+     *               started.
+     * @see        #run()
+     * @see        #stop()
+     */
+    public synchronized void start() {
+        /**
+         * This method is not invoked for the main method thread or "system"
+         * group threads created/set up by the VM. Any new functionality added
+         * to this method in the future may have to also be added to the VM.
+         *
+         * A zero status value corresponds to state "NEW".
+         */
+        if (threadStatus != 0)
+            throw new IllegalThreadStateException();
+
+        /* Notify the group that this thread is about to be started
+         * so that it can be added to the group's list of threads
+         * and the group's unstarted count can be decremented. */
+        group.add(this);
+
+        boolean started = false;
+        try {
+            start0();
+            started = true;
+        } finally {
+            try {
+                if (!started) {
+                    group.threadStartFailed(this);
+                }
+            } catch (Throwable ignore) {
+                /* do nothing. If start0 threw a Throwable then
+                  it will be passed up the call stack */
+            }
+        }
+    }
+
+* run的实现
+<pre>
+	/**
+     * If this thread was constructed using a separate
+     * <code>Runnable</code> run object, then that
+     * <code>Runnable</code> object's <code>run</code> method is called;
+     * otherwise, this method does nothing and returns.
+     * <p>
+     * Subclasses of <code>Thread</code> should override this method.
+     *
+     * @see     #start()
+     * @see     #stop()
+     * @see     #Thread(ThreadGroup, Runnable, String)
+     */
+    @Override
+    public void run() {
+        if (target != null) {
+            target.run();
+        }
+    }
+
+* 方法的区别
+	* start方法是一个线程开始执行的原因（所以我们应该通过调用start方法来启动一个线程，而不是run）
+	* start方法至多启动同一个线程一次。
+	* 线程再完成执行后，不会重新启动start方法。
+	* start方法不会被“主线程”或者是虚拟机创建/设置的“系统态”线程调用（而是创建一个新线程来调用）。
+	* run就是一个普通的方法，可以被重复调用。
+</p></pre></p></p></pre>
