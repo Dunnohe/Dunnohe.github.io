@@ -71,7 +71,16 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
 	- 0.0%hi (_hardware interrupts_)硬中断的CPU百分比。
 	- 0.0%si (_software interrupts_)软终端的CPU百分比。
 	- 0.0%st (_Steal Time_)通常我们服务器是一个虚拟机，这个指标就代表目前我们所在的虚拟机偷取的整个物理机的CPU的总和。
-- 第四行和第五行内容-内存利用	
+- 第四行内容-内存利用	
+	- 8059416k total, 物理内存总量
+	- 7374232k used, 使用的物理内存量
+	- 685184k free, 空闲的物理内存量
+	- 288420k buffers, 用作内核缓存的物理内存量
+- 第五行内容-交换空间
+	- 2096440k total, 交换区总量
+	- 0k used, 使用的交换区量
+	- 2096440k free, 空闲的交换区量
+	- 5570192k cached, 缓冲交换区总量
 
 # <a name="tcy">top常用的一些命令</a>
 
