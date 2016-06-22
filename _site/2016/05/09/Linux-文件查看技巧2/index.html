@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Java多线程学习系列 - Dunno Blog</title>
+    <title>linux下文件查看技巧 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -140,15 +140,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#java多线程" title="java多线程">java多线程</a>
+                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                         
                     </div>
-                    <h1>Java多线程学习系列</h1>
+                    <h1>linux下文件查看技巧</h1>
                     
                     
-                    <h2 class="subheading"> "6-ReentrantLock(可重入锁)"</h2>
+                    <h2 class="subheading"> "2-了解正则表达式"</h2>
                     
-                    <span class="meta">Posted by Dunno on January 27, 2016</span>
+                    <span class="meta">Posted by Dunno on May 9, 2016</span>
                 </div>
             </div>
         </div>
@@ -166,46 +166,339 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="reentrantlock">ReentrantLock(可重入锁)</h1>
-<p># 介绍
-重入锁</p>
+				<h1 id="section">目录</h1>
 
 <ul>
-  <li>一个ReentrantLock的拥有者是最近一次使用该锁lock了却还没有unlock的线程。</li>
-  <li>如果一个线程成功的lock了，方法会成功返回，同时该线程会获得锁。如果该线程已经拥有该锁，再调用lock方法，lock方法会立马返回。</li>
-  <li></li>
+  <li><a href="#bj">背景</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#cc">字符类操作系统字符分类</a>
+    <ul>
+      <li><a href="#xbds">[xxx]表达式</a></li>
+      <li><a href="#bsbh">表示变化</a></li>
+      <li><a href="#hy">还有一些tips</a></li>
+    </ul>
+  </li>
+  <li><a href="#zyzf">转义字符</a></li>
+  <li><a href="#dwd">定位点</a></li>
+  <li><a href="#xdf">限定符（修饰数量）</a></li>
+  <li><a href="#fwxs">范围修饰</a></li>
+  <li><a href="#fdyzf">非打印字符</a></li>
+  <li><a href="#mspp">模式匹配</a></li>
+  <li><a href="#yxjsx">优先级顺序</a></li>
 </ul>
 
-<p>重要的方法</p>
+<h1 id="a-namebja"><a name="bj">背景</a></h1>
+<p>在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。</p>
+<p>之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重要的东西-正则表达式。我们先来了解一些正则表达式的语法。</p>
 
-<p>public void lock()</p>
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://www.delorie.com/gnu/docs/grep/grep_toc.html#SEC_Contents</p>
+
+  <p>https://msdn.microsoft.com/zh-cn/library/az24scfc(v=vs.110).aspx</p>
+</blockquote>
+
+<h1 id="a-namecca"><a name="cc">字符类操作系统字符分类</a></h1>
+
+<h3 id="a-namexbdsxxx-a"><a name="xbds">[xxx] 表达式</a></h3>
+<p>有一类表达式通过 <strong>[</strong> 和 <strong>]</strong> 将一系列字符包含在其中，如[a2],它的意思是匹配出 <strong>[</strong> <strong>]</strong> 包含的任意一个字符，比如[a2]就能匹配出含有a或2的数据。如果[]中包含的第一个字符是  <strong>^</strong> ,就代表匹配任何不在 <strong>[</strong> <strong>]</strong> 中包含的字符。比如[^a2]就能匹配出任何不含有a或者不含有2的数据。</p>
+
+<h3 id="a-namebsbha"><a name="bsbh">表示变化</a></h3>
+<p>当表达一种区间时，我们才用连接符 <strong>-</strong> 来连接字符表达，它可以匹配到范围中的任何一个字符，比如<strong>[</strong>a-c<strong>]</strong>可以匹配到a或者b或者c。
+最后我们了解一些已经预先为我们考虑而设定好的一些特殊字符类：</p>
 
 <ul>
-  <li>获得锁
+  <li>[:alnum:]
     <ul>
-      <li>如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。</li>
-      <li>如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。</li>
-      <li>如果该锁已经被其他线程持有，那么当前线程将会block直到获得该锁。获得的那个时候lock hold count（锁持有数）会被设置成1。（可以说明该锁是“独占的”，不同线程只能有一个线程占有）</li>
+      <li>匹配英文大小写字符和数字(0-9,a-z.A-Z),等效于[:alpha:]和[:digit:]结果合集。</li>
+    </ul>
+
+    <pre><code>
+  命令
+  echo "a\nB\nf\n1\n\!\n\t\n#" |  grep --color=auto -e "[[:alnum:]]"
+  结果：
+      a
+      B
+      f
+      1
+  </code></pre>
+  </li>
+  <li>[:alpha:]
+    <ul>
+      <li>代表任何英文大小写字符（A-Z, a-z）,等效于[:lower:]和[:upper:]结果合集。</li>
+    </ul>
+    <pre><code>
+  命令
+  echo "a\nB\nf\n1\n\!\n\t\n#" |  grep --color=auto -e "[[:alpha:]]"
+  结果：
+      a
+      B
+      f
+  </code></pre>
+  </li>
+  <li>[:blank:]
+    <ul>
+      <li>代表空白字符,代表空格键与[Tab]按键两者。</li>
+    </ul>
+    <pre><code>
+  命令
+  echo "a\nB\nf\n1\n\!\n\t\n#" |  grep --color=auto -e "[[:blank:]]"
+  结果：
+      \t
+  </code></pre>
+  </li>
+  <li>[:cntrl:]
+    <ul>
+      <li>代表键盘上面的控制按键,亦即包括 CR, LF, Tab, Del.. 等等</li>
+    </ul>
+  </li>
+  <li>[:digit:]
+    <ul>
+      <li>代表数字:0,1,2,3,4,5,6,7,8,9</li>
+    </ul>
+  </li>
+  <li>[:graph:]
+    <ul>
+      <li>代表除了空格符合tab键之外的所有按键，实际就是等效于[:alnum:]和[:punct:]结果合集。</li>
+    </ul>
+  </li>
+  <li>[:lower:]
+    <ul>
+      <li>代表所有小写英文字母。a-z</li>
+    </ul>
+  </li>
+  <li>[:print:]
+    <ul>
+      <li>代表任何可以被打印出来的字符,等效于[:alnum:]和[:punct]和空格</li>
+    </ul>
+  </li>
+  <li>[:space:]
+    <ul>
+      <li>代表任何会产生空白的字符，包括空格键, [Tab], CR , 回车，换行等等</li>
+    </ul>
+  </li>
+  <li>[:upper:]
+    <ul>
+      <li>代表所有大写英文字母，A-Z</li>
+    </ul>
+  </li>
+  <li>[:xdigit:]
+    <ul>
+      <li>代表16进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符</li>
     </ul>
   </li>
 </ul>
 
-<p>public void lockInterruptibly() throws InterruptedException</p>
+<h3 id="a-namehytipsa"><a name="hy">还有一些tips</a></h3>
+<p>如果你使用 <strong>[</strong> <strong>]</strong> 中包含的字符有<strong>]</strong>,那么一定把它放在首位，比如<strong>[]ab]</strong>,会匹配<strong>]或者a或者b</strong>,<strong>[][ab]</strong>,会匹配<strong>]或者[或者a或者b</strong>,<strong>[^]]</strong>会匹配<strong>]</strong>之外的所有字符。</p>
 
-<ul>
-  <li>获得锁除非当前线程被打断
-    <ul>
-      <li>如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。</li>
-      <li>如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。</li>
-      <li>如果这个锁已经被其他线程持有，那么当前线程将不会被线程调度，同时当前线程会进入休眠状态直到以下两种情况之一发生：
-        <ul>
-          <li>当前线程获得锁</li>
-          <li>当前线程被Interrupt</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
+<h1 id="a-namezyzfa"><a name="zyzf">转义符号</a></h1>
+<table>
+<tr>
+	<th>字符类别</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>\c</td><td>控制字符</td>
+</tr>
+<tr>
+	<td>\s</td><td>代表空格</td>
+</tr>
+<tr>
+	<td>\S</td><td>代表不是空格</td>
+</tr>
+<tr>
+	<td>\d</td><td>代表数字</td>
+</tr>
+<tr>
+	<td>\D</td><td>代表不是数字</td>
+</tr>
+<tr>
+	<td>\w</td><td>代表是单词,等价于[[:alnum]]</td>
+</tr>
+<tr>
+	<td>\W</td><td>代表不是单词,等价于[^[:alnum]]</td>
+</tr>
+<tr>
+	<td>\xhh</td><td>代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符</td>
+</tr>
+<tr>
+	<td>\Oxxx</td><td>代表八进制的字符,亦即0-7</td>
+</tr>
+</table>
+<p># <a name="dwd">定位点</a></p>
+<table>
+<tr>
+	<th>锚标记</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>^</td><td>行首,比如:echo "a\nB\nf\n1\n\!\n\t\n#\n \nba" | grep --color=auto -e "^a" 只会匹配到a这一行</td>
+</tr>
+<tr>
+	<td>\A</td><td>字符串的开始</td>
+</tr>
+<tr>
+	<td>$</td><td>行尾,比如:echo "a\nB\nf\n1\n\!\n\t\n#\n \nba" | grep --color=auto -e "a$"会匹配到a,ba这两行</td>
+</tr>
+<tr>
+	<td>\Z</td><td>字符串的结束</td>
+</tr>
+<tr>
+	<td>\b</td><td>单词的边界,比如"\brat\b"只能匹配"rat"</td>
+</tr>
+<tr>
+	<td>\B</td><td>不是单词的边界,比如"c\Breat\Be"能匹配"create",但是"dirty \Brat"不能匹配"dirty rat"</td>
+</tr>
+<tr>
+	<td>\&lt;</td><td>单词的开头</td>
+</tr>
+<tr>
+	<td>\&gt;</td><td>单词的结尾</td>
+</tr>
+</table>
+
+<h1 id="a-namexdfa"><a name="xdf">限定符（修饰数量）</a></h1>
+
+<table>
+<tr>
+	<th>量词</th><th>代表意义</th>
+</tr>
+<tr>
+	<td>{3}</td><td>只出现3次</td>
+</tr>
+<tr>
+	<td>{3,}</td><td>出现3次以上</td>
+</tr>
+<tr>
+	<td>{3,5}</td><td>出现3次,4次或者5次</td>
+</tr>
+<tr>
+	<td>{3,5}?</td><td>单词的开头</td>
+</tr>
+<tr>
+	<td>?</td><td>等效于{0,1}</td>
+</tr>
+<tr>
+	<td>??</td><td>?的非贪心模式</td>
+</tr>
+<tr>
+	<td>*</td><td>出现0次或者多次,等价于{0,}</td>
+</tr>
+<tr>
+	<td>*?</td><td>*的非贪心模式</td>
+</tr>
+<tr>
+	<td>+</td><td>出现1次或者多次,等价于{1,}</td>
+</tr>
+<tr>
+	<td>+?</td><td>+的非贪心模式</td>
+</tr>
+</table>
+<p>我们看到表中有几行解释是飞贪心模式，什么是非贪心模式呢？</p>
+<p>当 ? 紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。</p>
+
+<h1 id="a-namefwxsa"><a name="fwxs">范围修饰</a></h1>
+<table>
+<tr>
+	<th>范围</th><th>代表意义</th>
+</tr>
+<tr>
+	<td> . </td><td>代表任何字符除开换行符(\n)</td>
+</tr>
+<tr>
+	<td>(a|b)</td><td>a或者b</td>
+</tr>
+<tr>
+	<td>(...)</td><td></td>
+</tr>
+<tr>
+	<td>(?:...)</td><td></td>
+</tr>
+<tr>
+	<td>[abc]</td><td>a或者b或者c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[^abc]</td><td>不是a或者不是b或者不是c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[a-q]</td><td>代表小写字母a~q,只出现一次</td>
+</tr>
+<tr>
+	<td>[A-Q]</td><td>代表大写字母A~Q,只出现一次</td>
+</tr>
+<tr>
+	<td>[0-7]</td><td>代表数字0~7,只出现一次</td>
+</tr>
+</table>
+
+<h1 id="a-namefdyzfa"><a name="fdyzf">非打印字符</a></h1>
+<table>
+<tr>
+	<th>范围</th><th>代表意义</th>
+</tr>
+<tr>
+	<td> . </td><td>代表任何字符除开换行符(\n)</td>
+</tr>
+<tr>
+	<td>(a|b)</td><td>a或者b</td>
+</tr>
+<tr>
+	<td>(...)</td><td></td>
+</tr>
+<tr>
+	<td>(?:...)</td><td></td>
+</tr>
+<tr>
+	<td>[abc]</td><td>a或者b或者c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[^abc]</td><td>不是a或者不是b或者不是c，只能匹配其中一个</td>
+</tr>
+<tr>
+	<td>[a-q]</td><td>代表小写字母a~q,只出现一次</td>
+</tr>
+<tr>
+	<td>[A-Q]</td><td>代表大写字母A~Q,只出现一次</td>
+</tr>
+<tr>
+	<td>[0-7]</td><td>代表数字0~7,只出现一次</td>
+</tr>
+</table>
+
+<h1 id="a-namemsppa"><a name="mspp">模式匹配</a></h1>
+
+<table>
+	<tr><th>模式匹配</th><th>代表意义</th></tr>
+	<tr><td>(?:模式)</td><td>	
+与模式 匹配，但不保存匹配项；即不会存储匹配项以备将来之用。 这对于用“or”字符 (|) 组合模式部件的情况很有用。</td></tr>
+	<tr><td>(?=模式)</td><td>	
+正预测先行。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。</td></tr>
+	<tr><td>(?!模式)</td><td>	
+负预测先行。 匹配与模式 不匹配的搜索字符串。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。</td></tr>
+</table>
+
+<h1 id="a-nameyxjsxa"><a name="yxjsx">优先级顺序</a></h1>
+<p>正则表达式的计算方式与算术表达式非常类似；即从左到右进行计算，并遵循优先级顺序。
+下表按从高到低的顺序包含了正则表达式运算符的优先级顺序。</p>
+<table>
+<tr>
+	<th>运算符</th><th>说明</th>
+</tr>
+<tr>
+	<td> \ </td><td>转义符</td>
+</tr>
+<tr>
+	<td>(), (?:), (?=), []</td><td>括号和中括号</td>
+</tr>
+<tr>
+	<td>*、+、?、{n}、{n,}、{n,m}</td><td>限定符</td>
+</tr>
+<tr>
+	<td>^、$、\任何元字符</td><td>定位点和序列</td>
+</tr>
+<tr>
+	<td>|</td><td>替换</td>
+</tr>
+</table>
 
 
 
@@ -217,12 +510,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">&larr; Previous Post</a>
+                        <a href="/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">Next Post &rarr;</a>
+                        <a href="/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">Next Post &rarr;</a>
                     </li>
                     
                 </ul>

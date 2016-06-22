@@ -5,8 +5,8 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 16 Jun 2016 14:24:15 +0800</pubDate>
-    <lastBuildDate>Thu, 16 Jun 2016 14:24:15 +0800</lastBuildDate>
+    <pubDate>Mon, 20 Jun 2016 14:20:00 +0800</pubDate>
+    <lastBuildDate>Mon, 20 Jun 2016 14:20:00 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
     
       <item>
@@ -29,7 +29,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h1 id=&quot;a-namebeijinga&quot;&gt;&lt;a name=&quot;beijing&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
 
 &lt;p&gt;之前了解了常用的几个统计读取日志的命令以及正则表达式,这节了解一下非常强大的两个命令,一个是sed,一个是awk,这两个命令能够完成绝大部分的关键词的取用和统计。&lt;/p&gt;
@@ -281,8 +281,8 @@ Bob     2415    40      62      72
 
 </description>
         <pubDate>Tue, 17 May 2016 01:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/17/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</guid>
+        <link>http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</guid>
         
         <category>Linux</category>
         
@@ -291,21 +291,43 @@ Bob     2415    40      62      72
     
       <item>
         <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;背景&lt;/h1&gt;
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#sml&quot;&gt;sed命令&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#smlth&quot;&gt;s命令替换&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#dgth&quot;&gt;多个替换&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#ykhpp&quot;&gt;圆括号匹配&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#scyml&quot;&gt;sed常用命令&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#cml&quot;&gt;c命令&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#dml&quot;&gt;d命令&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#pml&quot;&gt;p命令&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#mldb&quot;&gt;命令打包&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#zh&quot;&gt;最后再来个工作中最常用的，sed截取日志中某个时间段的文本&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
 
 &lt;p&gt;之前了解了常用的几个统计读取日志的命令以及正则表达式,这节了解一下非常强大的两个命令,一个是sed,一个是awk,这两个命令能够完成绝大部分的关键词的取用和统计。&lt;/p&gt;
 
-&lt;h1 id=&quot;section-1&quot;&gt;参考资料&lt;/h1&gt;
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
 &lt;blockquote&gt;
-  &lt;p&gt;http://coolshell.cn/articles/9104.html#more-9104
-http://coolshell.cn/articles/9070.html#more-9070
-大量的例子都是从这里搬运的，推荐大家看酷壳，个人觉得帮助到我很多。&lt;/p&gt;
+  &lt;p&gt;http://coolshell.cn/articles/9104.html#more-9104&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h1 id=&quot;sed&quot;&gt;sed命令&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;大量的例子都是从这里搬运的，推荐大家看酷壳，个人觉得帮助到我很多。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;h2 id=&quot;s&quot;&gt;s命令替换&lt;/h2&gt;
+&lt;h1 id=&quot;a-namesmlseda&quot;&gt;&lt;a name=&quot;sml&quot;&gt;sed命令&lt;/a&gt;&lt;/h1&gt;
+
+&lt;h3 id=&quot;a-namesmlthsa&quot;&gt;&lt;a name=&quot;smlth&quot;&gt;s命令替换&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;功能：管道流编辑器,它可以读指定的文件或者标准输入流,通过一系列的命名可以去修改读到的输入,然后再将修改后的输入进行输出。它可以对匹配的每行都进行处理，比如同时加上什么东西，替换什么东西，减少什么东西。&lt;br /&gt;
 直接看例子：&lt;br /&gt;
@@ -388,7 +410,8 @@ This is my fiSh, my fiSh&#39;S name iS george
 This is my goat, my goat&#39;S name iS adam
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;多个匹配&lt;/h2&gt;
+&lt;h3 id=&quot;a-namedgtha&quot;&gt;&lt;a name=&quot;dgth&quot;&gt;多个匹配&lt;/a&gt;&lt;/h3&gt;
+
 &lt;p&gt;如果我们需要一次替换多个模式，可参看下面的示例：（第一个模式把第一行到第三行的my替换成your，第二个则把第3行以后的This替换成了That）&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 $ sed &#39;1,3s/my/your/g; 3,$s/This/That/g&#39; my.txt
@@ -410,7 +433,7 @@ This is [my] fish, [my] fish&#39;s name is george
 This is [my] goat, [my] goat&#39;s name is adam
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;section-3&quot;&gt;圆括号匹配&lt;/h2&gt;
+&lt;h3 id=&quot;a-nameykhppa&quot;&gt;&lt;a name=&quot;ykhpp&quot;&gt;圆括号匹配&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;使用圆括号匹配的示例：（圆括号括起来的正则表达式所匹配的字符串会可以当成变量来使用，sed中使用的是\1,\2…）&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 $ sed &#39;s/This is my \([^,]*\),.*is \(.*\)/\1:\2/g&#39; my.txt
@@ -425,7 +448,7 @@ goat:adam
 匹配为：This is my (cat),……….is (betty)
 然后：\1就是cat，\2就是betty&lt;/p&gt;
 
-&lt;h2 id=&quot;sed-1&quot;&gt;sed的命令&lt;/h2&gt;
+&lt;h3 id=&quot;a-namescymlseda&quot;&gt;&lt;a name=&quot;scyml&quot;&gt;sed常用命令&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;a命令和i命令
 a命令就是append， i命令就是insert，它们是用来添加行的。如：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
@@ -471,13 +494,12 @@ This is my goat, my goat&#39;s name is adam
 ----
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;c&quot;&gt;c命令&lt;/h2&gt;
+&lt;h3 id=&quot;a-namecmlca&quot;&gt;&lt;a name=&quot;cml&quot;&gt;c命令&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;c 命令是替换匹配行&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 第二行替换匹配行
 $ sed &quot;2 c This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my monkey, my monkey&#39;s name is wukong
+This is my cat, my cat&#39;s name is bettyThis is my monkey, my monkey&#39;s name is wukong
 This is my fish, my fish&#39;s name is george
 This is my goat, my goat&#39;s name is adam
  
@@ -488,7 +510,8 @@ This is my monkey, my monkey&#39;s name is wukong
 This is my goat, my goat&#39;s name is adam
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;d&quot;&gt;d命令&lt;/h2&gt;
+&lt;h3 id=&quot;a-namedmlda&quot;&gt;&lt;a name=&quot;dml&quot;&gt;d命令&lt;/a&gt;&lt;/h3&gt;
+
 &lt;p&gt;删除匹配行&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 $ sed &#39;/fish/d&#39; my.txt
@@ -505,7 +528,7 @@ $ sed &#39;2,$d&#39; my.txt
 This is my cat, my cat&#39;s name is betty
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;p&quot;&gt;p命令&lt;/h2&gt;
+&lt;h3 id=&quot;a-namepmlpa&quot;&gt;&lt;a name=&quot;pml&quot;&gt;p命令&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;打印命令&lt;/p&gt;
 
 &lt;p&gt;你可以把这个命令当成grep式的命令&lt;/p&gt;
@@ -535,7 +558,7 @@ This is my dog, my dog&#39;s name is frank
 This is my fish, my fish&#39;s name is george
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;section-4&quot;&gt;命令打包&lt;/h2&gt;
+&lt;h3 id=&quot;a-namemldba&quot;&gt;&lt;a name=&quot;mldb&quot;&gt;命令打包&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;第二个是cmd可以是多个，它们可以用分号分开，可以用大括号括起来作为嵌套命令。下面是几个例子：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 $ cat pets.txt
@@ -575,15 +598,15 @@ my fish&#39;s name is george
 my goat&#39;s name is adam
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;sed-2&quot;&gt;最后再来个工作中最常用的，sed截取日志中某个时间段的文本&lt;/h2&gt;
+&lt;h3 id=&quot;a-namezhseda&quot;&gt;&lt;a name=&quot;zh&quot;&gt;最后再来个工作中最常用的，sed截取日志中某个时间段的文本&lt;/a&gt;&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;
 sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;/code&gt;&lt;/pre&gt;
 
 </description>
         <pubDate>Tue, 17 May 2016 01:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/17/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</guid>
+        <link>http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</guid>
         
         <category>Linux</category>
         
@@ -592,15 +615,44 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
     
       <item>
         <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;背景&lt;/h1&gt;
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#cc&quot;&gt;字符类操作系统字符分类&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#xbds&quot;&gt;[xxx]表达式&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#bsbh&quot;&gt;表示变化&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#hy&quot;&gt;还有一些tips&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#zyzf&quot;&gt;转义字符&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dwd&quot;&gt;定位点&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xdf&quot;&gt;限定符（修饰数量）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#fwxs&quot;&gt;范围修饰&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#fdyzf&quot;&gt;非打印字符&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#mspp&quot;&gt;模式匹配&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#yxjsx&quot;&gt;优先级顺序&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
 &lt;p&gt;之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重要的东西-正则表达式。我们先来了解一些正则表达式的语法。&lt;/p&gt;
-&lt;p&gt;# 字符类操作系统字符分类&lt;/p&gt;
 
-&lt;h2 id=&quot;xxx-&quot;&gt;[xxx] 表达式&lt;/h2&gt;
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://www.delorie.com/gnu/docs/grep/grep_toc.html#SEC_Contents&lt;/p&gt;
+
+  &lt;p&gt;https://msdn.microsoft.com/zh-cn/library/az24scfc(v=vs.110).aspx&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namecca&quot;&gt;&lt;a name=&quot;cc&quot;&gt;字符类操作系统字符分类&lt;/a&gt;&lt;/h1&gt;
+
+&lt;h3 id=&quot;a-namexbdsxxx-a&quot;&gt;&lt;a name=&quot;xbds&quot;&gt;[xxx] 表达式&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;有一类表达式通过 &lt;strong&gt;[&lt;/strong&gt; 和 &lt;strong&gt;]&lt;/strong&gt; 将一系列字符包含在其中，如[a2],它的意思是匹配出 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 包含的任意一个字符，比如[a2]就能匹配出含有a或2的数据。如果[]中包含的第一个字符是  &lt;strong&gt;^&lt;/strong&gt; ,就代表匹配任何不在 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 中包含的字符。比如[^a2]就能匹配出任何不含有a或者不含有2的数据。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;表示变化&lt;/h2&gt;
+&lt;h3 id=&quot;a-namebsbha&quot;&gt;&lt;a name=&quot;bsbh&quot;&gt;表示变化&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;当表达一种区间时，我们才用连接符 &lt;strong&gt;-&lt;/strong&gt; 来连接字符表达，它可以匹配到范围中的任何一个字符，比如&lt;strong&gt;[&lt;/strong&gt;a-c&lt;strong&gt;]&lt;/strong&gt;可以匹配到a或者b或者c。
 最后我们了解一些已经预先为我们考虑而设定好的一些特殊字符类：&lt;/p&gt;
 
@@ -686,10 +738,10 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;tips&quot;&gt;还有一些tips&lt;/h2&gt;
+&lt;h3 id=&quot;a-namehytipsa&quot;&gt;&lt;a name=&quot;hy&quot;&gt;还有一些tips&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;如果你使用 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 中包含的字符有&lt;strong&gt;]&lt;/strong&gt;,那么一定把它放在首位，比如&lt;strong&gt;[]ab]&lt;/strong&gt;,会匹配&lt;strong&gt;]或者a或者b&lt;/strong&gt;,&lt;strong&gt;[][ab]&lt;/strong&gt;,会匹配&lt;strong&gt;]或者[或者a或者b&lt;/strong&gt;,&lt;strong&gt;[^]]&lt;/strong&gt;会匹配&lt;strong&gt;]&lt;/strong&gt;之外的所有字符。&lt;/p&gt;
 
-&lt;h1 id=&quot;section-2&quot;&gt;转义符号&lt;/h1&gt;
+&lt;h1 id=&quot;a-namezyzfa&quot;&gt;&lt;a name=&quot;zyzf&quot;&gt;转义符号&lt;/a&gt;&lt;/h1&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;字符类别&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -722,7 +774,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 	&lt;td&gt;\Oxxx&lt;/td&gt;&lt;td&gt;代表八进制的字符,亦即0-7&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-&lt;p&gt;# 定位点&lt;/p&gt;
+&lt;p&gt;# &lt;a name=&quot;dwd&quot;&gt;定位点&lt;/a&gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;锚标记&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -753,7 +805,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;/tr&gt;
 &lt;/table&gt;
 
-&lt;h1 id=&quot;section-3&quot;&gt;限定符（修饰数量）&lt;/h1&gt;
+&lt;h1 id=&quot;a-namexdfa&quot;&gt;&lt;a name=&quot;xdf&quot;&gt;限定符（修饰数量）&lt;/a&gt;&lt;/h1&gt;
 
 &lt;table&gt;
 &lt;tr&gt;
@@ -793,7 +845,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;p&gt;我们看到表中有几行解释是飞贪心模式，什么是非贪心模式呢？&lt;/p&gt;
 &lt;p&gt;当 ? 紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。&lt;/p&gt;
 
-&lt;h1 id=&quot;section-4&quot;&gt;范围修饰&lt;/h1&gt;
+&lt;h1 id=&quot;a-namefwxsa&quot;&gt;&lt;a name=&quot;fwxs&quot;&gt;范围修饰&lt;/a&gt;&lt;/h1&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -827,7 +879,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;/tr&gt;
 &lt;/table&gt;
 
-&lt;h1 id=&quot;section-5&quot;&gt;非打印字符&lt;/h1&gt;
+&lt;h1 id=&quot;a-namefdyzfa&quot;&gt;&lt;a name=&quot;fdyzf&quot;&gt;非打印字符&lt;/a&gt;&lt;/h1&gt;
 &lt;table&gt;
 &lt;tr&gt;
 	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
@@ -861,7 +913,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;/tr&gt;
 &lt;/table&gt;
 
-&lt;h1 id=&quot;section-6&quot;&gt;模式匹配&lt;/h1&gt;
+&lt;h1 id=&quot;a-namemsppa&quot;&gt;&lt;a name=&quot;mspp&quot;&gt;模式匹配&lt;/a&gt;&lt;/h1&gt;
 
 &lt;table&gt;
 	&lt;tr&gt;&lt;th&gt;模式匹配&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;&lt;/tr&gt;
@@ -873,7 +925,7 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 负预测先行。 匹配与模式 不匹配的搜索字符串。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 
-&lt;h1 id=&quot;section-7&quot;&gt;优先级顺序&lt;/h1&gt;
+&lt;h1 id=&quot;a-nameyxjsxa&quot;&gt;&lt;a name=&quot;yxjsx&quot;&gt;优先级顺序&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;正则表达式的计算方式与算术表达式非常类似；即从左到右进行计算，并遵循优先级顺序。
 下表按从高到低的顺序包含了正则表达式运算符的优先级顺序。&lt;/p&gt;
 &lt;table&gt;
@@ -897,14 +949,10 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
 &lt;/tr&gt;
 &lt;/table&gt;
 
-&lt;p&gt;#参考资料
-&amp;gt; http://www.delorie.com/gnu/docs/grep/grep_toc.html#SEC_Contents
-&amp;gt; https://msdn.microsoft.com/zh-cn/library/az24scfc(v=vs.110).aspx&lt;/p&gt;
-
 </description>
         <pubDate>Mon, 09 May 2016 21:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
+        <link>http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
         
         <category>Linux</category>
         
@@ -1048,8 +1096,8 @@ echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个�
 
 </description>
         <pubDate>Mon, 09 May 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
+        <link>http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
         
         <category>Linux</category>
         
