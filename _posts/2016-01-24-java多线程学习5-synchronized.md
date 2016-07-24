@@ -22,6 +22,7 @@ A synchronized method automatically performs a lock action when it is invoked; i
 
 ## demo
 <pre>
+	<code>
 package com.github.dunno.concurrent.sync;
 
 import org.junit.Test;
@@ -268,5 +269,5 @@ public class TestSync {
 		}
 	}
 }
-
+</code>
 </pre>
