@@ -142,7 +142,9 @@ pre code {
   display: block;
   width: auto;
   white-space: pre;
-  word-wrap: normal;
+  /* 自动换行 */
+  word-wrap: break-word;
+  /*word-wrap: normal;*/
 }
 .post-container a {
   color: #337ab7;

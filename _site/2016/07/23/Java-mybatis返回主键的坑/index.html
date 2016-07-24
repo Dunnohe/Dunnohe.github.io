@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>linux下文件查看技巧 - Dunno Blog</title>
+    <title>Java-mybatis generator返回主键的用法 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -145,12 +145,12 @@
                         <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                         
                     </div>
-                    <h1>linux下文件查看技巧</h1>
+                    <h1>Java-mybatis generator返回主键的用法</h1>
                     
                     
-                    <h2 class="subheading"> "3-了解sed的用法"</h2>
+                    <h2 class="subheading"> "了解mybatis generator返回主键的用法"</h2>
                     
-                    <span class="meta">Posted by Dunno on May 17, 2016</span>
+                    <span class="meta">Posted by Dunno on July 23, 2016</span>
                 </div>
             </div>
         </div>
@@ -171,314 +171,123 @@
 				<h1 id="section">目录</h1>
 
 <ul>
-  <li><a href="#bj">背景</a></li>
-  <li><a href="#ckzl">参考资料</a></li>
-  <li><a href="#sml">sed命令</a>
-    <ul>
-      <li><a href="#smlth">s命令替换</a></li>
-      <li><a href="#dgth">多个替换</a></li>
-      <li><a href="#ykhpp">圆括号匹配</a></li>
-      <li><a href="#scyml">sed常用命令</a></li>
-      <li><a href="#cml">c命令</a></li>
-      <li><a href="#dml">d命令</a></li>
-      <li><a href="#pml">p命令</a></li>
-      <li><a href="#mldb">命令打包</a></li>
-      <li><a href="#zh">最后再来个工作中最常用的，sed截取日志中某个时间段的文本</a></li>
-    </ul>
-  </li>
+  <li><a href="#js">用法介绍</a></li>
+  <li><a href="#ckzl">附：我的generatorConfig全部配置</a></li>
+  <li><a href="#xkd">附：mybatis主键的用法</a></li>
 </ul>
 
-<h1 id="a-namebja"><a name="bj">背景</a></h1>
-<p>在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。</p>
+<h1 id="a-namejsa"><a name="js">用法介绍</a></h1>
+<p>使用mybatis plugin,配置如下：</p>
+<pre>
+<code>
+&lt;plugin&gt;
+    &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;1.3.2&lt;/version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;phase&gt;install&lt;/phase&gt;
+            &lt;id&gt;Generate MyBatis Artifacts&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;generate&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+    &lt;configuration&gt;
+        &lt;configurationFile&gt;src/main/resources/generatorConfig.xml&lt;/configurationFile&gt;
+        &lt;overwrite&gt;true&lt;/overwrite&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code>
+</pre>
 
-<p>之前了解了常用的几个统计读取日志的命令以及正则表达式,这节了解一下非常强大的两个命令,一个是sed,一个是awk,这两个命令能够完成绝大部分的关键词的取用和统计。</p>
+<p>查看官方对于生成主键的配置的解释</p>
 
-<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
 <blockquote>
-  <p>http://coolshell.cn/articles/9104.html#more-9104</p>
+  <p>http://www.mybatis.org/generator/configreference/generatedKey.html</p>
 </blockquote>
 
-<blockquote>
-  <p>大量的例子都是从这里搬运的，推荐大家看酷壳，个人觉得帮助到我很多。</p>
-</blockquote>
+<p>generatorConfig.xml 配置</p>
+<pre>
+<code>
+&lt;table schema=&quot;hotel_pda&quot; tableName=&quot;vg_upload_file&quot;&gt;
+    &lt;property name=&quot;useActualColumnNames&quot; value=&quot;false&quot;/&gt;
+    &lt;generatedKey column=&quot;id&quot; sqlStatement=&quot;MySql&quot; identity=&quot;true&quot; /&gt;
+&lt;/table&gt;
+</code>
+</pre>
 
-<h1 id="a-namesmlseda"><a name="sml">sed命令</a></h1>
+<h1 id="a-nameckzlgeneratorconfiga"><a name="ckzl">附：我的generatorConfig全部配置</a></h1>
 
-<h3 id="a-namesmlthsa"><a name="smlth">s命令替换</a></h3>
+<pre>
+<code>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE generatorConfiguration PUBLIC &quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&quot; &gt;
 
-<p>功能：管道流编辑器,它可以读指定的文件或者标准输入流,通过一系列的命名可以去修改读到的输入,然后再将修改后的输入进行输出。它可以对匹配的每行都进行处理，比如同时加上什么东西，替换什么东西，减少什么东西。<br />
-直接看例子：<br />
-测试文本：</p>
-<pre><code>
-$ cat pets.txt
-This is my cat
-  my cat's name is betty
-This is my dog
-  my dog's name is frank
-This is my fish
-  my fish's name is george
-This is my goat
-  my goat's name is adam
-</code></pre>
-<p>把匹配到my的地方全部换成Hao Chen’s
-** （s表示替换命令，/my/表示匹配my，/Hao Chen’s/表示把匹配替换成Hao Chen’s，/g 表示一行上的替换所有的匹配)**</p>
-<pre><code>
-$ sed "s/my/Hao Chen's/g" pets.txt
-</code></pre>
-<p>每一行最前面加点东西：</p>
-<pre><code>
-$ sed 's/^/#/g' pets.txt
-#This is my cat
-#  my cat's name is betty
-#This is my dog
-#  my dog's name is frank
-#This is my fish
-#  my fish's name is george
-#This is my goat
-#  my goat's name is adam
-</code></pre>
-<p>每一行最后面加点东西：
-** 可以看到sed 支持正则表达式，前一篇文章已经介绍了正则表达式，可以复习一下**</p>
-<pre><code>
-$ sed 's/$/ --- /g' pets.txt
-This is my cat ---
-  my cat's name is betty ---
-This is my dog ---
-  my dog's name is frank ---
-This is my fish ---
-  my fish's name is george ---
-This is my goat ---
-  my goat's name is adam ---
-</code></pre>
-<p>只替换第3到第6行的文本</p>
-<pre><code>
-$ sed "3,6s/my/your/g" pets.txt
-This is my cat
-  my cat's name is betty
-This is your dog
-  your dog's name is frank
-This is your fish
-  your fish's name is george
-This is my goat
-  my goat's name is adam
-</code></pre>
-<p>只替换每一行的第一个s：</p>
-<pre><code>
-$ sed 's/s/S/1' my.txt
-ThiS is my cat, my cat's name is betty
-ThiS is my dog, my dog's name is frank
-ThiS is my fish, my fish's name is george
-ThiS is my goat, my goat's name is adam
-</code></pre>
-<p>只替换每一行的第二个s：</p>
-<pre><code>
-$ sed 's/s/S/2' my.txt
-This iS my cat, my cat's name is betty
-This iS my dog, my dog's name is frank
-This iS my fish, my fish's name is george
-This iS my goat, my goat's name is adam
-</code></pre>
-<p>只替换第一行的第3个以后的s：</p>
-<pre><code>
-$ sed 's/s/S/3g' my.txt
-This is my cat, my cat'S name iS betty
-This is my dog, my dog'S name iS frank
-This is my fiSh, my fiSh'S name iS george
-This is my goat, my goat'S name iS adam
-</code></pre>
+&lt;generatorConfiguration&gt;
+    &lt;classPathEntry location=&quot;/Users/lianghe/.m2/repository/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar&quot;/&gt;
 
-<h3 id="a-namedgtha"><a name="dgth">多个匹配</a></h3>
+    &lt;context id=&quot;mysql&quot; targetRuntime=&quot;MyBatis3&quot;&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.EqualsHashCodePlugin&quot; /&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.SerializablePlugin&quot; /&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.CaseInsensitiveLikePlugin&quot; /&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.ToStringPlugin&quot; /&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.RowBoundsPlugin&quot;/&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.CaseInsensitiveLikePlugin&quot;/&gt;
 
-<p>如果我们需要一次替换多个模式，可参看下面的示例：（第一个模式把第一行到第三行的my替换成your，第二个则把第3行以后的This替换成了That）</p>
-<pre><code>
-$ sed '1,3s/my/your/g; 3,$s/This/That/g' my.txt
-This is your cat, your cat's name is betty
-This is your dog, your dog's name is frank
-That is your fish, your fish's name is george
-That is my goat, my goat's name is adam
-</code></pre>
-<p>上面的命令等价于：（注：下面使用的是sed的-e命令行参数）</p>
-<pre><code>
-sed -e '1,3s/my/your/g' -e '3,$s/This/That/g' my.txt
-</code></pre>
-<p>我们可以使用&amp;来当做被匹配的变量，然后可以在基本左右加点东西。如下所示：</p>
-<pre><code>
-$ sed 's/my/[&amp;]/g' my.txt
-This is [my] cat, [my] cat's name is betty
-This is [my] dog, [my] dog's name is frank
-This is [my] fish, [my] fish's name is george
-This is [my] goat, [my] goat's name is adam
-</code></pre>
+        &lt;!-- &#27880;&#37322; --&gt;
+        &lt;commentGenerator &gt;
+            &lt;property name=&quot;suppressAllComments&quot; value=&quot;true&quot;/&gt;&lt;!-- &#26159;&#21542;&#21462;&#28040;&#27880;&#37322; --&gt;
+            &lt;property name=&quot;suppressDate&quot; value=&quot;true&quot; /&gt; &lt;!-- &#26159;&#21542;&#29983;&#25104;&#27880;&#37322;&#20195;&#26102;&#38388;&#25139;--&gt;
+        &lt;/commentGenerator&gt;
 
-<h3 id="a-nameykhppa"><a name="ykhpp">圆括号匹配</a></h3>
-<p>使用圆括号匹配的示例：（圆括号括起来的正则表达式所匹配的字符串会可以当成变量来使用，sed中使用的是\1,\2…）</p>
-<pre><code>
-$ sed 's/This is my \([^,]*\),.*is \(.*\)/\1:\2/g' my.txt
-cat:betty
-dog:frank
-fish:george
-goat:adam
-</code></pre>
+        &lt;!-- jdbc --&gt;
+        &lt;jdbcConnection driverClass=&quot;com.mysql.jdbc.Driver&quot;
+                        connectionURL=&quot;jdbc:mysql://xx.xx.xx.xx/hotel_pda&quot;
+                        userId=&quot;xxx&quot;
+                        password=&quot;xxx&quot; /&gt;
+        &lt;!-- &#29983;&#25104;model --&gt;
+        &lt;javaModelGenerator targetPackage=&quot;com.xxx.domain&quot;
+                            targetProject=&quot;src/main/java&quot;&gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;false&quot;/&gt;
+            &lt;property name=&quot;trimStrings&quot; value=&quot;false&quot;/&gt;
+        &lt;/javaModelGenerator&gt;
 
-<p>上面这个例子中的正则表达式有点复杂，解开如下（去掉转义字符）：
-正则为：This is my ([^,]<em>),.</em>is (.*)
-匹配为：This is my (cat),……….is (betty)
-然后：\1就是cat，\2就是betty</p>
+        &lt;!-- &#29983;&#25104;sql --&gt;
+        &lt;sqlMapGenerator targetPackage=&quot;mapper/auto&quot;
+                         targetProject=&quot;src/main/resources&quot; &gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;false&quot;/&gt;
+        &lt;/sqlMapGenerator&gt;
 
-<h3 id="a-namescymlseda"><a name="scyml">sed常用命令</a></h3>
-<p>a命令和i命令
-a命令就是append， i命令就是insert，它们是用来添加行的。如：</p>
-<pre><code>
-# 其中的1i表明，其要在第1行前插入一行（insert）
-$ sed "1 i This is my monkey, my monkey's name is wukong" my.txt
-This is my monkey, my monkey's name is wukong
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
-This is my goat, my goat's name is adam
+        &lt;!-- &#29983;&#25104;sql client--&gt;
+        &lt;javaClientGenerator targetPackage=&quot;com.xxx.dao.auto&quot;
+                             targetProject=&quot;src/main/java&quot;
+                             type=&quot;XMLMAPPER&quot; &gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;false&quot;/&gt;
+        &lt;/javaClientGenerator&gt;
 
-# 其中的1a表明，其要在最后一行后追加一行（append）
-$ sed "$ a This is my monkey, my monkey's name is wukong" my.txt
-This is my cat, my cat's name is betty
-This is my monkey, my monkey's name is wukong
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
-This is my goat, my goat's name is adam
-</code></pre>
+        &lt;!-- Tables --&gt;
+        &lt;table schema=&quot;hotel_pda&quot; tableName=&quot;vg_upload_file&quot;&gt;
+            &lt;property name=&quot;useActualColumnNames&quot; value=&quot;false&quot;/&gt;
+            &lt;generatedKey column=&quot;id&quot; sqlStatement=&quot;MySql&quot; identity=&quot;true&quot; /&gt;
+        &lt;/table&gt;
+    &lt;/context&gt;
+&lt;/generatorConfiguration&gt;
 
-<p>我们可以运用匹配来添加文本：</p>
-<pre><code>
-# 注意其中的/fish/a，这意思是匹配到/fish/后就追加一行
-$ sed "/fish/a This is my monkey, my monkey's name is wukong" my.txt
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
-This is my monkey, my monkey's name is wukong
-This is my goat, my goat's name is adam
-</code></pre>
+</code>
+</pre>
 
-<p>下面这个例子是对每一行都挺插入：</p>
-<pre><code>
-# 注意其中的/fish/a，这意思是匹配到/fish/后就追加一行
-$ sed "/my/a ----" my.txt
-This is my cat, my cat's name is betty
-----
-This is my dog, my dog's name is frank
-----
-This is my fish, my fish's name is george
-----
-This is my goat, my goat's name is adam
-----
-</code></pre>
-
-<h3 id="a-namecmlca"><a name="cml">c命令</a></h3>
-<p>c 命令是替换匹配行</p>
-<pre><code>
-第二行替换匹配行
-$ sed "2 c This is my monkey, my monkey's name is wukong" my.txt
-This is my cat, my cat's name is bettyThis is my monkey, my monkey's name is wukong
-This is my fish, my fish's name is george
-This is my goat, my goat's name is adam
- 
-$ sed "/fish/c This is my monkey, my monkey's name is wukong" my.txt
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my monkey, my monkey's name is wukong
-This is my goat, my goat's name is adam
-</code></pre>
-
-<h3 id="a-namedmlda"><a name="dml">d命令</a></h3>
-
-<p>删除匹配行</p>
-<pre><code>
-$ sed '/fish/d' my.txt
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my goat, my goat's name is adam
- 
-$ sed '2d' my.txt
-This is my cat, my cat's name is betty
-This is my fish, my fish's name is george
-This is my goat, my goat's name is adam
-第2行到结束都删除
-$ sed '2,$d' my.txt
-This is my cat, my cat's name is betty
-</code></pre>
-
-<h3 id="a-namepmlpa"><a name="pml">p命令</a></h3>
-<p>打印命令</p>
-
-<p>你可以把这个命令当成grep式的命令</p>
-<pre><code>
-# 匹配fish并输出，可以看到fish的那一行被打了两遍，
-# 这是因为sed处理时会把处理的信息输出
-$ sed '/fish/p' my.txt
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
-This is my fish, my fish's name is george
-This is my goat, my goat's name is adam
- 
-# 使用n参数就好了
-$ sed -n '/fish/p' my.txt
-This is my fish, my fish's name is george
- 
-# 从一个模式到另一个模式
-$ sed -n '/dog/,/fish/p' my.txt
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
- 
-#从第一行打印到匹配fish成功的那一行
-$ sed -n '1,/fish/p' my.txt
-This is my cat, my cat's name is betty
-This is my dog, my dog's name is frank
-This is my fish, my fish's name is george
-</code></pre>
-
-<h3 id="a-namemldba"><a name="mldb">命令打包</a></h3>
-<p>第二个是cmd可以是多个，它们可以用分号分开，可以用大括号括起来作为嵌套命令。下面是几个例子：</p>
-<pre><code>
-$ cat pets.txt
-This is my cat
-  my cat's name is betty
-This is my dog
-  my dog's name is frank
-This is my fish
-  my fish's name is george
-This is my goat
-  my goat's name is adam
- 
-# 对3行到第6行，执行命令/This/d
-$ sed '3,6 {/This/d}' pets.txt
-This is my cat
-  my cat's name is betty
-  my dog's name is frank
-  my fish's name is george
-This is my goat
-  my goat's name is adam
- 
-# 对3行到第6行，匹配/This/成功后，再匹配/fish/，成功后执行d命令
-$ sed '3,6 {/This/{/fish/d}}' pets.txt
-This is my cat
-  my cat's name is betty
-This is my dog
-  my dog's name is frank
-  my fish's name is george
-This is my goat
-  my goat's name is adam
- 
-# 从第一行到最后一行，如果匹配到This，则删除之；如果前面有空格，则去除空格
-$ sed '1,${/This/d;s/^ *//g}' pets.txt
-my cat's name is betty
-my dog's name is frank
-my fish's name is george
-my goat's name is adam
-</code></pre>
-
-<h3 id="a-namezhseda"><a name="zh">最后再来个工作中最常用的，sed截取日志中某个时间段的文本</a></h3>
-<pre><code>
-sed -n '/15:32:30/,/16:12:09/p' access_log &gt;log.txt
-</code></pre>
+<h1 id="a-namexkdmybatisa"><a name="xkd">附：mybatis返回主键的用法</a></h1>
+<pre>
+<code>
+public int insert(Domain domain) {
+	//插入完成后 domain的主键id字段会被赋值，直接返回即可
+	domainMapper.insertSelective(domain);
+	return domain.getId();
+}
+</code>
+</pre>
 
 
 
@@ -490,13 +299,9 @@ sed -n '/15:32:30/,/16:12:09/p' access_log &gt;log.txt
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">&larr; Previous Post</a>
+                        <a href="/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/" data-toggle="tooltip" data-placement="top" title="Linux命令学习-lsof命令">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/" data-toggle="tooltip" data-placement="top" title="linux下文件查看技巧">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 

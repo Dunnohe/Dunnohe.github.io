@@ -28,7 +28,9 @@
     <!-- Hux change font-awesome CDN to qiniu -->
     <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-
+    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+    <script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+    <script >hljs.initHighlightingOnLoad();</script>  
     <!-- Hux Delete, sad but pending in China
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
@@ -153,6 +155,115 @@
                 post-container
             ">
     			
+<div class="post-preview">
+    <a href="/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/">
+        <h2 class="post-title">
+            Java-mybatis generator返回主键的用法
+        </h2>
+        
+        <h3 class="post-subtitle">
+             "了解mybatis generator返回主键的用法"
+        </h3>
+        
+        <div class="post-content-preview">
+            目录
+
+
+  用法介绍
+  附：我的generatorConfig全部配置
+  附：mybatis主键的用法
+
+
+用法介绍
+使用mybatis plugin,配置如下：
+
+
+&lt;plugin&gt;
+    &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-generato...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Dunno on July 23, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/">
+        <h2 class="post-title">
+            Linux命令学习-lsof命令
+        </h2>
+        
+        <h3 class="post-subtitle">
+             "了解lsof的用法"
+        </h3>
+        
+        <div class="post-content-preview">
+            目录
+
+
+  介绍
+  参考资料
+  先看懂top的输出吧
+  lsof常用的一些命令
+
+
+介绍
+lsof（“list open files”）命令名称很容易记住，把它看成“ls + of”, 在linux下面，一切都是文件，lsof则可以查看这些文件。
+
+参考资料
+
+  http://www.tecmint.com/10-lsof-command-examples-in-linux/
+
+
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Dunno on July 21, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/">
+        <h2 class="post-title">
+            Linux命令学习-top命令
+        </h2>
+        
+        <h3 class="post-subtitle">
+             "了解top的用法"
+        </h3>
+        
+        <div class="post-content-preview">
+            目录
+
+
+  背景
+  参考资料
+  先看懂top的输出吧
+  top常用的一些命令
+
+
+背景
+top命令是Linux下常用的性能分析工具,特别是应用性能报警的时候，我们经常会用到这个命令
+
+参考资料
+
+  https://linuxaria.com/howto/understanding-the-top-command-on-linux
+
+
+
+  http://linuxtools-rst...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Dunno on June 20, 2016
+    </p>
+</div>
+<hr>
+
 <div class="post-preview">
     <a href="/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/">
         <h2 class="post-title">
@@ -401,109 +512,17 @@ There are multiple mechanisms for communicating between threads. The most basic 
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "3-守护线程的创建和执行"
-        </h3>
-        
-        <div class="post-content-preview">
-            守护线程的创建和执行
-## 介绍
-java有一种线程叫守护线程：
-
-
-  这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。
-  通过调用setDaemon(true);将该线程设置成守护线程。
-
-
-##Demo
-验证一下1
-
-public class TestDaemonThread {
-
-	public static void main(String[] args) {...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 24, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "2-打断线程&等待线程的终止"
-        </h3>
-        
-        <div class="post-content-preview">
-            打断线程&amp;等待线程的终止
-##打断线程demo
-
-/**
- * Created by liang.he on 16/1/12.
- * 测试打断一个线程
- */
-public class TestInterruptThread extends Thread{
-
-	private boolean flag = true;
-
-	@Override
-	public void run() {
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 23, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            Java多线程学习系列
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "1-创建线程"
-        </h3>
-        
-        <div class="post-content-preview">
-            创建线程
-
-创建一个线程
-
-  实现Runnable接口
-    
-  public TestRunnable implements implements Runnable {
-      @Override
-      public void run() {
-      }
-  }
-  new Thread(new TestRunnable()).start();
-  
-  
-  继承Th...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on January 16, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
+
+<ul class="pager">
+    
+    
+    <li class="next">
+        <a href="/page2">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
 
 
     		</div>
@@ -529,7 +548,7 @@ public class TestInterruptThread extends Thread{
                             
                         
                             
-                                <a href="/tags/#Linux" title="Linux" rel="4">
+                                <a href="/tags/#Linux" title="Linux" rel="7">
                                     Linux
                                 </a>
                             

@@ -5,9 +5,510 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 20 Jun 2016 14:20:00 +0800</pubDate>
-    <lastBuildDate>Mon, 20 Jun 2016 14:20:00 +0800</lastBuildDate>
+    <pubDate>Sun, 24 Jul 2016 17:23:12 +0800</pubDate>
+    <lastBuildDate>Sun, 24 Jul 2016 17:23:12 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>Java-mybatis generator返回主键的用法</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;用法介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;附：我的generatorConfig全部配置&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;附：mybatis主键的用法&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;用法介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;使用mybatis plugin,配置如下：&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+&amp;lt;plugin&amp;gt;
+    &amp;lt;groupId&amp;gt;org.mybatis.generator&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;mybatis-generator-maven-plugin&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;1.3.2&amp;lt;/version&amp;gt;
+    &amp;lt;executions&amp;gt;
+        &amp;lt;execution&amp;gt;
+            &amp;lt;phase&amp;gt;install&amp;lt;/phase&amp;gt;
+            &amp;lt;id&amp;gt;Generate MyBatis Artifacts&amp;lt;/id&amp;gt;
+            &amp;lt;goals&amp;gt;
+                &amp;lt;goal&amp;gt;generate&amp;lt;/goal&amp;gt;
+            &amp;lt;/goals&amp;gt;
+        &amp;lt;/execution&amp;gt;
+    &amp;lt;/executions&amp;gt;
+    &amp;lt;configuration&amp;gt;
+        &amp;lt;configurationFile&amp;gt;src/main/resources/generatorConfig.xml&amp;lt;/configurationFile&amp;gt;
+        &amp;lt;overwrite&amp;gt;true&amp;lt;/overwrite&amp;gt;
+    &amp;lt;/configuration&amp;gt;
+&amp;lt;/plugin&amp;gt;
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;查看官方对于生成主键的配置的解释&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;http://www.mybatis.org/generator/configreference/generatedKey.html&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;generatorConfig.xml 配置&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+&amp;lt;table schema=&amp;quot;hotel_pda&amp;quot; tableName=&amp;quot;vg_upload_file&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;useActualColumnNames&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+    &amp;lt;generatedKey column=&amp;quot;id&amp;quot; sqlStatement=&amp;quot;MySql&amp;quot; identity=&amp;quot;true&amp;quot; /&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-nameckzlgeneratorconfiga&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;附：我的generatorConfig全部配置&lt;/a&gt;&lt;/h1&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;
+&amp;lt;!DOCTYPE generatorConfiguration PUBLIC &amp;quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&amp;quot;
+        &amp;quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&amp;quot; &amp;gt;
+
+&amp;lt;generatorConfiguration&amp;gt;
+    &amp;lt;classPathEntry location=&amp;quot;/Users/lianghe/.m2/repository/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar&amp;quot;/&amp;gt;
+
+    &amp;lt;context id=&amp;quot;mysql&amp;quot; targetRuntime=&amp;quot;MyBatis3&amp;quot;&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.EqualsHashCodePlugin&amp;quot; /&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.SerializablePlugin&amp;quot; /&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.CaseInsensitiveLikePlugin&amp;quot; /&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.ToStringPlugin&amp;quot; /&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.RowBoundsPlugin&amp;quot;/&amp;gt;
+        &amp;lt;plugin type=&amp;quot;org.mybatis.generator.plugins.CaseInsensitiveLikePlugin&amp;quot;/&amp;gt;
+
+        &amp;lt;!-- &amp;#27880;&amp;#37322; --&amp;gt;
+        &amp;lt;commentGenerator &amp;gt;
+            &amp;lt;property name=&amp;quot;suppressAllComments&amp;quot; value=&amp;quot;true&amp;quot;/&amp;gt;&amp;lt;!-- &amp;#26159;&amp;#21542;&amp;#21462;&amp;#28040;&amp;#27880;&amp;#37322; --&amp;gt;
+            &amp;lt;property name=&amp;quot;suppressDate&amp;quot; value=&amp;quot;true&amp;quot; /&amp;gt; &amp;lt;!-- &amp;#26159;&amp;#21542;&amp;#29983;&amp;#25104;&amp;#27880;&amp;#37322;&amp;#20195;&amp;#26102;&amp;#38388;&amp;#25139;--&amp;gt;
+        &amp;lt;/commentGenerator&amp;gt;
+
+        &amp;lt;!-- jdbc --&amp;gt;
+        &amp;lt;jdbcConnection driverClass=&amp;quot;com.mysql.jdbc.Driver&amp;quot;
+                        connectionURL=&amp;quot;jdbc:mysql://xx.xx.xx.xx/hotel_pda&amp;quot;
+                        userId=&amp;quot;xxx&amp;quot;
+                        password=&amp;quot;xxx&amp;quot; /&amp;gt;
+        &amp;lt;!-- &amp;#29983;&amp;#25104;model --&amp;gt;
+        &amp;lt;javaModelGenerator targetPackage=&amp;quot;com.xxx.domain&amp;quot;
+                            targetProject=&amp;quot;src/main/java&amp;quot;&amp;gt;
+            &amp;lt;property name=&amp;quot;enableSubPackages&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+            &amp;lt;property name=&amp;quot;trimStrings&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+        &amp;lt;/javaModelGenerator&amp;gt;
+
+        &amp;lt;!-- &amp;#29983;&amp;#25104;sql --&amp;gt;
+        &amp;lt;sqlMapGenerator targetPackage=&amp;quot;mapper/auto&amp;quot;
+                         targetProject=&amp;quot;src/main/resources&amp;quot; &amp;gt;
+            &amp;lt;property name=&amp;quot;enableSubPackages&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+        &amp;lt;/sqlMapGenerator&amp;gt;
+
+        &amp;lt;!-- &amp;#29983;&amp;#25104;sql client--&amp;gt;
+        &amp;lt;javaClientGenerator targetPackage=&amp;quot;com.xxx.dao.auto&amp;quot;
+                             targetProject=&amp;quot;src/main/java&amp;quot;
+                             type=&amp;quot;XMLMAPPER&amp;quot; &amp;gt;
+            &amp;lt;property name=&amp;quot;enableSubPackages&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+        &amp;lt;/javaClientGenerator&amp;gt;
+
+        &amp;lt;!-- Tables --&amp;gt;
+        &amp;lt;table schema=&amp;quot;hotel_pda&amp;quot; tableName=&amp;quot;vg_upload_file&amp;quot;&amp;gt;
+            &amp;lt;property name=&amp;quot;useActualColumnNames&amp;quot; value=&amp;quot;false&amp;quot;/&amp;gt;
+            &amp;lt;generatedKey column=&amp;quot;id&amp;quot; sqlStatement=&amp;quot;MySql&amp;quot; identity=&amp;quot;true&amp;quot; /&amp;gt;
+        &amp;lt;/table&amp;gt;
+    &amp;lt;/context&amp;gt;
+&amp;lt;/generatorConfiguration&amp;gt;
+
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-namexkdmybatisa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;附：mybatis返回主键的用法&lt;/a&gt;&lt;/h1&gt;
+&lt;pre&gt;
+&lt;code&gt;
+public int insert(Domain domain) {
+	//插入完成后 domain的主键id字段会被赋值，直接返回即可
+	domainMapper.insertSelective(domain);
+	return domain.getId();
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+</description>
+        <pubDate>Sat, 23 Jul 2016 04:09:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Linux命令学习-lsof命令</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;先看懂top的输出吧&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;lsof常用的一些命令&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;lsof（“list open files”）命令名称很容易记住，把它看成“ls + of”, 在linux下面，一切都是文件，lsof则可以查看这些文件。&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://www.tecmint.com/10-lsof-command-examples-in-linux/&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;http://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/lsof.html?highlight=lsof&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkda&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;先了解输出吧&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;我们先运行一下lsof -R(加-R 可以打出ppid)命令&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -R
+COMMAND     PID  PPID      USER   FD      TYPE             DEVICE SIZE/OFF      NODE NAME
+init          1     0      root  cwd   unknown                                       /proc/1/cwd (readlink: Permission denied)
+init          1     0      root  rtd   unknown                                       /proc/1/root (readlink: Permission denied)
+init          1     0      root  txt   unknown                                       /proc/1/exe (readlink: Permission denied)
+init          1     0      root NOFD                                                 /proc/1/fd (opendir: Permission denied)
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;COMMAND 进程名称&lt;/li&gt;
+  &lt;li&gt;PID 进程id&lt;/li&gt;
+  &lt;li&gt;PPID 进程父id&lt;/li&gt;
+  &lt;li&gt;USER 进程所有者&lt;/li&gt;
+  &lt;li&gt;FD 文件描述符
+    &lt;pre&gt;
+  &lt;code&gt;
+  （1）cwd：表示current work dirctory，即：应用程序的当前工作目录，这是该应用程序启动的目录，除非它本身对这个目录进行更改
+  （2）txt ：该类型的文件是程序代码，如应用程序二进制文件本身或共享库，如上列表中显示的 /sbin/init 程序
+  （3）lnn：library references (AIX);
+  （4）er：FD information error (see NAME column);
+  （5）jld：jail directory (FreeBSD);
+  （6）ltx：shared library text (code and data);
+  （7）mxx ：hex memory-mapped type number xx.
+  （8）m86：DOS Merge mapped file;
+  （9）mem：memory-mapped file;
+  （10）mmap：memory-mapped device;
+  （11）pd：parent directory;
+  （12）rtd：root directory;
+  （13）tr：kernel trace file (OpenBSD);
+  （14）v86  VP/ix mapped file;
+  （15）0：表示标准输出
+  （16）1：表示标准输入
+  （17）2：表示标准错误
+  一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等
+  （1）u：表示该文件被打开并处于读取/写入模式
+  （2）r：表示该文件被打开并处于只读模式
+  （3）w：表示该文件被打开并处于
+  （4）空格：表示该文件的状态模式为unknow，且没有锁定
+  （5）-：表示该文件的状态模式为unknow，且被锁定
+  同时在文件状态模式后面，还跟着相关的锁
+  （1）N：for a Solaris NFS lock of unknown type;
+  （2）r：for read lock on part of the file;
+  （3）R：for a read lock on the entire file;
+  （4）w：for a write lock on part of the file;（文件的部分写锁）
+  （5）W：for a write lock on the entire file;（整个文件的写锁）
+  （6）u：for a read and write lock of any length;
+  （7）U：for a lock of unknown type;
+  （8）x：for an SCO OpenServer Xenix lock on part      of the file;
+  （9）X：for an SCO OpenServer Xenix lock on the      entire file;
+  （10）space：if there is no lock.
+  &lt;/code&gt;
+  &lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;TYPE 文件类型
+    &lt;pre&gt;
+  &lt;code&gt;
+  （1）DIR：表示目录
+  （2）CHR：表示字符类型
+  （3）BLK：块设备类型
+  （4）UNIX： UNIX 域套接字
+  （5）FIFO：先进先出 (FIFO) 队列
+  （6）IPv4：网际协议 (IP) 套接字
+  &lt;/code&gt;
+  &lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;DEVICE 指定磁盘的名称&lt;/li&gt;
+  &lt;li&gt;SIZE 文件大小&lt;/li&gt;
+  &lt;li&gt;NODE 索引节点&lt;/li&gt;
+  &lt;li&gt;NAME 打开文件的确切名称&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-nametcylsofa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;lsof常用的一些命令&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定用户打开的文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+lsof -u heliang05
+COMMAND  PID      USER   FD      TYPE             DEVICE SIZE/OFF      NODE NAME
+sshd    3126 heliang05  cwd   unknown                                       /proc/3126/cwd (readlink: Permission denied)
+sshd    3126 heliang05  rtd   unknown                                       /proc/3126/root (readlink: Permission denied)
+sshd    3126 heliang05  txt   unknown                                       /proc/3126/exe (readlink: Permission denied)
+sshd    3126 heliang05 NOFD                                                 /proc/3126/fd (opendir: Permission denied)
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;找到在特定TCP端口上运行的进程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i TCP:22
+COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd    1471    root    3u  IPv4  12683      0t0  TCP *:ssh (LISTEN)
+sshd    1471    root    4u  IPv6  12685      0t0  TCP *:ssh (LISTEN)
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;找到特定TCP端口范围上的进程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i TCP:0-1024
+COMMAND    PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+Google     258 lianghe  153u  IPv4 0x8bc54911385f362b      0t0  TCP 172.30.30.61:57712-&amp;gt;10.32.255.116:http (ESTABLISHED)
+Google     258 lianghe  156u  IPv4 0x8bc5491133dc4d23      0t0  TCP 172.30.30.61:57819-&amp;gt;103.37.152.63:https (CLOSE_WAIT)
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;查询所有的网络连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i
+COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+rpcbind   1203     rpc    6u  IPv4  11326      0t0  UDP *:sunrpc
+rpcbind   1203     rpc    7u  IPv4  11330      0t0  UDP *:954
+rpcbind   1203     rpc   11u  IPv6  11336      0t0  TCP *:sunrpc (LISTEN)
+avahi-dae 1241   avahi   13u  IPv4  11579      0t0  UDP *:mdns
+avahi-dae 1241   avahi   14u  IPv4  11580      0t0  UDP *:58600
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;查询所有的ipv4连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i 4
+COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+rpcbind   1203     rpc    6u  IPv4  11326      0t0  UDP *:sunrpc
+rpcbind   1203     rpc    7u  IPv4  11330      0t0  UDP *:954
+rpcbind   1203     rpc    8u  IPv4  11331      0t0  TCP *:sunrpc (LISTEN)
+avahi-dae 1241   avahi   13u  IPv4  11579      0t0  UDP *:mdns
+avahi-dae 1241   avahi   14u  IPv4  11580      0t0  UDP *:58600
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;查询所有的ipv6连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i 6
+COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+rpcbind   1203     rpc    9u  IPv6  11333      0t0  UDP *:sunrpc
+rpcbind   1203     rpc   10u  IPv6  11335      0t0  UDP *:954
+rpcbind   1203     rpc   11u  IPv6  11336      0t0  TCP *:sunrpc (LISTEN)
+rpc.statd 1277 rpcuser   10u  IPv6  11858      0t0  UDP *:55800
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;根据指定的pid查找&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -p 1
+COMMAND PID USER   FD   TYPE     DEVICE SIZE/OFF   NODE NAME
+init      1 root  cwd    DIR      253,0     4096      2 /
+init      1 root  rtd    DIR      253,0     4096      2 /
+init      1 root  txt    REG      253,0   145180 147164 /sbin/init
+&lt;/code&gt;
+&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;列出谁在使用某个端口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# lsof -i :3306
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这些参数也可以互相组合使用&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 21 Jul 2016 04:20:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Linux命令学习-top命令</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;先看懂top的输出吧&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;top常用的一些命令&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;top命令是Linux下常用的性能分析工具,特别是应用性能报警的时候，我们经常会用到这个命令&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;https://linuxaria.com/howto/understanding-the-top-command-on-linux&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;http://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/top.html?highlight=top&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkdtopa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;先看懂top的输出吧&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;我们先运行一下top命令&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+top - 13:26:40 up 188 days, 20:28,  1 user,  load average: 0.07, 0.05, 0.05
+Tasks: 145 total,   1 running, 144 sleeping,   0 stopped,   0 zombie
+Cpu(s):  0.7%us,  0.3%sy,  0.0%ni, 99.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:   8059416k total,  7374232k used,   685184k free,   288420k buffers
+Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND     
+ 8182 sankuai   20   0  981m  40m 3420 S  3.0  0.5 180:24.71 sg_agent 
+17939 sankuai   20   0 3612m 996m  17m S  1.7 12.7 639:16.22 java 
+ 8193 sankuai   20   0 1045m  29m 3152 S  1.3  0.4  84:28.97 sg_agent_worker   
+10107 sankuai   20   0  268m 6724 3616 S  0.3  0.1   7:05.65 log_agent_file    
+    1 root      20   0 23500 1552 1212 S  0.0  0.0   0:05.93 init 
+    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd 
+    3 root      RT   0     0    0    0 S  0.0  0.0   0:54.01 migration/0       
+    4 root      20   0     0    0    0 S  0.0  0.0   3:28.67 ksoftirqd/0       
+    5 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/0
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;第一行内容-top
+    &lt;ul&gt;
+      &lt;li&gt;13:26:40 &lt;strong&gt;系统当前时间&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;188 days, 20:28, &lt;strong&gt;系统开机到现在经过了多少时间&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;1 user, &lt;strong&gt;当前1个用户在线&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;load average: 0.07, 0.05, 0.05 &lt;strong&gt;系统1分钟、5分钟、15分钟的CPU负载信息&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第二行内容-task
+    &lt;ul&gt;
+      &lt;li&gt;Tasks &lt;strong&gt;任务,右边的数字也就是一个对任务的统计信息&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;145 total, &lt;strong&gt;任务总数&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;1 running, &lt;strong&gt;运行的任务总数&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;144 sleeping, &lt;strong&gt;休眠的任务总数&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;0 stopped, &lt;strong&gt;停止的任务总数&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;0 zombie, &lt;strong&gt;等待父进程来停止的任务总数&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第三行内容-cpu
+    &lt;ul&gt;
+      &lt;li&gt;0.7%us (&lt;em&gt;user processes&lt;/em&gt;)用户进程的CPU百分比,不包含renice值为负的任务。&lt;/li&gt;
+      &lt;li&gt;0.3%sy (&lt;em&gt;system processes&lt;/em&gt;)系统进程的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;0.0%ni (processes with priority &lt;em&gt;upgrade nice&lt;/em&gt;)改变过优先级的进程的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;99.0%id 没被利用的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;0.0%wa (processes &lt;em&gt;waiting&lt;/em&gt; for I/O operations)等待I/O的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;0.0%hi (&lt;em&gt;hardware interrupts&lt;/em&gt;)硬中断的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;0.0%si (&lt;em&gt;software interrupts&lt;/em&gt;)软终端的CPU百分比。&lt;/li&gt;
+      &lt;li&gt;0.0%st (&lt;em&gt;Steal Time&lt;/em&gt;)通常我们服务器是一个虚拟机，这个指标就代表目前我们所在的虚拟机偷取的整个物理机的CPU的总和。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第四行内容-内存利用
+    &lt;ul&gt;
+      &lt;li&gt;8059416k total, 物理内存总量&lt;/li&gt;
+      &lt;li&gt;7374232k used, 使用的物理内存量&lt;/li&gt;
+      &lt;li&gt;685184k free, 空闲的物理内存量&lt;/li&gt;
+      &lt;li&gt;288420k buffers, 用作内核缓存的物理内存量&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第五行内容-交换空间
+    &lt;ul&gt;
+      &lt;li&gt;2096440k total, 交换区总量&lt;/li&gt;
+      &lt;li&gt;0k used, 使用的交换区量&lt;/li&gt;
+      &lt;li&gt;2096440k free, 空闲的交换区量&lt;/li&gt;
+      &lt;li&gt;5570192k cached, 缓冲交换区总量&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;大于第六行内容-进程列表
+    &lt;ul&gt;
+      &lt;li&gt;PID：进程的ID&lt;/li&gt;
+      &lt;li&gt;USER：进程所有者&lt;/li&gt;
+      &lt;li&gt;PR：进程的优先级别，越小越优先被执行&lt;/li&gt;
+      &lt;li&gt;NI：The “NICE” value of the process，&lt;a href=&quot;#niv&quot;&gt;关于nice value of process的解释&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;VIRT：进程占用的虚拟内存&lt;/li&gt;
+      &lt;li&gt;RES：进程占用的物理内存&lt;/li&gt;
+      &lt;li&gt;SHR：进程使用的共享内存&lt;/li&gt;
+      &lt;li&gt;S：进程的状态。S表示休眠，R表示正在运行，Z表示僵死状态，N表示该进程优先值为负数&lt;/li&gt;
+      &lt;li&gt;%CPU：进程占用CPU的使用率&lt;/li&gt;
+      &lt;li&gt;%MEM：进程使用的物理内存和总内存的百分比&lt;/li&gt;
+      &lt;li&gt;TIME+：该进程启动后占用的总的CPU时间，即占用CPU使用时间的累加值。&lt;/li&gt;
+      &lt;li&gt;COMMAND：进程启动命令名称&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-nametcytopa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;top常用的一些命令&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;q 退出&lt;/li&gt;
+  &lt;li&gt;space 立即刷新&lt;/li&gt;
+  &lt;li&gt;s 设置刷新时间&lt;/li&gt;
+  &lt;li&gt;c COMMAND 显示完整的命令 等效于 top -c&lt;/li&gt;
+  &lt;li&gt;k kill 进程&lt;/li&gt;
+  &lt;li&gt;u 指定用户&lt;/li&gt;
+  &lt;li&gt;t 显示或隐藏进程和CPU状态信息&lt;/li&gt;
+  &lt;li&gt;m 显示或隐藏内存状态信息&lt;/li&gt;
+  &lt;li&gt;l 显示或隐藏uptime信息&lt;/li&gt;
+  &lt;li&gt;1 监控每个逻辑CPU的状况&lt;/li&gt;
+  &lt;li&gt;P 按%CPU使用率排行&lt;/li&gt;
+  &lt;li&gt;T 按MITE+排行&lt;/li&gt;
+  &lt;li&gt;M 按%MEM排行&lt;/li&gt;
+  &lt;li&gt;top -p pid 显示指定的pid进程信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namenivnice-value-of-processa&quot;&gt;&lt;a name=&quot;niv&quot;&gt;nice value of process&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;http://askubuntu.com/questions/399357/what-does-the-nice-value-mean-in-cpu-utilization-statistics&lt;/p&gt;
+
+&lt;p&gt;The nice value for the processor is&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;the time the CPU has spent running users’ processes that have been “niced”.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;(from man top) A “niced” process is one with a positive nice value. So if the processor’s nice value is high, that means it is working with some low priority processes. So this indicator is useful when you see high CPU utilization and you are afraid that this high load will have bad effect on your system:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;High CPU utilization with high nice value: Nothing to worry, not so important tasks doing their job, important processes will easily get CPU time if they need. This situation is not a real bottleneck.&lt;/li&gt;
+  &lt;li&gt;High CPU utilization with low nice value: Something to worry because the CPU is stressed with important processes so these or new processes will have to wait. This situation is a real bottleneck.
+I think this nice value is not too important for a simple user, this is more useful in a server environment.&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 20 Jun 2016 21:18:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>linux下文件查看技巧</title>
@@ -1173,6 +1674,7 @@ A synchronized method automatically performs a lock action when it is invoked; i
 
 &lt;h2 id=&quot;demo&quot;&gt;demo&lt;/h2&gt;
 &lt;pre&gt;
+	&lt;code&gt;
 package com.github.dunno.concurrent.sync;
 
 import org.junit.Test;
@@ -1419,7 +1921,7 @@ public class TestSync {
 		}
 	}
 }
-
+&lt;/code&gt;
 &lt;/pre&gt;
 </description>
         <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
@@ -1495,289 +1997,6 @@ public class TestSync {
         <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</guid>
-        
-        <category>java多线程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;守护线程的创建和执行&lt;/h1&gt;
-&lt;p&gt;## 介绍
-java有一种线程叫守护线程：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。&lt;/li&gt;
-  &lt;li&gt;通过调用setDaemon(true);将该线程设置成守护线程。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;##Demo
-验证一下1&lt;/p&gt;
-&lt;pre&gt;
-public class TestDaemonThread {
-
-	public static void main(String[] args) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 2;
-
-				while ( sleep &amp;gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + &quot;i have sleep 1 secends!&quot;);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
-
-				System.out.println(Thread.currentThread().getName() + &quot;i &#39;m wake up&quot;);
-			}
-		});
-		thread.setName(&quot;not daemon thread &quot;);
-
-		Thread thread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 5;
-
-				while ( sleep &amp;gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + &quot;i have sleep 1 secends!&quot;);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
-
-				System.out.println(Thread.currentThread().getName() + &quot;i &#39;m wake up&quot;);
-			}
-		});
-		thread2.setName(&quot;daemon thread &quot;);
-		thread2.setDaemon(true);
-
-		thread.start();
-		thread2.start();
-
-		try {
-			thread2.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println(thread.getName() + &quot;pro &quot; + thread.getPriority());
-		System.out.println(thread2.getName() + &quot;pro &quot; + thread2.getPriority());
-
-	}
-}
-&lt;/pre&gt;
-&lt;p&gt;上面代码中，我们执行两个线程，一个普通线程，sleep2秒，另一个线程是守护线程，sleep5秒，根据上面的例子，我们预测一下，普通线程执行2秒后，主线程就退出了。&lt;/p&gt;
-
-</description>
-        <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/</guid>
-        
-        <category>java多线程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;打断线程&amp;amp;等待线程的终止&lt;/h1&gt;
-&lt;p&gt;##打断线程demo&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-/**
- * Created by liang.he on 16/1/12.
- * 测试打断一个线程
- */
-public class TestInterruptThread extends Thread{
-
-	private boolean flag = true;
-
-	@Override
-	public void run() {
-		while (true) {
-			System.out.println(&quot;i&#39;m still running!&quot;);
-			if (isInterrupted()) {
-				System.out.println(&quot;The Prime Generator has been Interrupted&quot;);
-				return;
-			}
-		}
-	}
-
-	public static void main(String[] args ) {
-		TestInterruptThread task = new TestInterruptThread();
-		task.start();
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		task.interrupt();
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;等待线程的终止&lt;/h2&gt;
-
-&lt;p&gt;调用线程的join()方法。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 23 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/</guid>
-        
-        <category>java多线程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;创建线程&lt;/h1&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;创建一个线程&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;实现Runnable接口
-    &lt;pre&gt;
-  public TestRunnable implements implements Runnable {
-      @Override
-      public void run() {
-      }
-  }
-  new Thread(new TestRunnable()).start();
-  &lt;/pre&gt;
-  &lt;/li&gt;
-  &lt;li&gt;继承Thread类
-    &lt;pre&gt;
-  public class TestThread extends Thread {
-      @Override
-      public void run() {
-      }
-  }
-  new TestThread().start();
-  &lt;/pre&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;启动一个线程&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;启动一个线程
-    &lt;pre&gt;
-  new Thread().start();
-  &lt;/pre&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;线程的状态&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;NEW 当线程创建之后但是还没有调用start方法时会是这个状态。&lt;/li&gt;
-  &lt;li&gt;RUNNABLE 当线程正在JVM中执行时（但实际也有可能正在等待操作系统的其他资源，比如处理器资源），线程会被标记成该状态&lt;/li&gt;
-  &lt;li&gt;BOLCKED 线程正在等待一个监视器锁或者进入同步块/方法，或者在调用Object.wait()方法之后重进入同步块/方法&lt;/li&gt;
-  &lt;li&gt;WAITING 线程正在等待另一个线程执行完一个特定的动作时会标记成该状态，比如：一个线程被调用了Object.wait()会使它处于WAITING状态直到另一个线程调用了Object.notify()或者Object.notifyAll()唤醒该线程；或者该线程被调用了Object.join()等待另一个线程的终止时会处于WAITING状态。&lt;/li&gt;
-  &lt;li&gt;TIMED_WAITING 在特定的时间内等待另一个线程。以下方法会产生该作用：
-    &lt;ul&gt;
-      &lt;li&gt;Thread.sleep&lt;/li&gt;
-      &lt;li&gt;Object.wait with timeout&lt;/li&gt;
-      &lt;li&gt;Thread.join with timeout&lt;/li&gt;
-      &lt;li&gt;LockSupport.parkNanos&lt;/li&gt;
-      &lt;li&gt;LockSupport.parkUntil&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;TERMINATED 线程的终止状态，当线程完成它的执行时标记成该状态。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;startrun&quot;&gt;start和run的区别&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;start的实现&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-/**
-     * Causes this thread to begin execution; the Java Virtual Machine
-     * calls the &lt;code&gt;run&lt;/code&gt; method of this thread.
-     * &lt;p&gt;
-     * The result is that two threads are running concurrently: the
-     * current thread (which returns from the call to the
-     * &lt;code&gt;start&lt;/code&gt; method) and the other thread (which executes its
-     * &lt;code&gt;run&lt;/code&gt; method).
-     * &lt;p&gt;
-     * It is never legal to start a thread more than once.
-     * In particular, a thread may not be restarted once it has completed
-     * execution.
-     *
-     * @exception  IllegalThreadStateException  if the thread was already
-     *               started.
-     * @see        #run()
-     * @see        #stop()
-     */
-    public synchronized void start() {
-        /**
-         * This method is not invoked for the main method thread or &quot;system&quot;
-         * group threads created/set up by the VM. Any new functionality added
-         * to this method in the future may have to also be added to the VM.
-         *
-         * A zero status value corresponds to state &quot;NEW&quot;.
-         */
-        if (threadStatus != 0)
-            throw new IllegalThreadStateException();
-
-        /* Notify the group that this thread is about to be started
-         * so that it can be added to the group&#39;s list of threads
-         * and the group&#39;s unstarted count can be decremented. */
-        group.add(this);
-
-        boolean started = false;
-        try {
-            start0();
-            started = true;
-        } finally {
-            try {
-                if (!started) {
-                    group.threadStartFailed(this);
-                }
-            } catch (Throwable ignore) {
-                /* do nothing. If start0 threw a Throwable then
-                  it will be passed up the call stack */
-            }
-        }
-    }
-
-* run的实现
-&lt;pre&gt;
-	/**
-     * If this thread was constructed using a separate
-     * &lt;code&gt;Runnable&lt;/code&gt; run object, then that
-     * &lt;code&gt;Runnable&lt;/code&gt; object&#39;s &lt;code&gt;run&lt;/code&gt; method is called;
-     * otherwise, this method does nothing and returns.
-     * &lt;p&gt;
-     * Subclasses of &lt;code&gt;Thread&lt;/code&gt; should override this method.
-     *
-     * @see     #start()
-     * @see     #stop()
-     * @see     #Thread(ThreadGroup, Runnable, String)
-     */
-    @Override
-    public void run() {
-        if (target != null) {
-            target.run();
-        }
-    }
-
-* 方法的区别
-	* start方法是一个线程开始执行的原因（所以我们应该通过调用start方法来启动一个线程，而不是run）
-	* start方法至多启动同一个线程一次。
-	* 线程再完成执行后，不会重新启动start方法。
-	* start方法不会被“主线程”或者是虚拟机创建/设置的“系统态”线程调用（而是创建一个新线程来调用）。
-	* run就是一个普通的方法，可以被重复调用。
-&lt;/p&gt;&lt;/pre&gt;&lt;/p&gt;&lt;/p&gt;&lt;/pre&gt;
-</description>
-        <pubDate>Sat, 16 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/</guid>
         
         <category>java多线程</category>
         
