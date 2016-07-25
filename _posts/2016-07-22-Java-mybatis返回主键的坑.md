@@ -58,7 +58,7 @@ generatorConfig.xml 配置
 # <a name="ckzl">附：我的generatorConfig全部配置</a>
 
 <pre>
-<code>
+<code class="XML">
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
 &lt;!DOCTYPE generatorConfiguration PUBLIC &quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&quot;
         &quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&quot; &gt;
@@ -118,7 +118,7 @@ generatorConfig.xml 配置
 
 # <a name="xkd">附：mybatis返回主键的用法</a>
 <pre>
-<code>
+<code class="Java">
 public int insert(Domain domain) {
 	//插入完成后 domain的主键id字段会被赋值，直接返回即可
 	domainMapper.insertSelective(domain);

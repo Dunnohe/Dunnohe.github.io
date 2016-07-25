@@ -28,8 +28,8 @@
     <!-- Hux change font-awesome CDN to qiniu -->
     <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
-    <script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
     <script >hljs.initHighlightingOnLoad();</script>  
     <!-- Hux Delete, sad but pending in China
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -142,7 +142,7 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        <a class="tag" href="/tags/#Java" title="Java">Java</a>
                         
                     </div>
                     <h1>Java-mybatis generator返回主键的用法</h1>
@@ -220,7 +220,7 @@
 <h1 id="a-nameckzlgeneratorconfiga"><a name="ckzl">附：我的generatorConfig全部配置</a></h1>
 
 <pre>
-<code>
+<code class="XML">
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
 &lt;!DOCTYPE generatorConfiguration PUBLIC &quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&quot;
         &quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&quot; &gt;
@@ -280,7 +280,7 @@
 
 <h1 id="a-namexkdmybatisa"><a name="xkd">附：mybatis返回主键的用法</a></h1>
 <pre>
-<code>
+<code class="Java">
 public int insert(Domain domain) {
 	//插入完成后 domain的主键id字段会被赋值，直接返回即可
 	domainMapper.insertSelective(domain);
@@ -332,9 +332,11 @@ public int insert(Domain domain) {
                             
         				
                             
-                				<a href="/tags/#Linux" title="Linux" rel="7">
+                				<a href="/tags/#Linux" title="Linux" rel="6">
                                     Linux
                                 </a>
+                            
+        				
                             
         				
         			</div>
