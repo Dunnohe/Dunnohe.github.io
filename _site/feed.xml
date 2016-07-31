@@ -5,9 +5,449 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Jul 2016 17:56:42 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Jul 2016 17:56:42 +0800</lastBuildDate>
+    <pubDate>Sun, 31 Jul 2016 23:06:27 +0800</pubDate>
+    <lastBuildDate>Sun, 31 Jul 2016 23:06:27 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>JDK-命令行工具介绍</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jps命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#jhat&quot;&gt;jhat命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jmap命令介绍&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
+&lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+&lt;/p&gt;
+&lt;p&gt;这里我们先介绍用法比较简单的几个命令:jps,jmap,jhat&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkdjpsa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jps命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+jps JVM进程状态工具
+
+→ jps 列出进程id和main函数名称
+7124 AppMain
+10829 Jps
+
+→ jps -q 只输出进程id
+7124
+10807
+
+→ jps -m 输出进程id和主函数参数
+7124 AppMain org.codehaus.classworlds.Launcher -Didea.version=15.0 clean jetty:run -Pperformance
+10857 Jps -m
+
+→ jps -l 只输出进程id和主函数路径
+7124 com.intellij.rt.execution.application.AppMain
+10888 sun.tools.jps.Jps
+
+→ jps -v 输出进程id和给传递给jvm的参数（最常用）
+7124 AppMain -Xms2048m -Xmx2048m -XX:PermSize=1024m -XX:MaxPermSize=1024m -Dmaven.home=/usr/local/apache-maven-3.1.1 -Dclassworlds.conf=/usr/local/apache-maven-3.1.1/bin/m2.conf -Didea.launcher.port=7533 -Didea.launcher.bin.path=/Applications/IntelliJ IDEA 15.app/Contents/bin -Dfile.encoding=UTF-8
+10933 Jps -Dapplication.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home -Xms8m
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-namejhatjhata&quot;&gt;&lt;a name=&quot;jhat&quot;&gt;jhat命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+jhat 堆dump游览器 - 启动一个web服务在一个堆dump文件上（比如使用jmap -dump产生的&lt;br /&gt;文件），可以在界面来浏览堆数据。
+
+jhat -h 帮助
+
+jhat filename 分析dump文件
+在上面我们使用了jmap -dump:live,format=b,file=test 7124
+现在我们来浏览一下数据
+
+→ jhat test
+Reading from test...
+Dump file created Sun Jul 31 18:20:41 CST 2016
+Snapshot read, resolving...
+Resolving 4317462 objects...
+WARNING:  Failed to resolve object id 0x788fe2078 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f382a8 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f37f40 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f19328 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f191b0 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f18f90 for field clazz (signature L)
+Chasing references, expect 863 dots..................................
+Eliminating duplicate references..................................
+Snapshot resolved.
+Started HTTP server on port 7000
+Server is ready.
+
+输出到这里说明已经ok了，那么接下来我们可以打开游览器，输入127.0.0.1:7000就可以浏览这些数据了
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/img/jhat/jhat.png&quot; alt=&quot;jhat_输出&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nametcyjmapa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jmap命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+jmap java内存图 根据指定的进程id或者核心文件或者远程debug server输出对象或者堆内存的情况
+
+jmap 或者 jmap -help 输出使用帮助 
+
+jmap -histo:7124 打印堆对象柱状图
+下面是部分输出：num:编号 instance:实例数量 byte:大小 class-类名
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:       2251207      406535312  [C
+   2:        328187      263542800  [B
+   3:         90692       51871032  [I
+   4:       1922400       46137600  java.lang.String
+   5:       1121773       35896736  java.util.HashMap$Entry
+   6:        237870       32585432  &lt;constmethodklass&gt;
+   7:        783437       31337480  java.util.HashMap$KeyIterator
+   8:        237870       30457760  &lt;methodklass&gt;
+   9:         21767       25312768  &lt;constantpoolklass&gt;
+   
+jmap -dump:&lt;dump-option&gt;
+
+dump-option:
+live  指定了该选择则只dump live object，所有就dump堆中所有对象。
+format=b 二进制格式
+file=&lt;file&gt; 指定dump的具体文件
+比如:
+jmap -dump:live,format=b,file=test 7124
+
+
+&lt;/file&gt;&lt;/dump-option&gt;&lt;/constantpoolklass&gt;&lt;/methodklass&gt;&lt;/constmethodklass&gt;&lt;/code&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Thu, 28 Jul 2016 17:30:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</guid>
+        
+        <category>JVM</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Linux命令学习-找到大文件的目录</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://man.linuxde.net/du&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkddua&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;du 预估文件空间使用情况&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-a,–all 输出所有文件大小，不仅仅是目录&lt;/li&gt;
+  &lt;li&gt;-b,–bytes 按照bytes大小输出&lt;/li&gt;
+  &lt;li&gt;-c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。&lt;/li&gt;
+  &lt;li&gt;-k或–kilobytes 以KB(1024bytes)为单位输出。&lt;/li&gt;
+  &lt;li&gt;-m或–megabytes 以MB为单位输出。&lt;/li&gt;
+  &lt;li&gt;-s或–summarize 仅显示总计，只列出最后加总的值。&lt;/li&gt;
+  &lt;li&gt;-h或–human-readable 按照最适合的单位输出，提高信息的可读性，强烈推荐用这个，不需要-b -k -m了。&lt;/li&gt;
+  &lt;li&gt;-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。&lt;/li&gt;
+  &lt;li&gt;-L&lt;符号链接&gt;或--dereference&lt;符号链接&gt; 显示选项中所指定符号链接的源文件大小。&lt;/符号链接&gt;&lt;/符号链接&gt;&lt;/li&gt;
+  &lt;li&gt;-s或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。&lt;/li&gt;
+  &lt;li&gt;-X&lt;文件&gt;或--exclude-from=&lt;文件&gt; 在&lt;文件&gt;指定目录或文件。&lt;/文件&gt;&lt;/文件&gt;&lt;/文件&gt;&lt;/li&gt;
+  &lt;li&gt;–exclude=&lt;目录或文件&gt; 略过指定的目录或文件。&lt;/目录或文件&gt;&lt;/li&gt;
+  &lt;li&gt;-D或–dereference-args 显示指定符号链接的源文件大小。&lt;/li&gt;
+  &lt;li&gt;-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。&lt;/li&gt;
+  &lt;li&gt;-l或–count-links 重复计算硬件链接的文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-nametcya&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;例子&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录或者文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# du /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+288	/home/heliang05/lib
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;按照指定单位输出大小(建议使用-h就行了)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# du -b /home/heliang05
+16593	/home/heliang05/bin
+204846	/home/heliang05/lib/python/polysh
+209287	/home/heliang05/lib/python
+
+du -k /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+
+du -m /home/heliang05
+1	/home/heliang05/bin
+1	/home/heliang05/lib/python/polysh
+1	/home/heliang05/lib/python
+1	/home/heliang05/lib
+
+du -h /home/heliang05
+20K	/home/heliang05/bin
+276K	/home/heliang05/lib/python/polysh
+284K	/home/heliang05/lib/python
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+du -sh /home/heliang05
+1.1M	/home/heliang05
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+du -sh /home/heliang05
+1.1M	/home/heliang05
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-c 和 -a 和 -s的区别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+建立测试数据（先建立一个depth1文件夹，然后在depth1里面建立一个depth的文件，同时在depth1里面简历depth2的文件夹，然后在depth2里面再建立一个depth文件）
+mkdir depth1
+cd depth1/
+echo &quot;depth1&quot; &amp;gt; depth
+mkdir depth2
+cd depth2/
+echo &quot;depth1&quot; &amp;gt; depth
+
+测试不同命令的输出
+
+du -ch depth1/
+8.0K	depth1/depth2
+16K	depth1/
+16K	总用量
+
+du -ah depth1/
+4.0K	depth1/depth2/depth
+8.0K	depth1/depth2
+4.0K	depth1/depth
+16K	depth1/
+
+du -sh depth1/
+16K	depth1/
+
+结论：
+-c 只会输出该目录下所有的文件及目录，不会继续输出子目录大小
+-a 会输出当前目录以及子目录大小
+-s 只会打出当面目录总和大小
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-namedta&quot;&gt;&lt;a name=&quot;dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;回到这次背景本身，我通过du命令找到了大文件时，需要删除无用文件，释放空间。
+使用rm -rf的时候注意，可能无法释放空间，虽然删除了文件，但是文件还被其他应用使用的话，会导致仍然占用空间。
+有一个还不错的方式是采用 &amp;gt; xxfile 来释放空间。&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 25 Jul 2016 20:30:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Linux命令学习-找到大文件的目录</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://man.linuxde.net/du&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkddua&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;du 预估文件空间使用情况&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-a,–all 输出所有文件大小，不仅仅是目录&lt;/li&gt;
+  &lt;li&gt;-b,–bytes 按照bytes大小输出&lt;/li&gt;
+  &lt;li&gt;-c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。&lt;/li&gt;
+  &lt;li&gt;-k或–kilobytes 以KB(1024bytes)为单位输出。&lt;/li&gt;
+  &lt;li&gt;-m或–megabytes 以MB为单位输出。&lt;/li&gt;
+  &lt;li&gt;-s或–summarize 仅显示总计，只列出最后加总的值。&lt;/li&gt;
+  &lt;li&gt;-h或–human-readable 按照最适合的单位输出，提高信息的可读性，强烈推荐用这个，不需要-b -k -m了。&lt;/li&gt;
+  &lt;li&gt;-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。&lt;/li&gt;
+  &lt;li&gt;-L&lt;符号链接&gt;或--dereference&lt;符号链接&gt; 显示选项中所指定符号链接的源文件大小。&lt;/符号链接&gt;&lt;/符号链接&gt;&lt;/li&gt;
+  &lt;li&gt;-s或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。&lt;/li&gt;
+  &lt;li&gt;-X&lt;文件&gt;或--exclude-from=&lt;文件&gt; 在&lt;文件&gt;指定目录或文件。&lt;/文件&gt;&lt;/文件&gt;&lt;/文件&gt;&lt;/li&gt;
+  &lt;li&gt;–exclude=&lt;目录或文件&gt; 略过指定的目录或文件。&lt;/目录或文件&gt;&lt;/li&gt;
+  &lt;li&gt;-D或–dereference-args 显示指定符号链接的源文件大小。&lt;/li&gt;
+  &lt;li&gt;-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。&lt;/li&gt;
+  &lt;li&gt;-l或–count-links 重复计算硬件链接的文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-nametcya&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;例子&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录或者文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# du /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+288	/home/heliang05/lib
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;按照指定单位输出大小(建议使用-h就行了)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+# du -b /home/heliang05
+16593	/home/heliang05/bin
+204846	/home/heliang05/lib/python/polysh
+209287	/home/heliang05/lib/python
+
+du -k /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+
+du -m /home/heliang05
+1	/home/heliang05/bin
+1	/home/heliang05/lib/python/polysh
+1	/home/heliang05/lib/python
+1	/home/heliang05/lib
+
+du -h /home/heliang05
+20K	/home/heliang05/bin
+276K	/home/heliang05/lib/python/polysh
+284K	/home/heliang05/lib/python
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+du -sh /home/heliang05
+1.1M	/home/heliang05
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+du -sh /home/heliang05
+1.1M	/home/heliang05
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-c 和 -a 和 -s的区别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;
+&lt;code&gt;
+建立测试数据（先建立一个depth1文件夹，然后在depth1里面建立一个depth的文件，同时在depth1里面简历depth2的文件夹，然后在depth2里面再建立一个depth文件）
+mkdir depth1
+cd depth1/
+echo &quot;depth1&quot; &amp;gt; depth
+mkdir depth2
+cd depth2/
+echo &quot;depth1&quot; &amp;gt; depth
+
+测试不同命令的输出
+
+du -ch depth1/
+8.0K	depth1/depth2
+16K	depth1/
+16K	总用量
+
+du -ah depth1/
+4.0K	depth1/depth2/depth
+8.0K	depth1/depth2
+4.0K	depth1/depth
+16K	depth1/
+
+du -sh depth1/
+16K	depth1/
+
+结论：
+-c 只会输出该目录下所有的文件及目录，不会继续输出子目录大小
+-a 会输出当前目录以及子目录大小
+-s 只会打出当面目录总和大小
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-namedta&quot;&gt;&lt;a name=&quot;dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;回到这次背景本身，我通过du命令找到了大文件时，需要删除无用文件，释放空间。
+使用rm -rf的时候注意，可能无法释放空间，虽然删除了文件，但是文件还被其他应用使用的话，会导致仍然占用空间。
+有一个还不错的方式是采用 &amp;gt; xxfile 来释放空间。&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 25 Jul 2016 20:30:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>Java-mybatis generator返回主键的用法</title>
@@ -1601,404 +2041,6 @@ echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个�
         <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
         
         <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;reentrantlock&quot;&gt;ReentrantLock(可重入锁)&lt;/h1&gt;
-&lt;p&gt;# 介绍
-重入锁&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一个ReentrantLock的拥有者是最近一次使用该锁lock了却还没有unlock的线程。&lt;/li&gt;
-  &lt;li&gt;如果一个线程成功的lock了，方法会成功返回，同时该线程会获得锁。如果该线程已经拥有该锁，再调用lock方法，lock方法会立马返回。&lt;/li&gt;
-  &lt;li&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;重要的方法&lt;/p&gt;
-
-&lt;p&gt;public void lock()&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;获得锁
-    &lt;ul&gt;
-      &lt;li&gt;如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。&lt;/li&gt;
-      &lt;li&gt;如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。&lt;/li&gt;
-      &lt;li&gt;如果该锁已经被其他线程持有，那么当前线程将会block直到获得该锁。获得的那个时候lock hold count（锁持有数）会被设置成1。（可以说明该锁是“独占的”，不同线程只能有一个线程占有）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;public void lockInterruptibly() throws InterruptedException&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;获得锁除非当前线程被打断
-    &lt;ul&gt;
-      &lt;li&gt;如果该锁没有被其他的线程持有，则该方法会立马返回，调用该方法的线程持有该锁，并且lock hold count(锁持有数)设置成1。&lt;/li&gt;
-      &lt;li&gt;如果该线程已经拥有该锁，则该方法立马返回，且lock hold count（锁持有数）增加1。&lt;/li&gt;
-      &lt;li&gt;如果这个锁已经被其他线程持有，那么当前线程将不会被线程调度，同时当前线程会进入休眠状态直到以下两种情况之一发生：
-        &lt;ul&gt;
-          &lt;li&gt;当前线程获得锁&lt;/li&gt;
-          &lt;li&gt;当前线程被Interrupt&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 27 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/27/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A06-reentrantlock/</guid>
-        
-        <category>java多线程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;synchronized&quot;&gt;synchronized&lt;/h1&gt;
-&lt;p&gt;## 先来看看jsr133中lock的语义&lt;/p&gt;
-
-&lt;p&gt;There are multiple mechanisms for communicating between threads. The most basic of these methods is synchronization, which is implemented using monitors. Each object is associated with a monitor, which a thread can lock or unlock. Only one thread at a time may hold a lock on a monitor. Any other threads attempting to lock that monitor are blocked until they can obtain a lock on that monitor.&lt;/p&gt;
-&lt;p&gt;A thread t may lock a particular monitor multiple times; each unlock reverses the effect of one lock operation.&lt;/p&gt;
-&lt;p&gt;The synchronized statement computes a reference to an object; it then attempts to perform a lock action on that object’s monitor and does not proceed further until the lock action has successfully completed. After the lock action has been performed, the body of the synchronized statement is executed. If execution of the body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.
-A synchronized method automatically performs a lock action when it is invoked; its body is not executed until the lock action has successfully completed. If the method is an instance method, it locks the monitor associated with the instance for which it was invoked (that is, the object that will be known as this during execution of the body of the method). If the method is static, it locks the monitor associated with the Class object that represents the class in which the method is defined. If execution of the method’s body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.&lt;/p&gt;
-
-&lt;p&gt;The semantics neither prevents nor requires detection of deadlock conditions. Programs where threads hold (directly or indirectly) locks on multiple objects should use conventional techniques for deadlock avoidance, creating higher-level locking primitives that don’t deadlock, if necessary.&lt;/p&gt;
-
-&lt;p&gt;Other mechanisms, such as reads and writes of volatile variables and classes provided in the java.util.concurrent package, provide alternative mechanisms for synchronization.&lt;/p&gt;
-
-&lt;h2 id=&quot;demo&quot;&gt;demo&lt;/h2&gt;
-&lt;pre&gt;
-	&lt;code&gt;
-package com.github.dunno.concurrent.sync;
-
-import org.junit.Test;
-
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-/**
- * Created by liang.he on 16/1/16.
- */
-public class TestSync {
-	//类锁：在代码中的方法上加了static和synchronized的锁，或者synchronized(xxx.class）的代码段
-	//对象锁：在代码中的方法上加了synchronized的锁，或者synchronized(this）的代码段
-	//私有锁：在类内部声明一个私有属性如private Object lock，在需要加锁的代码段synchronized(lock）
-
-	private Integer lock = new Integer(1);
-
-	private Integer lock2 = new Integer(2);
-
-	private final static Integer staticLock = new Integer(3);
-
-	//无锁
-	public void noLockMethod() {
-		long start = System.currentTimeMillis();
-		System.out.println(&quot;noLockMethod start! start:&quot; + start);
-		int sleep = 2;
-		while (sleep &amp;gt; 0) {
-			try {
-				Thread.sleep(1000);
-				System.out.println(&quot;noLockMethod-lock:&quot; + lock2);
-				System.out.println(&quot;noLockMethod-lock:&quot; + lock);
-				System.out.println(&quot;noLockMethod-lock:&quot; + staticLock);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			sleep --;
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(&quot;noLockMethod end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-	}
-
-	//对象锁1
-	public synchronized void objectLockMethod() {
-		long start = System.currentTimeMillis();
-		System.out.println(&quot;objectLockMethod start! start:&quot; + start);
-		int sleep = 2;
-		while (sleep &amp;gt; 0) {
-			try {
-				Thread.sleep(1000);
-				System.out.println(&quot;objectLockMethod-lock:&quot; + lock2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			sleep --;
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(&quot;objectLockMethod end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-	}
-
-	//对象锁2
-	public void objectLockMethod2() {
-		synchronized (this) {
-			long start = System.currentTimeMillis();
-			System.out.println(&quot;objectLockMehtod2 start! start:&quot; + start);
-			int sleep = 2;
-			while (sleep &amp;gt; 0) {
-				try {
-					Thread.sleep(1000);
-					System.out.println(&quot;objectLockMehtod2-lock:&quot; + lock2);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				sleep --;
-			}
-			long end = System.currentTimeMillis();
-			System.out.println(&quot;objectLockMehtod2 end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-		}
-	}
-
-	//私有锁 锁变量1
-	public void privateLockMethod() {
-		synchronized (lock) {
-			long start = System.currentTimeMillis();
-			System.out.println(&quot;privateLockMethod start! start:&quot; + start);
-			int sleep = 2;
-			while (sleep &amp;gt; 0) {
-				try {
-					Thread.sleep(1000);
-					System.out.println(&quot;privateLockMethod1-lock:&quot; + lock2);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				sleep --;
-			}
-			long end = System.currentTimeMillis();
-			System.out.println(&quot;privateLockMethod end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-		}
-	}
-
-	//私有锁 锁变量2
-	public void privateLockMethod2() {
-		synchronized (lock2) {
-			long start = System.currentTimeMillis();
-			System.out.println(&quot;privateLockMethod2 start! mills:&quot; + start);
-			int sleep = 2;
-			while (sleep &amp;gt; 0) {
-				try {
-					Thread.sleep(1000);
-					System.out.println(&quot;privateLockMethod2-lock:&quot; + lock);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				sleep --;
-			}
-			long end = System.currentTimeMillis();
-			System.out.println(&quot;privateLockMethod end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-		}
-	}
-
-	//类锁
-	public synchronized static void classLockMethod() {
-		long start = System.currentTimeMillis();
-		System.out.println(&quot;classLockMethod start! mills:&quot; + start);
-		int sleep = 2;
-		while (sleep &amp;gt; 0) {
-			try {
-				Thread.sleep(1000);
-				System.out.println(&quot;classLockMethod-lock:&quot; + staticLock);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			sleep --;
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(&quot;classLockMethod end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-	}
-
-	//类锁
-	public static void classLockMethod2() {
-		synchronized (TestSync.class) {
-			long start = System.currentTimeMillis();
-			System.out.println(&quot;classLockMethod2 start! mills:&quot; + start);
-			int sleep = 2;
-			while (sleep &amp;gt; 0) {
-				try {
-					Thread.sleep(1000);
-					System.out.println(&quot;classLockMethod2-lock:&quot; + staticLock);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				sleep --;
-			}
-			long end = System.currentTimeMillis();
-			System.out.println(&quot;classLockMethod2 end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-		}
-	}
-
-	private ReentrantLock reentrantLock = new ReentrantLock();
-
-	//独占锁
-	public void reentrantLock() {
-		try {
-			reentrantLock.lock();
-			long start = System.currentTimeMillis();
-			System.out.println(&quot;reentrantLock start! start:&quot; + start);
-			int sleep = 2;
-			while (sleep &amp;gt; 0) {
-				try {
-					Thread.sleep(1000);
-					System.out.println(&quot;reentrantLock-lock:&quot; + lock2);
-					System.out.println(&quot;reentrantLock-lock:&quot; + lock);
-					System.out.println(&quot;reentrantLock-lock:&quot; + staticLock);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				sleep --;
-			}
-			long end = System.currentTimeMillis();
-			System.out.println(&quot;reentrantLock end! end:&quot; + end + &quot; cost:&quot; + (end - start));
-		} finally {
-			reentrantLock.unlock();
-		}
-	}
-
-	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-
-	public void readWriteLock() {
-
-	}
-
-	//测试私有锁锁不同变量是否会有竞争
-	//结论:
-	//只打开注释1,注释2,可以说明“当私有锁监视同一资源会竞争,等待其中一个资源释放,当监视的资源不是同一个不会产生竞争”
-	//只打开注释3,注释4,可以说明“对象锁会互相竞争，等待另一个方法结束”
-	//只打开注释5,注释6,可以说明&quot;类锁会互相竞争，等待另一个释放资源&quot;
-	//只打开注释1,注释6,打开注释1,注释5,可以说明&quot;不同的锁不会竞争&quot;
-	//只打开注释1,注释7,3-7或者5-7,可以说明&quot;无锁变量不会和锁变量竞争&quot;
-	//不同类的锁不会竞争
-	@Test
-	public void test1() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Thread thread1 = new Thread(new Runnable() {
-					@Override
-					public void run() {
-
-						//privateLockMethod();//注释1
-						//objectLockMethod();//注释3
-						//classLockMethod();//注释5
-						reentrantLock();//注释8
-					}
-				});
-				Thread thread2 = new Thread(new Runnable() {
-					@Override
-					public void run() {
-
-						//privateLockMethod2();//注释2
-						//objectLockMethod2();//注释4
-						//classLockMethod2();//注释6
-						//noLockMethod();//注释7
-						reentrantLock();//注释9
-					}
-				});
-				thread1.start();
-				thread2.start();
-
-				try {
-					thread1.join();
-					thread2.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-			}
-		});
-		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-}
-&lt;/code&gt;
-&lt;/pre&gt;
-</description>
-        <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/</guid>
-        
-        <category>java多线程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Java多线程学习系列</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;线程的睡眠&amp;amp;等待&amp;amp;让步&amp;amp;唤醒&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;yield()
-    &lt;ul&gt;
-      &lt;li&gt;发送请求告诉调度器“当前线程”让出当前对处理器资源的占用。调度器可以忽略该请求。&lt;/li&gt;
-      &lt;li&gt;很少场景会使用到这个方法，该方法可能对于debug或者出于测试的目的的场景有些用处（就是没有什么卵用的意思）。&lt;/li&gt;
-      &lt;li&gt;D大调&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;sleep(long millis)
-    &lt;ul&gt;
-      &lt;li&gt;当前的执行线程（注意是当前执行线程，比如如果你万一使用t1.sleep(1000),也不建议这么写，不一定会对t1起作用）进入休眠(暂停执行)。&lt;/li&gt;
-      &lt;li&gt;使用该方法时并不会让出对象的监视器。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;wait(long timeout)
-    &lt;ul&gt;
-      &lt;li&gt;使“当前线程”等待直到其他线程调用了notify()或者notifyAll()方法。&lt;/li&gt;
-      &lt;li&gt;“当前线程”必须是此时正在起作用的对象监视器的所有者。&lt;/li&gt;
-      &lt;li&gt;该方法让“当前线程（以下用T表示）”等待同时释放对象监视器的锁，而且T在等待期间也不会再进行线程调度。除非发生以下一种情况：
-        &lt;ul&gt;
-          &lt;li&gt;其他线程调用notify()时,随机唤醒了T线程。&lt;/li&gt;
-          &lt;li&gt;其他线程调用了notifyAll()&lt;/li&gt;
-          &lt;li&gt;其他线程interrupts了T线程&lt;/li&gt;
-          &lt;li&gt;指定的真实等待时间结束。当蚕食timeout是0时，那么则不会考虑timeout，线程T会一直等待直到被唤醒。&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;线程可能不在上面四种情况下被唤醒，我们称为“spurious wakeup”,在实际操作中几乎不会发生。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;wait()
-    &lt;ul&gt;
-      &lt;li&gt;wait()的实现是wait(0);&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;notify()
-    &lt;ul&gt;
-      &lt;li&gt;唤醒一个在该对象监视器上等待的单个线程。&lt;/li&gt;
-      &lt;li&gt;唤醒的机制是随机唤醒。&lt;/li&gt;
-      &lt;li&gt;一次wait方法只能使一个线程在该对象监视器等待。&lt;/li&gt;
-      &lt;li&gt;被唤醒的线程不会开始处理程序直到当前线程释放了对这个对象监视器的锁。&lt;/li&gt;
-      &lt;li&gt;这个方法应该被这个对象监视器的拥有者的这个线程调用。一个线程成为对象监视器的拥有者有以下三个方法：
-        &lt;ul&gt;
-          &lt;li&gt;通过执行一个这个对象的同步实例方法&lt;/li&gt;
-          &lt;li&gt;通过执行锁住这个对象的同步块方法&lt;/li&gt;
-          &lt;li&gt;对于Class类型的对象来说，通过执行这个类的一个静态的同步方法。&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;一个线程在一个时刻只能拥有一个对象监视器。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;notifyAll()
-    &lt;ul&gt;
-      &lt;li&gt;唤醒在此对象监视器上面的所有等待的线程。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 24 Jan 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/</guid>
-        
-        <category>java多线程</category>
         
         
       </item>
