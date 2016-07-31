@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Java多线程学习系列 - Dunno Blog</title>
+    <title>Linux命令学习-找到大文件的目录 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,15 +142,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#java多线程" title="java多线程">java多线程</a>
+                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                         
                     </div>
-                    <h1>Java多线程学习系列</h1>
+                    <h1>Linux命令学习-找到大文件的目录</h1>
                     
                     
-                    <h2 class="subheading"> "4-线程的睡眠&等待&让步&唤醒"</h2>
+                    <h2 class="subheading"> "了解du命令的使用"</h2>
                     
-                    <span class="meta">Posted by Dunno on January 24, 2016</span>
+                    <span class="meta">Posted by Dunno on July 25, 2016</span>
                 </div>
             </div>
         </div>
@@ -168,64 +168,149 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="section">线程的睡眠&amp;等待&amp;让步&amp;唤醒</h1>
+				<h1 id="section">目录</h1>
 
 <ul>
-  <li>yield()
-    <ul>
-      <li>发送请求告诉调度器“当前线程”让出当前对处理器资源的占用。调度器可以忽略该请求。</li>
-      <li>很少场景会使用到这个方法，该方法可能对于debug或者出于测试的目的的场景有些用处（就是没有什么卵用的意思）。</li>
-      <li>D大调</li>
-    </ul>
-  </li>
-  <li>sleep(long millis)
-    <ul>
-      <li>当前的执行线程（注意是当前执行线程，比如如果你万一使用t1.sleep(1000),也不建议这么写，不一定会对t1起作用）进入休眠(暂停执行)。</li>
-      <li>使用该方法时并不会让出对象的监视器。</li>
-    </ul>
-  </li>
-  <li>wait(long timeout)
-    <ul>
-      <li>使“当前线程”等待直到其他线程调用了notify()或者notifyAll()方法。</li>
-      <li>“当前线程”必须是此时正在起作用的对象监视器的所有者。</li>
-      <li>该方法让“当前线程（以下用T表示）”等待同时释放对象监视器的锁，而且T在等待期间也不会再进行线程调度。除非发生以下一种情况：
-        <ul>
-          <li>其他线程调用notify()时,随机唤醒了T线程。</li>
-          <li>其他线程调用了notifyAll()</li>
-          <li>其他线程interrupts了T线程</li>
-          <li>指定的真实等待时间结束。当蚕食timeout是0时，那么则不会考虑timeout，线程T会一直等待直到被唤醒。</li>
-        </ul>
-      </li>
-      <li>线程可能不在上面四种情况下被唤醒，我们称为“spurious wakeup”,在实际操作中几乎不会发生。</li>
-    </ul>
-  </li>
-  <li>wait()
-    <ul>
-      <li>wait()的实现是wait(0);</li>
-    </ul>
-  </li>
-  <li>notify()
-    <ul>
-      <li>唤醒一个在该对象监视器上等待的单个线程。</li>
-      <li>唤醒的机制是随机唤醒。</li>
-      <li>一次wait方法只能使一个线程在该对象监视器等待。</li>
-      <li>被唤醒的线程不会开始处理程序直到当前线程释放了对这个对象监视器的锁。</li>
-      <li>这个方法应该被这个对象监视器的拥有者的这个线程调用。一个线程成为对象监视器的拥有者有以下三个方法：
-        <ul>
-          <li>通过执行一个这个对象的同步实例方法</li>
-          <li>通过执行锁住这个对象的同步块方法</li>
-          <li>对于Class类型的对象来说，通过执行这个类的一个静态的同步方法。</li>
-        </ul>
-      </li>
-      <li>一个线程在一个时刻只能拥有一个对象监视器。</li>
-    </ul>
-  </li>
-  <li>notifyAll()
-    <ul>
-      <li>唤醒在此对象监视器上面的所有等待的线程。</li>
-    </ul>
-  </li>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#xkd">du命令介绍</a></li>
+  <li><a href="#tcy">例子</a></li>
+  <li><a href="#dt">多提一句，删除文件</a></li>
 </ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://man.linuxde.net/du</p>
+</blockquote>
+
+<h1 id="a-namexkddua"><a name="xkd">du命令介绍</a></h1>
+<p>du 预估文件空间使用情况</p>
+
+<ul>
+  <li>-a,–all 输出所有文件大小，不仅仅是目录</li>
+  <li>-b,–bytes 按照bytes大小输出</li>
+  <li>-c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。</li>
+  <li>-k或–kilobytes 以KB(1024bytes)为单位输出。</li>
+  <li>-m或–megabytes 以MB为单位输出。</li>
+  <li>-s或–summarize 仅显示总计，只列出最后加总的值。</li>
+  <li>-h或–human-readable 按照最适合的单位输出，提高信息的可读性，强烈推荐用这个，不需要-b -k -m了。</li>
+  <li>-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。</li>
+  <li>-L<符号链接>或--dereference<符号链接> 显示选项中所指定符号链接的源文件大小。</符号链接></符号链接></li>
+  <li>-s或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。</li>
+  <li>-X<文件>或--exclude-from=<文件> 在<文件>指定目录或文件。</文件></文件></文件></li>
+  <li>–exclude=<目录或文件> 略过指定的目录或文件。</目录或文件></li>
+  <li>-D或–dereference-args 显示指定符号链接的源文件大小。</li>
+  <li>-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。</li>
+  <li>-l或–count-links 重复计算硬件链接的文件。</li>
+</ul>
+
+<h1 id="a-nametcya"><a name="tcy">例子</a></h1>
+
+<ul>
+  <li>查询指定目录或者文件</li>
+</ul>
+<pre>
+<code>
+# du /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+288	/home/heliang05/lib
+</code>
+</pre>
+
+<ul>
+  <li>按照指定单位输出大小(建议使用-h就行了)</li>
+</ul>
+<pre>
+<code>
+# du -b /home/heliang05
+16593	/home/heliang05/bin
+204846	/home/heliang05/lib/python/polysh
+209287	/home/heliang05/lib/python
+
+du -k /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+
+du -m /home/heliang05
+1	/home/heliang05/bin
+1	/home/heliang05/lib/python/polysh
+1	/home/heliang05/lib/python
+1	/home/heliang05/lib
+
+du -h /home/heliang05
+20K	/home/heliang05/bin
+276K	/home/heliang05/lib/python/polysh
+284K	/home/heliang05/lib/python
+</code>
+</pre>
+
+<ul>
+  <li>查询指定目录的大小（并不看其子目录）</li>
+</ul>
+<pre>
+<code>
+du -sh /home/heliang05
+1.1M	/home/heliang05
+</code>
+</pre>
+
+<ul>
+  <li>查询指定目录的大小（并不看其子目录）</li>
+</ul>
+<pre>
+<code>
+du -sh /home/heliang05
+1.1M	/home/heliang05
+</code>
+</pre>
+
+<ul>
+  <li>-c 和 -a 和 -s的区别</li>
+</ul>
+<pre>
+<code>
+建立测试数据（先建立一个depth1文件夹，然后在depth1里面建立一个depth的文件，同时在depth1里面简历depth2的文件夹，然后在depth2里面再建立一个depth文件）
+mkdir depth1
+cd depth1/
+echo "depth1" &gt; depth
+mkdir depth2
+cd depth2/
+echo "depth1" &gt; depth
+
+测试不同命令的输出
+
+du -ch depth1/
+8.0K	depth1/depth2
+16K	depth1/
+16K	总用量
+
+du -ah depth1/
+4.0K	depth1/depth2/depth
+8.0K	depth1/depth2
+4.0K	depth1/depth
+16K	depth1/
+
+du -sh depth1/
+16K	depth1/
+
+结论：
+-c 只会输出该目录下所有的文件及目录，不会继续输出子目录大小
+-a 会输出当前目录以及子目录大小
+-s 只会打出当面目录总和大小
+</code>
+</pre>
+
+<h1 id="a-namedta"><a name="dt">多提一句，删除文件</a></h1>
+<p>回到这次背景本身，我通过du命令找到了大文件时，需要删除无用文件，释放空间。
+使用rm -rf的时候注意，可能无法释放空间，虽然删除了文件，但是文件还被其他应用使用的话，会导致仍然占用空间。
+有一个还不错的方式是采用 &gt; xxfile 来释放空间。</p>
+
 
 
                 <hr>
@@ -236,12 +321,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">&larr; Previous Post</a>
+                        <a href="/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/" data-toggle="tooltip" data-placement="top" title="Linux命令学习-找到大文件的目录">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A05-synchronized/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">Next Post &rarr;</a>
+                        <a href="/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/" data-toggle="tooltip" data-placement="top" title="JDK-命令行工具介绍">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
