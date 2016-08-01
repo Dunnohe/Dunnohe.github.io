@@ -1,0 +1,143 @@
+<h1 id="section">目录</h1>
+
+<ul>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#xkd">du命令介绍</a></li>
+  <li><a href="#tcy">例子</a></li>
+  <li><a href="#dt">多提一句，删除文件</a></li>
+</ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://man.linuxde.net/du</p>
+</blockquote>
+
+<h1 id="a-namexkddua"><a name="xkd">du命令介绍</a></h1>
+<p>du 预估文件空间使用情况</p>
+
+<ul>
+  <li>-a,–all 输出所有文件大小，不仅仅是目录</li>
+  <li>-b,–bytes 按照bytes大小输出</li>
+  <li>-c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。</li>
+  <li>-k或–kilobytes 以KB(1024bytes)为单位输出。</li>
+  <li>-m或–megabytes 以MB为单位输出。</li>
+  <li>-s或–summarize 仅显示总计，只列出最后加总的值。</li>
+  <li>-h或–human-readable 按照最适合的单位输出，提高信息的可读性，强烈推荐用这个，不需要-b -k -m了。</li>
+  <li>-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。</li>
+  <li>-L<符号链接>或--dereference<符号链接> 显示选项中所指定符号链接的源文件大小。</符号链接></符号链接></li>
+  <li>-s或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。</li>
+  <li>-X<文件>或--exclude-from=<文件> 在<文件>指定目录或文件。</文件></文件></文件></li>
+  <li>–exclude=<目录或文件> 略过指定的目录或文件。</目录或文件></li>
+  <li>-D或–dereference-args 显示指定符号链接的源文件大小。</li>
+  <li>-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。</li>
+  <li>-l或–count-links 重复计算硬件链接的文件。</li>
+</ul>
+
+<h1 id="a-nametcya"><a name="tcy">例子</a></h1>
+
+<ul>
+  <li>查询指定目录或者文件</li>
+</ul>
+<pre>
+<code>
+# du /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+288	/home/heliang05/lib
+</code>
+</pre>
+
+<ul>
+  <li>按照指定单位输出大小(建议使用-h就行了)</li>
+</ul>
+<pre>
+<code>
+# du -b /home/heliang05
+16593	/home/heliang05/bin
+204846	/home/heliang05/lib/python/polysh
+209287	/home/heliang05/lib/python
+
+du -k /home/heliang05
+20	/home/heliang05/bin
+276	/home/heliang05/lib/python/polysh
+284	/home/heliang05/lib/python
+
+du -m /home/heliang05
+1	/home/heliang05/bin
+1	/home/heliang05/lib/python/polysh
+1	/home/heliang05/lib/python
+1	/home/heliang05/lib
+
+du -h /home/heliang05
+20K	/home/heliang05/bin
+276K	/home/heliang05/lib/python/polysh
+284K	/home/heliang05/lib/python
+</code>
+</pre>
+
+<ul>
+  <li>查询指定目录的大小（并不看其子目录）</li>
+</ul>
+<pre>
+<code>
+du -sh /home/heliang05
+1.1M	/home/heliang05
+</code>
+</pre>
+
+<ul>
+  <li>查询指定目录的大小（并不看其子目录）</li>
+</ul>
+<pre>
+<code>
+du -sh /home/heliang05
+1.1M	/home/heliang05
+</code>
+</pre>
+
+<ul>
+  <li>-c 和 -a 和 -s的区别</li>
+</ul>
+<pre>
+<code>
+建立测试数据（先建立一个depth1文件夹，然后在depth1里面建立一个depth的文件，同时在depth1里面简历depth2的文件夹，然后在depth2里面再建立一个depth文件）
+mkdir depth1
+cd depth1/
+echo "depth1" &gt; depth
+mkdir depth2
+cd depth2/
+echo "depth1" &gt; depth
+
+测试不同命令的输出
+
+du -ch depth1/
+8.0K	depth1/depth2
+16K	depth1/
+16K	总用量
+
+du -ah depth1/
+4.0K	depth1/depth2/depth
+8.0K	depth1/depth2
+4.0K	depth1/depth
+16K	depth1/
+
+du -sh depth1/
+16K	depth1/
+
+结论：
+-c 只会输出该目录下所有的文件及目录，不会继续输出子目录大小
+-a 会输出当前目录以及子目录大小
+-s 只会打出当面目录总和大小
+</code>
+</pre>
+
+<h1 id="a-namedta"><a name="dt">多提一句，删除文件</a></h1>
+<p>回到这次背景本身，我通过du命令找到了大文件时，需要删除无用文件，释放空间。
+使用rm -rf的时候注意，可能无法释放空间，虽然删除了文件，但是文件还被其他应用使用的话，会导致仍然占用空间。
+有一个还不错的方式是采用 &gt; xxfile 来释放空间。</p>
+
