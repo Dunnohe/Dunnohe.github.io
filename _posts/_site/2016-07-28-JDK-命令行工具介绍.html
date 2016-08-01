@@ -1,0 +1,119 @@
+<h1 id="section">目录</h1>
+
+<ul>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#xkd">jps命令介绍</a></li>
+  <li><a href="#jhat">jhat命令介绍</a></li>
+  <li><a href="#tcy">jmap命令介绍</a></li>
+</ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。</p>
+<p>jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+</p>
+<p>这里我们先介绍用法比较简单的几个命令:jps,jmap,jhat</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://docs.oracle.com/javase/7/docs/technotes/tools/</p>
+</blockquote>
+
+<h1 id="a-namexkdjpsa"><a name="xkd">jps命令介绍</a></h1>
+
+<pre>
+<code>
+jps JVM进程状态工具
+
+→ jps 列出进程id和main函数名称
+7124 AppMain
+10829 Jps
+
+→ jps -q 只输出进程id
+7124
+10807
+
+→ jps -m 输出进程id和主函数参数
+7124 AppMain org.codehaus.classworlds.Launcher -Didea.version=15.0 clean jetty:run -Pperformance
+10857 Jps -m
+
+→ jps -l 只输出进程id和主函数路径
+7124 com.intellij.rt.execution.application.AppMain
+10888 sun.tools.jps.Jps
+
+→ jps -v 输出进程id和给传递给jvm的参数（最常用）
+7124 AppMain -Xms2048m -Xmx2048m -XX:PermSize=1024m -XX:MaxPermSize=1024m -Dmaven.home=/usr/local/apache-maven-3.1.1 -Dclassworlds.conf=/usr/local/apache-maven-3.1.1/bin/m2.conf -Didea.launcher.port=7533 -Didea.launcher.bin.path=/Applications/IntelliJ IDEA 15.app/Contents/bin -Dfile.encoding=UTF-8
+10933 Jps -Dapplication.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home -Xms8m
+</code>
+</pre>
+
+<h1 id="a-namejhatjhata"><a name="jhat">jhat命令介绍</a></h1>
+
+<pre>
+<code>
+jhat 堆dump游览器 - 启动一个web服务在一个堆dump文件上（比如使用jmap -dump产生的<br />文件），可以在界面来浏览堆数据。
+
+jhat -h 帮助
+
+jhat filename 分析dump文件
+在上面我们使用了jmap -dump:live,format=b,file=test 7124
+现在我们来浏览一下数据
+
+→ jhat test
+Reading from test...
+Dump file created Sun Jul 31 18:20:41 CST 2016
+Snapshot read, resolving...
+Resolving 4317462 objects...
+WARNING:  Failed to resolve object id 0x788fe2078 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f382a8 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f37f40 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f19328 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f191b0 for field clazz (signature L)
+WARNING:  Failed to resolve object id 0x788f18f90 for field clazz (signature L)
+Chasing references, expect 863 dots..................................
+Eliminating duplicate references..................................
+Snapshot resolved.
+Started HTTP server on port 7000
+Server is ready.
+
+输出到这里说明已经ok了，那么接下来我们可以打开游览器，输入127.0.0.1:7000就可以浏览这些数据了
+</code>
+</pre>
+
+<p><img src="http://dunnohe.github.io/img/jhat/jhat.png" alt="jhat_输出" />
+游览器输出</p>
+
+<h1 id="a-nametcyjmapa"><a name="tcy">jmap命令介绍</a></h1>
+
+<pre>
+<code>
+jmap java内存图 根据指定的进程id或者核心文件或者远程debug server输出对象或者堆内存的情况
+
+jmap 或者 jmap -help 输出使用帮助 
+
+jmap -histo:7124 打印堆对象柱状图
+下面是部分输出：num:编号 instance:实例数量 byte:大小 class-类名
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:       2251207      406535312  [C
+   2:        328187      263542800  [B
+   3:         90692       51871032  [I
+   4:       1922400       46137600  java.lang.String
+   5:       1121773       35896736  java.util.HashMap$Entry
+   6:        237870       32585432  <constmethodklass>
+   7:        783437       31337480  java.util.HashMap$KeyIterator
+   8:        237870       30457760  <methodklass>
+   9:         21767       25312768  <constantpoolklass>
+   
+jmap -dump:<dump-option>
+
+dump-option:
+live  指定了该选择则只dump live object，所有就dump堆中所有对象。
+format=b 二进制格式
+file=<file> 指定dump的具体文件
+比如:
+jmap -dump:live,format=b,file=test 7124
+
+
+</file></dump-option></constantpoolklass></methodklass></constmethodklass></code></pre>

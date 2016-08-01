@@ -1,0 +1,119 @@
+<h1 id="section">目录</h1>
+
+<ul>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#xkd">jstat命令介绍</a></li>
+  <li><a href="#tcy">jstack -l 输出解释</a></li>
+</ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。</p>
+<p>jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+</p>
+<p>这次我们介绍非常非常常用的命令：jstat</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://docs.oracle.com/javase/7/docs/technotes/tools/</p>
+</blockquote>
+
+<h1 id="a-namexkdjstata"><a name="xkd">jstat命令介绍</a></h1>
+
+<p>jstack jvm监控统计工具-可以用于观察jvm运行时区域的数据</p>
+
+<h2 id="section-1">用法</h2>
+<p>jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</p>
+
+<p><img src="http://dunnohe.github.io/img/jstat/jstat.png" alt="jstat_输出" />
+一张图理解用法</p>
+
+<h2 id="options">options</h2>
+<p>使用jstat -options可以查看支持的选项</p>
+
+<pre>
+<code>
+$ jstat -options
+-class 显示classLoader的相关信息
+-compiler 显示JIT编译的相关信息
+-gc 显示gc相关信息
+-gccapacity 显示gc容量信息
+-gccause 
+-gcnew
+-gcnewcapacity
+-gcold
+-gcoldcapacity
+-gcpermcapacity
+-gcutil
+-printcompilation
+
+</code>
+
+<pre>
+<code>
+部分输出
+2016-07-31 22:24:21
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
+
+"Thread-11-EventThread" daemon prio=5 tid=0x00007f8e9d8e0000 nid=0x32327 waiting on condition [0x0000700013bca000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  &lt;0x00000007eef76740&gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:494)
+
+   Locked ownable synchronizers:
+	- None
+
+"Thread-11-SendThread(10.4.241.128:2181)" daemon prio=5 tid=0x00007f8e9d857000 nid=0x2a33f runnable [0x0000700013ac7000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
+	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:200)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	- locked &lt;0x00000007eef75488&gt; (a sun.nio.ch.Util$2)
+	- locked &lt;0x00000007eef75478&gt; (a java.util.Collections$UnmodifiableSet)
+	- locked &lt;0x00000007eef75358&gt; (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:349)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
+
+   Locked ownable synchronizers:
+	- None
+</code>
+</pre>
+
+# <a name="tcy">jstack -l 输出解释</a>
+
+- **"Thread-11-EventThread"** 线程名字，当使用Thread类生成的线程，thread会被命名成Thread-(Number)，而使用ThreadFactory类生成的线程会被命名成pool-(number)-thread-(number)
+- **daemon** 如果有这一列代表是守护线程，没有则说明不是
+- **prio=5** 代表该线程的权值
+- **tid=0x00007f8e9d857000** 代表该线程唯一的id（线程id），这个id是java层面的id
+- **nid=0x2a33f** 本地线程id(Native thread ID)，这个id的值依赖于系统平台层面。
+	- windows下，就是操作系统级别的线程id
+	- Linux下，nid是线程的pid （这里多提一句，我们大多场景是在linux上，当出现问题时，我们先可以利用 top -Hp 找出不正常的线程pid，把pid转成16进制（因为nid是16进制），然后根据这个转好的pid立马找到线程在干嘛，通常就能发现问题，top的用法，可以回滚之前的top使用的总结。 ）
+	- Solaris下，nid是thr_self()的返回值
+	- 在Mac OS下，可以认为是本地pthread_t的值
+- **waiting on condition [0x0000700013bca000] / runnable [0x0000700013ac7000]** 线程此时的状态
+- **最后一栏** 代表线程调用的完整的堆栈信息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+</pre>
