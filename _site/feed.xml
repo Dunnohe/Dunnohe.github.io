@@ -5,9 +5,104 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 31 Jul 2016 23:06:27 +0800</pubDate>
-    <lastBuildDate>Sun, 31 Jul 2016 23:06:27 +0800</lastBuildDate>
+    <pubDate>Mon, 01 Aug 2016 17:16:29 +0800</pubDate>
+    <lastBuildDate>Mon, 01 Aug 2016 17:16:29 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>JDK-命令行工具介绍2</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
+&lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+&lt;/p&gt;
+&lt;p&gt;这次我们介绍非常非常常用的命令：jstack&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/
+https://dzone.com/articles/how-analyze-java-thread-dumps
+https://gist.github.com/rednaxelafx/843622&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkdjstacka&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;jstack 根据指定的端口或者远程debug服务打印出线程栈跟踪信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;jstack--l-7124-pid7124&quot;&gt;jstack -l 7124 打出pid为7124的线程栈跟踪信息&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+部分输出
+2016-07-31 22:24:21
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
+
+&quot;Thread-11-EventThread&quot; daemon prio=5 tid=0x00007f8e9d8e0000 nid=0x32327 waiting on condition [0x0000700013bca000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  &amp;lt;0x00000007eef76740&amp;gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:494)
+
+   Locked ownable synchronizers:
+	- None
+
+&quot;Thread-11-SendThread(10.4.241.128:2181)&quot; daemon prio=5 tid=0x00007f8e9d857000 nid=0x2a33f runnable [0x0000700013ac7000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
+	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:200)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	- locked &amp;lt;0x00000007eef75488&amp;gt; (a sun.nio.ch.Util$2)
+	- locked &amp;lt;0x00000007eef75478&amp;gt; (a java.util.Collections$UnmodifiableSet)
+	- locked &amp;lt;0x00000007eef75358&amp;gt; (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:349)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
+
+   Locked ownable synchronizers:
+	- None
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-nametcyjstack--l-a&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;“Thread-11-EventThread”&lt;/strong&gt; 线程名字，当使用Thread类生成的线程，thread会被命名成Thread-(Number)，而使用ThreadFactory类生成的线程会被命名成pool-(number)-thread-(number)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;daemon&lt;/strong&gt; 如果有这一列代表是守护线程，没有则说明不是&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;prio=5&lt;/strong&gt; 代表该线程的权值&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;tid=0x00007f8e9d857000&lt;/strong&gt; 代表该线程唯一的id（线程id），这个id是java层面的id&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;nid=0x2a33f&lt;/strong&gt; 本地线程id(Native thread ID)，这个id的值依赖于系统平台层面。
+    &lt;ul&gt;
+      &lt;li&gt;windows下，就是操作系统级别的线程id&lt;/li&gt;
+      &lt;li&gt;Linux下，nid是线程的pid （这里多提一句，我们大多场景是在linux上，当出现问题时，我们先可以利用 top -Hp 找出不正常的线程pid，把pid转成16进制（因为nid是16进制），然后根据这个转好的pid立马找到线程在干嘛，通常就能发现问题，top的用法，可以回滚之前的top使用的总结。 ）&lt;/li&gt;
+      &lt;li&gt;Solaris下，nid是thr_self()的返回值&lt;/li&gt;
+      &lt;li&gt;在Mac OS下，可以认为是本地pthread_t的值&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;waiting on condition [0x0000700013bca000] / runnable [0x0000700013ac7000]&lt;/strong&gt; 线程此时的状态&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;最后一栏&lt;/strong&gt; 代表线程调用的完整的堆栈信息&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 01 Aug 2016 02:58:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/08/01/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/01/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</guid>
+        
+        <category>JVM</category>
+        
+        
+      </item>
     
       <item>
         <title>JDK-命令行工具介绍</title>
@@ -93,7 +188,7 @@ Server is ready.
 &lt;/code&gt;
 &lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/img/jhat/jhat.png&quot; alt=&quot;jhat_输出&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/jhat/jhat.png&quot; alt=&quot;jhat_输出&quot; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;a-nametcyjmapa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jmap命令介绍&lt;/a&gt;&lt;/h1&gt;
 
@@ -866,7 +961,7 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
       &lt;li&gt;0.0%wa (processes &lt;em&gt;waiting&lt;/em&gt; for I/O operations)等待I/O的CPU百分比。&lt;/li&gt;
       &lt;li&gt;0.0%hi (&lt;em&gt;hardware interrupts&lt;/em&gt;)硬中断的CPU百分比。&lt;/li&gt;
       &lt;li&gt;0.0%si (&lt;em&gt;software interrupts&lt;/em&gt;)软终端的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%st (&lt;em&gt;Steal Time&lt;/em&gt;)通常我们服务器是一个虚拟机，这个指标就代表目前我们所在的虚拟机偷取的整个物理机的CPU的总和。&lt;/li&gt;
+      &lt;li&gt;0.0%st (&lt;em&gt;Steal Time&lt;/em&gt;)通常我们服务器是一个虚拟机，这个指标就代表宿主机上其他虚拟机实例偷取的CPU时间&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;第四行内容-内存利用
@@ -906,20 +1001,33 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
 &lt;h1 id=&quot;a-nametcytopa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;top常用的一些命令&lt;/a&gt;&lt;/h1&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;q 退出&lt;/li&gt;
-  &lt;li&gt;space 立即刷新&lt;/li&gt;
-  &lt;li&gt;s 设置刷新时间&lt;/li&gt;
-  &lt;li&gt;c COMMAND 显示完整的命令 等效于 top -c&lt;/li&gt;
-  &lt;li&gt;k kill 进程&lt;/li&gt;
-  &lt;li&gt;u 指定用户&lt;/li&gt;
-  &lt;li&gt;t 显示或隐藏进程和CPU状态信息&lt;/li&gt;
-  &lt;li&gt;m 显示或隐藏内存状态信息&lt;/li&gt;
-  &lt;li&gt;l 显示或隐藏uptime信息&lt;/li&gt;
-  &lt;li&gt;1 监控每个逻辑CPU的状况&lt;/li&gt;
-  &lt;li&gt;P 按%CPU使用率排行&lt;/li&gt;
-  &lt;li&gt;T 按MITE+排行&lt;/li&gt;
-  &lt;li&gt;M 按%MEM排行&lt;/li&gt;
-  &lt;li&gt;top -p pid 显示指定的pid进程信息&lt;/li&gt;
+  &lt;li&gt;命令行命令
+    &lt;ul&gt;
+      &lt;li&gt;a 根据内存利用率排序&lt;/li&gt;
+      &lt;li&gt;b 在“批量模式”启动top,这种模式很利于把输出top的结果，这种模式下，top不再接受你输入的&lt;strong&gt;界面命令&lt;/strong&gt;，同时它会运行至 -n 命令设置的时间或者手动kill掉&lt;/li&gt;
+      &lt;li&gt;H 线程开关（这个经常用于排查故障，找出有问题的线程pid），使用这个命令会把进程私有的线程也都输出出来。&lt;/li&gt;
+      &lt;li&gt;n 用法 -n (number)，top每隔一段时间就会输出一次，这个-n就是指定top输出的次数&lt;/li&gt;
+      &lt;li&gt;p 指定pid输出对应的进程&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;界面命令 （输入top之后可以输入的命令）
+    &lt;ul&gt;
+      &lt;li&gt;q 退出&lt;/li&gt;
+      &lt;li&gt;space 立即刷新&lt;/li&gt;
+      &lt;li&gt;s 设置刷新时间&lt;/li&gt;
+      &lt;li&gt;c COMMAND 显示完整的命令 等效于 top -c&lt;/li&gt;
+      &lt;li&gt;k kill 进程&lt;/li&gt;
+      &lt;li&gt;u 指定用户&lt;/li&gt;
+      &lt;li&gt;t 显示或隐藏进程和CPU状态信息&lt;/li&gt;
+      &lt;li&gt;m 显示或隐藏内存状态信息&lt;/li&gt;
+      &lt;li&gt;l 显示或隐藏uptime信息&lt;/li&gt;
+      &lt;li&gt;1 监控每个逻辑CPU的状况&lt;/li&gt;
+      &lt;li&gt;P 按%CPU使用率排行&lt;/li&gt;
+      &lt;li&gt;T 按MITE+排行&lt;/li&gt;
+      &lt;li&gt;M 按%MEM排行&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;其他命令请使用 man top&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;a-namenivnice-value-of-processa&quot;&gt;&lt;a name=&quot;niv&quot;&gt;nice value of process&lt;/a&gt;&lt;/h1&gt;
@@ -939,6 +1047,8 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
   &lt;li&gt;High CPU utilization with low nice value: Something to worry because the CPU is stressed with important processes so these or new processes will have to wait. This situation is a real bottleneck.
 I think this nice value is not too important for a simple user, this is more useful in a server environment.&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;结论：nice value值越高的时候，被cpu执行的机会越少，如果进程占用cpu比较高，同时nice value也比较高的话，你就需要担心了。说明此时cpu比较紧张&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 20 Jun 2016 21:18:00 +0800</pubDate>
@@ -1894,151 +2004,6 @@ sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
         <pubDate>Mon, 09 May 2016 21:00:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;背景&lt;/h1&gt;
-&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。
-&lt;/p&gt;
-
-&lt;h1 id=&quot;section-1&quot;&gt;筛选命令&lt;/h1&gt;
-
-&lt;h2 id=&quot;cut&quot;&gt;cut命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：截取结果
-选项参数：
--d :后面接分隔字符。与 -f 一起使用;
--f :依据 -d 的分隔字符将一段讯息分割成为数段,用 -f 取出第几段的意思; 
--c :以字符 (characters) 的单位取出固定字符区间;
-
-eg:
-cut -d&#39;分隔字符&#39; -f fields &amp;lt;==用与有特定分隔字符
-cut -c 字符区间 &amp;lt;==用亍排列整齐的讯息
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;grep&quot;&gt;grep命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：筛选结果
-选项参数：
--A num 	把每处匹配的后面num几行打出来
--B num  把每处匹配的前面几行打出来
--C num  等效于 -A num -B num
--c 把匹配的个数打出来
---color=auto 把匹配部分的颜色打出来
--e pattern pattern是正则表达式，符合的打出来
--i 不考虑大小写来匹配
--m num 最大匹配次数
--n 把行号打印出来
--v 反向匹配
--o 正则
-eg:
-grep -nC 2 -i -m 3 -color=auto &quot;exception&quot; error.log 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;sort&quot;&gt;sort命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：排序
-选项参数:
--b 忽略开头的空格
--d 按照字典顺序排序
--f 忽略大小写
--g 一般的数字排序
--i 只考虑能被打印出的字符
--M 按照月份排序
--n 根据数字string类型排序
--r 结果反向
--c 检测input是不是已经排序了，如果是就不再排序了
-eg:
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;# 统计命令
-## uniq命令&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：结果去重
-选项参数:
--c 打印出每项对应的数目
--d 仅仅输出input中重复的行
--u 仅仅打印出input没有重复的行
--i 忽略大小写字符的不同
-eg:
-cat testsort | uniq
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;wc&quot;&gt;wc命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：统计个数
-选项参数:
--c 统计打印出来的字节个数
--l 统计打印出来的行数
--m 统计打印出来的字符个数
--w 统计打印出来的单词个数
-eg:
-cat testsort | wc -l
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;tee&quot;&gt;tee命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能：打印输出时同时把结果写入文件中
-选项参数:
--a 通过append的方式追加到文件中
-eg:
-cat testsort| sort -g | uniq | wc -m | tee -a test 结果会打印出来
-cat test 就可以看到结果
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h1 id=&quot;section-2&quot;&gt;字符串替换命令&lt;/h1&gt;
-
-&lt;h2 id=&quot;tr&quot;&gt;tr命令&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-功能:替换字符
-语法:
-tr [-Ccsu] string1 string2
-tr [-Ccu] -d string1
-tr [-Ccu] -s string1
-tr [-Ccu] -ds string1 string2
-选项参数:
--c 统计打印出来的字节个数
--l 统计打印出来的行数
--m 统计打印出来的字符个数
--w 统计打印出来的单词个数
-eg:
-把如下输出
-1
-2
-3
-转化成 1,2,3
-echo &quot;1\n2\n3&quot; | tr &quot;\r\n&quot; &quot;,&quot; 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;xargs&quot;&gt;xargs命令&lt;/h2&gt;
-&lt;p&gt;将管道前面的内容作为xargs后面命令的参数,如果xargs后面没有跟命令,那么默认是echo。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-功能:将管道前面的内容作为xargs后面命令的参数,如果xargs后面没有跟命令,那么默认是echo。
-语法:
-xargs [-0epn] command
-选项参数:
--0 :如果输入的 stdin 含有特殊字符,例如 `, \, 空格键等等字符时,这个 -0 参数可以将
-他还原成一般字符。这个参数可以用于特殊状态!
--e :这个是 EOF (end of file) 的意思。后面可以接一个字符串,当 xargs分析到这个字符串时,就会停止继续工作!
--p :在执行每个指令的argument 时,都会询问使用者是否执行该命令，输入y执行，输入n不执行;
--n :后面接次数,每次 command 指令执行时,要使用几个参数的意思。
-eg:
-echo &quot;1\n2\n3&quot; | xargs
-echo &quot;1\n2\n3\n\\&quot;  | xargs  #打印不出\字符
-echo &quot;1\n2\n3\n\\&quot;  | xargs -0  #打印的出\字符
-echo &quot;1\n2\n3&quot; | xargs -E 2  #因为2作为终结符，所以只会打印出1
-echo &quot;1\n2\n3\n\\&quot;  | xargs  -n 2 #按照2个参数一组依次执行
-echo &quot;1\n2\n3\n\\&quot;  | xargs -n1 -p #一次询问你是否打印单个数字
-&lt;/code&gt;&lt;/pre&gt;
-
-</description>
-        <pubDate>Mon, 09 May 2016 20:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A71/</guid>
         
         <category>Linux</category>
         

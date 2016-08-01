@@ -240,7 +240,7 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
       <li>0.0%wa (processes <em>waiting</em> for I/O operations)等待I/O的CPU百分比。</li>
       <li>0.0%hi (<em>hardware interrupts</em>)硬中断的CPU百分比。</li>
       <li>0.0%si (<em>software interrupts</em>)软终端的CPU百分比。</li>
-      <li>0.0%st (<em>Steal Time</em>)通常我们服务器是一个虚拟机，这个指标就代表目前我们所在的虚拟机偷取的整个物理机的CPU的总和。</li>
+      <li>0.0%st (<em>Steal Time</em>)通常我们服务器是一个虚拟机，这个指标就代表宿主机上其他虚拟机实例偷取的CPU时间</li>
     </ul>
   </li>
   <li>第四行内容-内存利用
@@ -280,20 +280,33 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
 <h1 id="a-nametcytopa"><a name="tcy">top常用的一些命令</a></h1>
 
 <ul>
-  <li>q 退出</li>
-  <li>space 立即刷新</li>
-  <li>s 设置刷新时间</li>
-  <li>c COMMAND 显示完整的命令 等效于 top -c</li>
-  <li>k kill 进程</li>
-  <li>u 指定用户</li>
-  <li>t 显示或隐藏进程和CPU状态信息</li>
-  <li>m 显示或隐藏内存状态信息</li>
-  <li>l 显示或隐藏uptime信息</li>
-  <li>1 监控每个逻辑CPU的状况</li>
-  <li>P 按%CPU使用率排行</li>
-  <li>T 按MITE+排行</li>
-  <li>M 按%MEM排行</li>
-  <li>top -p pid 显示指定的pid进程信息</li>
+  <li>命令行命令
+    <ul>
+      <li>a 根据内存利用率排序</li>
+      <li>b 在“批量模式”启动top,这种模式很利于把输出top的结果，这种模式下，top不再接受你输入的<strong>界面命令</strong>，同时它会运行至 -n 命令设置的时间或者手动kill掉</li>
+      <li>H 线程开关（这个经常用于排查故障，找出有问题的线程pid），使用这个命令会把进程私有的线程也都输出出来。</li>
+      <li>n 用法 -n (number)，top每隔一段时间就会输出一次，这个-n就是指定top输出的次数</li>
+      <li>p 指定pid输出对应的进程</li>
+    </ul>
+  </li>
+  <li>界面命令 （输入top之后可以输入的命令）
+    <ul>
+      <li>q 退出</li>
+      <li>space 立即刷新</li>
+      <li>s 设置刷新时间</li>
+      <li>c COMMAND 显示完整的命令 等效于 top -c</li>
+      <li>k kill 进程</li>
+      <li>u 指定用户</li>
+      <li>t 显示或隐藏进程和CPU状态信息</li>
+      <li>m 显示或隐藏内存状态信息</li>
+      <li>l 显示或隐藏uptime信息</li>
+      <li>1 监控每个逻辑CPU的状况</li>
+      <li>P 按%CPU使用率排行</li>
+      <li>T 按MITE+排行</li>
+      <li>M 按%MEM排行</li>
+    </ul>
+  </li>
+  <li>其他命令请使用 man top</li>
 </ul>
 
 <h1 id="a-namenivnice-value-of-processa"><a name="niv">nice value of process</a></h1>
@@ -313,6 +326,8 @@ Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
   <li>High CPU utilization with low nice value: Something to worry because the CPU is stressed with important processes so these or new processes will have to wait. This situation is a real bottleneck.
 I think this nice value is not too important for a simple user, this is more useful in a server environment.</li>
 </ul>
+
+<p>结论：nice value值越高的时候，被cpu执行的机会越少，如果进程占用cpu比较高，同时nice value也比较高的话，你就需要担心了。说明此时cpu比较紧张</p>
 
 
 
@@ -368,6 +383,10 @@ I think this nice value is not too important for a simple user, this is more use
         				
                             
         				
+                            
+                				<a href="/tags/#JVM" title="JVM" rel="2">
+                                    JVM
+                                </a>
                             
         				
         			</div>

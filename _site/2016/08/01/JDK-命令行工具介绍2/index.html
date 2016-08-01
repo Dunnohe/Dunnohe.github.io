@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Java多线程学习系列 - Dunno Blog</title>
+    <title>JDK-命令行工具介绍2 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A03-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/08/01/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,15 +142,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#java多线程" title="java多线程">java多线程</a>
+                        <a class="tag" href="/tags/#JVM" title="JVM">JVM</a>
                         
                     </div>
-                    <h1>Java多线程学习系列</h1>
+                    <h1>JDK-命令行工具介绍2</h1>
                     
                     
-                    <h2 class="subheading"> "3-守护线程的创建和执行"</h2>
+                    <h2 class="subheading"> "了解jstack的用法"</h2>
                     
-                    <span class="meta">Posted by Dunno on January 24, 2016</span>
+                    <span class="meta">Posted by Dunno on August 1, 2016</span>
                 </div>
             </div>
         </div>
@@ -168,77 +168,88 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="section">守护线程的创建和执行</h1>
-<p>## 介绍
-java有一种线程叫守护线程：</p>
+				<h1 id="section">目录</h1>
 
 <ul>
-  <li>这种线程拥有非常低的执行权值且一般在其他线程在同一程序不执行时执行。</li>
-  <li>通过调用setDaemon(true);将该线程设置成守护线程。</li>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#xkd">jstack命令介绍</a></li>
+  <li><a href="#tcy">jstack -l 输出解释</a></li>
 </ul>
 
-<p>##Demo
-验证一下1</p>
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。</p>
+<p>jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+</p>
+<p>这次我们介绍非常非常常用的命令：jstack</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+<blockquote>
+  <p>http://docs.oracle.com/javase/7/docs/technotes/tools/
+https://dzone.com/articles/how-analyze-java-thread-dumps
+https://gist.github.com/rednaxelafx/843622</p>
+</blockquote>
+
+<h1 id="a-namexkdjstacka"><a name="xkd">jstack命令介绍</a></h1>
+
+<p>jstack 根据指定的端口或者远程debug服务打印出线程栈跟踪信息。</p>
+
+<h2 id="jstack--l-7124-pid7124">jstack -l 7124 打出pid为7124的线程栈跟踪信息</h2>
+
 <pre>
-public class TestDaemonThread {
+<code>
+部分输出
+2016-07-31 22:24:21
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
 
-	public static void main(String[] args) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 2;
+"Thread-11-EventThread" daemon prio=5 tid=0x00007f8e9d8e0000 nid=0x32327 waiting on condition [0x0000700013bca000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  &lt;0x00000007eef76740&gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:494)
 
-				while ( sleep &gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
+   Locked ownable synchronizers:
+	- None
 
-				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
-			}
-		});
-		thread.setName("not daemon thread ");
+"Thread-11-SendThread(10.4.241.128:2181)" daemon prio=5 tid=0x00007f8e9d857000 nid=0x2a33f runnable [0x0000700013ac7000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
+	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:200)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	- locked &lt;0x00000007eef75488&gt; (a sun.nio.ch.Util$2)
+	- locked &lt;0x00000007eef75478&gt; (a java.util.Collections$UnmodifiableSet)
+	- locked &lt;0x00000007eef75358&gt; (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:349)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
 
-		Thread thread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int sleep = 5;
-
-				while ( sleep &gt; 0) {
-					try {
-						Thread.sleep(1000);
-						System.out.println(Thread.currentThread().getName() + "i have sleep 1 secends!");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					sleep --;
-				}
-
-				System.out.println(Thread.currentThread().getName() + "i 'm wake up");
-			}
-		});
-		thread2.setName("daemon thread ");
-		thread2.setDaemon(true);
-
-		thread.start();
-		thread2.start();
-
-		try {
-			thread2.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println(thread.getName() + "pro " + thread.getPriority());
-		System.out.println(thread2.getName() + "pro " + thread2.getPriority());
-
-	}
-}
+   Locked ownable synchronizers:
+	- None
+</code>
 </pre>
-<p>上面代码中，我们执行两个线程，一个普通线程，sleep2秒，另一个线程是守护线程，sleep5秒，根据上面的例子，我们预测一下，普通线程执行2秒后，主线程就退出了。</p>
+
+<h1 id="a-nametcyjstack--l-a"><a name="tcy">jstack -l 输出解释</a></h1>
+
+<ul>
+  <li><strong>“Thread-11-EventThread”</strong> 线程名字，当使用Thread类生成的线程，thread会被命名成Thread-(Number)，而使用ThreadFactory类生成的线程会被命名成pool-(number)-thread-(number)</li>
+  <li><strong>daemon</strong> 如果有这一列代表是守护线程，没有则说明不是</li>
+  <li><strong>prio=5</strong> 代表该线程的权值</li>
+  <li><strong>tid=0x00007f8e9d857000</strong> 代表该线程唯一的id（线程id），这个id是java层面的id</li>
+  <li><strong>nid=0x2a33f</strong> 本地线程id(Native thread ID)，这个id的值依赖于系统平台层面。
+    <ul>
+      <li>windows下，就是操作系统级别的线程id</li>
+      <li>Linux下，nid是线程的pid （这里多提一句，我们大多场景是在linux上，当出现问题时，我们先可以利用 top -Hp 找出不正常的线程pid，把pid转成16进制（因为nid是16进制），然后根据这个转好的pid立马找到线程在干嘛，通常就能发现问题，top的用法，可以回滚之前的top使用的总结。 ）</li>
+      <li>Solaris下，nid是thr_self()的返回值</li>
+      <li>在Mac OS下，可以认为是本地pthread_t的值</li>
+    </ul>
+  </li>
+  <li><strong>waiting on condition [0x0000700013bca000] / runnable [0x0000700013ac7000]</strong> 线程此时的状态</li>
+  <li><strong>最后一栏</strong> 代表线程调用的完整的堆栈信息</li>
+</ul>
 
 
 
@@ -250,13 +261,9 @@ public class TestDaemonThread {
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">&larr; Previous Post</a>
+                        <a href="/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/" data-toggle="tooltip" data-placement="top" title="JDK-命令行工具介绍">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/01/24/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A04-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AD%89%E5%BE%85&%E8%AE%A9%E6%AD%A5&%E5%94%A4%E9%86%92/" data-toggle="tooltip" data-placement="top" title="Java多线程学习系列">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
