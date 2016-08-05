@@ -5,99 +5,671 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 01 Aug 2016 20:42:55 +0800</pubDate>
-    <lastBuildDate>Mon, 01 Aug 2016 20:42:55 +0800</lastBuildDate>
+    <pubDate>Fri, 05 Aug 2016 10:27:46 +0800</pubDate>
+    <lastBuildDate>Fri, 05 Aug 2016 10:27:46 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
     
       <item>
-        <title>JDK-命令行工具介绍2</title>
+        <title>JDK-命令行工具介绍4</title>
         <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jstat命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;常用的jvm options&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
 &lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
 &lt;/p&gt;
-&lt;p&gt;这次我们介绍非常非常常用的命令：jstack&lt;/p&gt;
+&lt;p&gt;这一次总结的命令是**jinfo**，实际这个命令并不复杂，用的也不多，专门拿一个篇幅总结是想借着这个命令同时总结一下JVM常用的参数&lt;/p&gt;
 
 &lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
 &lt;blockquote&gt;
   &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/
-https://dzone.com/articles/how-analyze-java-thread-dumps
-https://gist.github.com/rednaxelafx/843622&lt;/p&gt;
+http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#Options&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h1 id=&quot;a-namexkdjstacka&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id=&quot;a-namexkdjinfoa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jinfo命令介绍&lt;/a&gt;&lt;/h1&gt;
 
-&lt;p&gt;jstack 根据指定的端口或者远程debug服务打印出线程栈跟踪信息。&lt;/p&gt;
+&lt;p&gt;jstack jvm监控统计工具-可以用于观察jvm运行时区域的数据&lt;/p&gt;
 
-&lt;h2 id=&quot;jstack--l-7124-pid7124&quot;&gt;jstack -l 7124 打出pid为7124的线程栈跟踪信息&lt;/h2&gt;
-
+&lt;h2 id=&quot;section-1&quot;&gt;用法&lt;/h2&gt;
 &lt;pre&gt;
 &lt;code&gt;
-部分输出
-2016-07-31 22:24:21
-Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
+Usage:
+    jinfo [option] &amp;lt;pid&amp;gt;
+        (to connect to running process)
+    jinfo [option] &amp;lt;executable &amp;lt;core&amp;gt;
+        (to connect to a core file)
+    jinfo [option] [server_id@]&amp;lt;remote server IP or hostname&amp;gt;
+        (to connect to remote debug server)
 
-&quot;Thread-11-EventThread&quot; daemon prio=5 tid=0x00007f8e9d8e0000 nid=0x32327 waiting on condition [0x0000700013bca000]
-   java.lang.Thread.State: WAITING (parking)
-	at sun.misc.Unsafe.park(Native Method)
-	- parking to wait for  &amp;lt;0x00000007eef76740&amp;gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
-	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
-	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-	at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:494)
-
-   Locked ownable synchronizers:
-	- None
-
-&quot;Thread-11-SendThread(10.4.241.128:2181)&quot; daemon prio=5 tid=0x00007f8e9d857000 nid=0x2a33f runnable [0x0000700013ac7000]
-   java.lang.Thread.State: RUNNABLE
-	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
-	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:200)
-	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
-	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
-	- locked &amp;lt;0x00000007eef75488&amp;gt; (a sun.nio.ch.Util$2)
-	- locked &amp;lt;0x00000007eef75478&amp;gt; (a java.util.Collections$UnmodifiableSet)
-	- locked &amp;lt;0x00000007eef75358&amp;gt; (a sun.nio.ch.KQueueSelectorImpl)
-	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
-	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:349)
-	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
-
-   Locked ownable synchronizers:
-	- None
+where &amp;lt;option&amp;gt; is one of:
+    -flag &amp;lt;name&amp;gt;         输出指定JVM参数的值
+    -flag [+|-]&amp;lt;name&amp;gt;    启动或者禁用JVM的参数
+    -flag &amp;lt;name&amp;gt;=&amp;lt;value&amp;gt; 设置JVM参数的值
+    -flags               输出所有jvm参数的值
+    -sysprops            输出系统属性
+    &amp;lt;no option&amp;gt;    输出上面两个属性说有结果
+    -h | -help           输出使用用法
 &lt;/code&gt;
 &lt;/pre&gt;
 
-&lt;h1 id=&quot;a-nametcyjstack--l-a&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id=&quot;jinfo--flags-10536&quot;&gt;示例: jinfo -flags 10536&lt;/h2&gt;
+&lt;pre&gt;
+&lt;code&gt;
+部分输出...
+
+Attaching to process ID 10536, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 24.76-b04
+
+-Dapp.key=hotel.HotelCampaignsWeb -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 
+-Djava.io.tmpdir=/tmp -Djava.net.preferIPv6Addresses=false -Xdebug -Xnoagent
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-nametcyjvm-optionsa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;常用的jvm options&lt;/a&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;behavioral-options&quot;&gt;Behavioral Options&lt;/h2&gt;
+
+&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;1&quot;&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;
+        &lt;th width=&quot;45%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Option and Default Value&lt;/th&gt;
+        &lt;th width=&quot;55%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-AllowUserSignalHandlers&lt;/td&gt;
+        &lt;td&gt;Do not complain if the application installs signal handlers. (Relevant to Solaris and Linux only.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:AltStackSize=16384&lt;/td&gt;
+        &lt;td&gt;Alternate signal stack size (in Kbytes). (Relevant to Solaris only, removed from 5.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-DisableExplicitGC&lt;/td&gt;
+        &lt;td&gt;By default calls to System.gc() are enabled (-XX:-DisableExplicitGC). Use -XX:+DisableExplicitGC to disable
+            calls to System.gc(). Note that the JVM still performs garbage collection when necessary.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+FailOverToOldVerifier&lt;/td&gt;
+        &lt;td&gt;Fail over to old verifier when the new type checker fails. (Introduced in 6.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+HandlePromotionFailure&lt;/td&gt;
+        &lt;td&gt;The youngest generation collection does not require a guarantee of full promotion of all live objects.
+            (Introduced in 1.4.2 update 11) [5.0 and earlier: false.]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+MaxFDLimit&lt;/td&gt;
+        &lt;td&gt;Bump the number of file descriptors to max. (Relevant&amp;nbsp; to Solaris only.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:PreBlockSpin=10&lt;/td&gt;
+        &lt;td&gt;Spin count variable for use with -XX:+UseSpinning. Controls the maximum spin iterations allowed before
+            entering operating system thread synchronization code. (Introduced in 1.4.2.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-RelaxAccessControlCheck&lt;/td&gt;
+        &lt;td&gt;Relax the access control checks in the verifier. (Introduced in 6.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+ScavengeBeforeFullGC&lt;/td&gt;
+        &lt;td&gt;Do young generation GC prior to a full GC. (Introduced in 1.4.1.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseAltSigs&lt;/td&gt;
+        &lt;td&gt;Use alternate signals instead of SIGUSR1 and SIGUSR2 for VM internal signals. (Introduced in 1.3.1 update 9,
+            1.4.1. Relevant to Solaris only.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseBoundThreads&lt;/td&gt;
+        &lt;td&gt;Bind user level threads to kernel threads. (Relevant to Solaris only.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseConcMarkSweepGC&lt;/td&gt;
+        &lt;td&gt;Use concurrent mark-sweep collection for the old generation. (Introduced in 1.4.1)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseGCOverheadLimit&lt;/td&gt;
+        &lt;td&gt;Use a policy that limits the proportion of the VM&#39;s time that is spent in GC before an OutOfMemory error is
+            thrown. (Introduced in 6.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseLWPSynchronization&lt;/td&gt;
+        &lt;td&gt;Use LWP-based instead of thread based synchronization. (Introduced in 1.4.0. Relevant to Solaris only.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseParallelGC&lt;/td&gt;
+        &lt;td&gt;Use parallel garbage collection for scavenges. (Introduced in 1.4.1)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseParallelOldGC&lt;/td&gt;
+        &lt;td&gt;Use parallel garbage collection for the full collections. Enabling this option automatically sets
+            -XX:+UseParallelGC. (Introduced in 5.0 update 6.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseSerialGC&lt;/td&gt;
+        &lt;td&gt;Use serial garbage collection. (Introduced in 5.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseSpinning&lt;/td&gt;
+        &lt;td&gt;Enable naive spinning on Java monitor before entering operating system thread synchronizaton code. (Relevant
+            to 1.4.2 and 5.0 only.) [1.4.2, multi-processor Windows platforms: true]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseTLAB&lt;/td&gt;
+        &lt;td&gt;Use thread-local object allocation (Introduced in 1.4.0, known as UseTLE prior to that.) [1.4.2 and earlier,
+            x86 or with -client: false]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseSplitVerifier&lt;/td&gt;
+        &lt;td&gt;Use the new type checker with StackMapTable attributes. (Introduced in 5.0.)[5.0: false]&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseThreadPriorities&lt;/td&gt;
+        &lt;td&gt;Use native thread priorities.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseVMInterruptibleIO&lt;/td&gt;
+        &lt;td&gt;Thread interrupt before or with EINTR for I/O operations results in OS_INTRPT. (Introduced in 6. Relevant to
+            Solaris only.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;garbage-first-g1-garbage-collection-options&quot;&gt;Garbage First (G1) Garbage Collection Options&lt;/h2&gt;
+
+&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;1&quot;&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;
+        &lt;th width=&quot;45%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Option and Default Value&lt;/th&gt;
+        &lt;th width=&quot;55%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseG1GC&lt;/td&gt;
+        &lt;td&gt;Use the Garbage First (G1) Collector&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxGCPauseMillis=n&lt;/td&gt;
+        &lt;td&gt;Sets a target for the maximum GC pause time. This is a soft goal, and the JVM will make its best effort to
+            achieve it.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:InitiatingHeapOccupancyPercent&lt;span id=&quot;MainContent&quot; class=&quot;wcm-region&quot; style=&quot;display: inline&quot;&gt;=n&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;Percentage of the (entire) heap occupancy to start a concurrent GC cycle. It is used by GCs that trigger a
+            concurrent GC cycle based on the occupancy of the entire heap, not just one of the generations (e.g., G1). A
+            value of 0 denotes &#39;do constant GC cycles&#39;. The default value is 45.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:NewRatio=n&lt;/td&gt;
+        &lt;td&gt;Ratio of old/new generation sizes. The default value is 2.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:SurvivorRatio=n&lt;/td&gt;
+        &lt;td&gt;Ratio of eden/survivor space size. The default value is 8.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxTenuringThreshold=n&lt;/td&gt;
+        &lt;td&gt;Maximum value for tenuring threshold. The default value is 15.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ParallelGCThreads=n&lt;/td&gt;
+        &lt;td&gt;Sets the number of threads used during parallel phases of the garbage collectors. The default value varies
+            with the platform on which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ConcGCThreads=n&lt;/td&gt;
+        &lt;td&gt;Number of threads concurrent garbage collectors will use. The default value varies with the platform on
+            which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:G1ReservePercent&lt;span id=&quot;MainContent2&quot; class=&quot;wcm-region&quot; style=&quot;display: inline&quot;&gt;=n&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;Sets the amount of heap that is reserved as a false ceiling to reduce the possibility of promotion failure.
+            The default value is 10.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:G1HeapRegionSize&lt;span id=&quot;MainContent3&quot; class=&quot;wcm-region&quot; style=&quot;display: inline&quot;&gt;=n&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;With G1 the Java heap is subdivided into uniformly sized regions. This sets the size of the individual
+            sub-divisions. The default value of this parameter is determined ergonomically based upon heap size. The
+            minimum value is 1Mb and the maximum value is 32Mb.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;performance-options&quot;&gt;Performance Options&lt;/h2&gt;
+&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;1&quot;&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;
+        &lt;th width=&quot;45%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Option and Default Value&lt;/th&gt;
+        &lt;th width=&quot;55%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+AggressiveOpts&lt;/td&gt;
+        &lt;td&gt;Turn on point performance compiler optimizations that are expected to be default in upcoming releases.
+            (Introduced in 5.0 update 6.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:CompileThreshold=10000&lt;/td&gt;
+        &lt;td&gt;Number of method invocations/branches before compiling [-client: 1,500]&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:LargePageSizeInBytes=4m&lt;/td&gt;
+        &lt;td&gt;Sets the large page size used for the Java heap. (Introduced in 1.4.0 update 1.) [amd64: 2m.]&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxHeapFreeRatio=70&lt;/td&gt;
+        &lt;td&gt;Maximum percentage of heap free after GC to avoid shrinking.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxNewSize=size&lt;/td&gt;
+        &lt;td&gt;Maximum size of new generation (in bytes). Since 1.4, MaxNewSize is computed as a function of NewRatio.
+            [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxPermSize=64m&lt;/td&gt;
+        &lt;td&gt;Size of the Permanent Generation.&amp;nbsp; [5.0 and newer: 64 bit VMs are scaled 30% larger; 1.4 amd64: 96m;
+            1.3.1 -client: 32m.]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MinHeapFreeRatio=40&lt;/td&gt;
+        &lt;td&gt;Minimum percentage of heap free after GC to avoid expansion.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:NewRatio=2&lt;/td&gt;
+        &lt;td&gt;Ratio of old/new generation sizes. [Sparc -client: 8; x86 -server: 8; x86 -client: 12.]-client: 4 (1.3) 8
+            (1.3.1+), x86: 12]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:NewSize=2m&lt;/td&gt;
+        &lt;td&gt;Default size of new generation (in bytes) [5.0 and newer: 64 bit VMs are scaled 30% larger; x86: 1m; x86,
+            5.0 and older: 640k]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ReservedCodeCacheSize=32m&lt;/td&gt;
+        &lt;td&gt;Reserved code cache size (in bytes) - maximum code cache size. [Solaris 64-bit, amd64, and -server x86:
+            2048m; in 1.5.0_06 and earlier, Solaris 64-bit and amd64: 1024m.]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:SurvivorRatio=8&lt;/td&gt;
+        &lt;td&gt;Ratio of eden/survivor space size [Solaris amd64: 6; Sparc in 1.3.1: 25; other Solaris platforms in 5.0 and
+            earlier: 32]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:TargetSurvivorRatio=50&lt;/td&gt;
+        &lt;td&gt;Desired percentage of survivor space used after scavenge.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ThreadStackSize=512&lt;/td&gt;
+        &lt;td&gt;Thread Stack Size (in Kbytes). (0 means use default stack size) [Sparc: 512; Solaris x86: 320 (was 256 prior
+            in 5.0 and earlier); Sparc 64 bit: 1024; Linux amd64: 1024 (was 0 in 5.0 and earlier); all others 0.]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseBiasedLocking&lt;/td&gt;
+        &lt;td&gt;Enable biased locking. For more details, see this &lt;a href=&quot;/technetwork/java/tuning-139912.html#section4.2.5&quot;&gt;tuning example&lt;/a&gt;. (Introduced in 5.0 update
+            6.) [5.0: false]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseFastAccessorMethods&lt;/td&gt;
+        &lt;td&gt;Use optimized versions of Get&amp;lt;Primitive&amp;gt;Field.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseISM&lt;/td&gt;
+        &lt;td&gt;Use Intimate Shared Memory. [Not accepted for non-Solaris platforms.] For details, see &lt;a href=&quot;/technetwork/java/ism-139376.html&quot;&gt;Intimate Shared Memory&lt;/a&gt;.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseLargePages&lt;/td&gt;
+        &lt;td&gt;Use large page memory. (Introduced in 5.0 update 5.) For details, see &lt;a href=&quot;/technetwork/java/javase/tech/largememory-jsp-137182.html&quot;&gt;Java Support for Large Memory Pages&lt;/a&gt;.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseMPSS&lt;/td&gt;
+        &lt;td&gt;Use Multiple Page Size Support w/4mb pages for the heap. Do not use with ISM as this replaces the need for
+            ISM. (Introduced in 1.4.0 update 1, Relevant to Solaris 9 and newer.) [1.4.1 and earlier: false]
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseStringCache&lt;/td&gt;
+        &lt;td&gt;Enables caching of commonly allocated strings.&lt;br /&gt; &amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:AllocatePrefetchLines=1&lt;/td&gt;
+        &lt;td&gt;Number of cache lines to load after the last object allocation using prefetch instructions generated in JIT
+            compiled code. Default values are 1 if the last allocated object was an instance and 3 if it was an array.
+            &lt;br /&gt; &amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:AllocatePrefetchStyle=1&lt;/td&gt;
+        &lt;td&gt;Generated code style for prefetch instructions.&lt;br /&gt; 0 - no prefetch instructions are generate*d*,&lt;br /&gt; 1 -
+            execute prefetch instructions after each allocation,&lt;br /&gt; 2 - use TLAB allocation watermark pointer to gate
+            when prefetch instructions are executed.&lt;br /&gt; &amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseCompressedStrings&lt;/td&gt;
+        &lt;td&gt;Use a byte[] for Strings which can be represented as pure ASCII. (Introduced in Java 6 Update 21 Performance
+            Release) &lt;br /&gt; &amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+OptimizeStringConcat&lt;/td&gt;
+        &lt;td&gt;Optimize String concatenation operations where possible. (Introduced in Java 6 Update 20) &lt;br /&gt; &amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;debugging-options&quot;&gt;Debugging Options&lt;/h2&gt;
+
+&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;1&quot;&gt;
+    &lt;tbody&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;th width=&quot;45%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Option and Default Value&lt;/th&gt;
+        &lt;th width=&quot;55%&quot; valign=&quot;top&quot; align=&quot;left&quot;&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-CITime&lt;/td&gt;
+        &lt;td&gt;Prints time spent in JIT Compiler. (Introduced in 1.4.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ErrorFile=./hs_err_pid&amp;lt;pid&amp;gt;.log&lt;/td&gt;
+        &lt;td&gt;If an error occurs, save the error data to this file. (Introduced in 6.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-ExtendedDTraceProbes&lt;/td&gt;
+        &lt;td&gt;Enable performance-impacting &lt;a href=&quot;http://docs.oracle.com/javase/6/docs/technotes/guides/vm/dtrace.html&quot;&gt;dtrace&lt;/a&gt;
+            probes. (Introduced in 6. Relevant to Solaris only.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:HeapDumpPath=./java_pid&amp;lt;pid&amp;gt;.hprof&lt;/td&gt;
+        &lt;td&gt;Path to directory or filename for heap dump. &lt;em&gt;Manageable&lt;/em&gt;. (Introduced in 1.4.2 update 12, 5.0 update
+            7.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-HeapDumpOnOutOfMemoryError&lt;/td&gt;
+        &lt;td&gt;Dump heap to file when java.lang.OutOfMemoryError is thrown. &lt;em&gt;Manageable&lt;/em&gt;. (Introduced in 1.4.2
+            update 12, 5.0 update 7.)
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:OnError=&quot;&amp;lt;cmd args&amp;gt;;&amp;lt;cmd args&amp;gt;&quot;&lt;/td&gt;
+        &lt;td&gt;Run user-defined commands on fatal error. (Introduced in 1.4.2 update 9.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:OnOutOfMemoryError=&quot;&amp;lt;cmd args&amp;gt;; &lt;br clear=&quot;none&quot; /&gt; &amp;lt;cmd args&amp;gt;&quot;&lt;/td&gt;
+        &lt;td&gt;Run user-defined commands when an OutOfMemoryError is first thrown. (Introduced in 1.4.2 update 12, 6)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintClassHistogram&lt;/td&gt;
+        &lt;td&gt;Print a histogram of class instances on Ctrl-Break. &lt;em&gt;Manageable&lt;/em&gt;. (Introduced in 1.4.2.) The &lt;a href=&quot;http://docs.oracle.com/javase/6/docs/technotes/tools/share/jmap.html&quot;&gt;jmap -histo&lt;/a&gt; command
+            provides equivalent functionality.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintConcurrentLocks&lt;/td&gt;
+        &lt;td&gt;Print java.util.concurrent locks in Ctrl-Break thread dump. &lt;em&gt;Manageable&lt;/em&gt;. (Introduced in 6.) The &lt;a href=&quot;http://docs.oracle.com/javase/6/docs/technotes/tools/share/jstack.html&quot;&gt;jstack -l&lt;/a&gt; command
+            provides equivalent functionality.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintCommandLineFlags&lt;/td&gt;
+        &lt;td&gt;Print flags that appeared on the command line. (Introduced in 5.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintCompilation&lt;/td&gt;
+        &lt;td&gt;Print message when a method is compiled.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintGC&lt;/td&gt;
+        &lt;td&gt;Print messages at garbage collection. &lt;em&gt;Manageable&lt;/em&gt;.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintGCDetails&lt;/td&gt;
+        &lt;td&gt;Print more details at garbage collection. &lt;em&gt;Manageable&lt;/em&gt;. (Introduced in 1.4.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintGCTimeStamps&lt;/td&gt;
+        &lt;td&gt;Print timestamps at garbage collection. &lt;em&gt;Manageable&lt;/em&gt; (Introduced in 1.4.0.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintTenuringDistribution&lt;/td&gt;
+        &lt;td&gt;Print tenuring age information.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-PrintAdaptiveSizePolicy&lt;/td&gt;
+        &lt;td&gt;Enables printing of information about adaptive generation sizing.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-TraceClassLoading&lt;/td&gt;
+        &lt;td&gt;Trace loading of classes.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-TraceClassLoadingPreorder&lt;/td&gt;
+        &lt;td&gt;Trace all classes loaded in order referenced (not loaded). (Introduced in 1.4.2.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-TraceClassResolution&lt;/td&gt;
+        &lt;td&gt;Trace constant pool resolutions. (Introduced in 1.4.2.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-TraceClassUnloading&lt;/td&gt;
+        &lt;td&gt;Trace unloading of classes.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-TraceLoaderConstraints&lt;/td&gt;
+        &lt;td&gt;Trace recording of loader constraints. (Introduced in 6.)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+PerfDataSaveToFile&lt;/td&gt;
+        &lt;td&gt;Saves jvmstat binary data on exit.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:ParallelGCThreads=n&lt;/td&gt;
+        &lt;td&gt;Sets the number of garbage collection threads in the young and old parallel garbage collectors. The default
+            value varies with the platform on which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+UseCompressedOops&lt;/td&gt;
+        &lt;td&gt;Enables the use of compressed pointers (object references represented as 32 bit offsets instead of 64-bit
+            pointers) for optimized 64-bit performance with Java heap sizes less than 32gb.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:+AlwaysPreTouch&lt;/td&gt;
+        &lt;td&gt;Pre-touch the Java heap during JVM initialization. Every page of the heap is thus demand-zeroed during
+            initialization rather than incrementally during application execution.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:AllocatePrefetchDistance=n&lt;/td&gt;
+        &lt;td&gt;Sets the prefetch distance for object allocation. Memory about to be written with the value of new objects
+            is prefetched into cache at this distance (in bytes) beyond the address of the last allocated object. Each
+            Java thread has its own allocation point. The default value varies with the platform on which the JVM is
+            running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:InlineSmallCode=n&lt;/td&gt;
+        &lt;td&gt;Inline a previously compiled method only if its generated native code size is less than this. The default
+            value varies with the platform on which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxInlineSize=35&lt;/td&gt;
+        &lt;td&gt;Maximum bytecode size of a method to be inlined.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:FreqInlineSize=n&lt;/td&gt;
+        &lt;td&gt;Maximum bytecode size of a frequently executed method to be inlined. The default value varies with the
+            platform on which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:LoopUnrollLimit=n&lt;/td&gt;
+        &lt;td&gt;Unroll loop bodies with server compiler intermediate representation node count less than this value. The
+            limit used by the server compiler is a function of this value, not the actual value. The default value
+            varies with the platform on which the JVM is running.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:InitialTenuringThreshold=7&lt;/td&gt;
+        &lt;td&gt;Sets the initial tenuring threshold for use in adaptive GC sizing in the parallel young collector. The
+            tenuring threshold is the number of times an object survives a young collection before being promoted to the
+            old, or tenured, generation.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:MaxTenuringThreshold=n&lt;/td&gt;
+        &lt;td&gt;Sets the maximum tenuring threshold for use in adaptive GC sizing. The current largest value is 15. The
+            default value is 15 for the parallel collector and is 4 for CMS.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-Xloggc:&amp;lt;filename&amp;gt;&lt;/td&gt;
+        &lt;td&gt;Log GC verbose output to specified file. The verbose output is controlled by the normal verbose GC flags.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:-UseGCLogFileRotation&lt;/td&gt;
+        &lt;td&gt;Enabled GC log rotation, requires -Xloggc.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:NumberOfGClogFiles=1&lt;/td&gt;
+        &lt;td&gt;Set the number of files to use when rotating logs, must be &amp;gt;= 1. The rotated log files will use the
+            following naming scheme, &amp;lt;filename&amp;gt;.0, &amp;lt;filename&amp;gt;.1, ..., &amp;lt;filename&amp;gt;.n-1.
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign=&quot;top&quot;&gt;
+        &lt;td&gt;-XX:GCLogFileSize=8K&lt;/td&gt;
+        &lt;td&gt;The size of the log file at which point the log will be rotated, must be &amp;gt;= 8K.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+</description>
+        <pubDate>Tue, 02 Aug 2016 02:58:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D4/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D4/</guid>
+        
+        <category>JVM</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>JDK-命令行工具介绍3</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;“Thread-11-EventThread”&lt;/strong&gt; 线程名字，当使用Thread类生成的线程，thread会被命名成Thread-(Number)，而使用ThreadFactory类生成的线程会被命名成pool-(number)-thread-(number)&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;daemon&lt;/strong&gt; 如果有这一列代表是守护线程，没有则说明不是&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;prio=5&lt;/strong&gt; 代表该线程的权值&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;tid=0x00007f8e9d857000&lt;/strong&gt; 代表该线程唯一的id（线程id），这个id是java层面的id&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;nid=0x2a33f&lt;/strong&gt; 本地线程id(Native thread ID)，这个id的值依赖于系统平台层面。
-    &lt;ul&gt;
-      &lt;li&gt;windows下，就是操作系统级别的线程id&lt;/li&gt;
-      &lt;li&gt;Linux下，nid是线程的pid （这里多提一句，我们大多场景是在linux上，当出现问题时，我们先可以利用 top -Hp 找出不正常的线程pid，把pid转成16进制（因为nid是16进制），然后根据这个转好的pid立马找到线程在干嘛，通常就能发现问题，top的用法，可以回滚之前的top使用的总结。 ）&lt;/li&gt;
-      &lt;li&gt;Solaris下，nid是thr_self()的返回值&lt;/li&gt;
-      &lt;li&gt;在Mac OS下，可以认为是本地pthread_t的值&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;waiting on condition [0x0000700013bca000] / runnable [0x0000700013ac7000]&lt;/strong&gt; 线程此时的状态&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;最后一栏&lt;/strong&gt; 代表线程调用的完整的堆栈信息&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jstat命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jstat -l 输出解释&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
+&lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+&lt;/p&gt;
+&lt;p&gt;这次我们介绍非常非常常用的命令：jstat&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkdjstata&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jstat命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;jstack jvm监控统计工具-可以用于观察jvm运行时区域的数据&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;用法&lt;/h2&gt;
+&lt;p&gt;jstat -&amp;lt;option&amp;gt; [-t] [-h&amp;lt;lines&amp;gt;] &amp;lt;vmid&amp;gt; [&amp;lt;interval&amp;gt; [&amp;lt;count&amp;gt;]]&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/jstat/jstat.png&quot; alt=&quot;jstat_输出&quot; /&gt;
+一张图理解用法&lt;/p&gt;
+
+&lt;h2 id=&quot;options&quot;&gt;options&lt;/h2&gt;
+&lt;p&gt;使用jstat -options可以查看支持的选项&lt;/p&gt;
+
+&lt;p&gt;$ jstat -options&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-class 显示classLoader的相关信息&lt;/li&gt;
+  &lt;li&gt;-compiler 显示JIT编译的相关信息&lt;/li&gt;
+  &lt;li&gt;-gc 显示gc相关信息&lt;/li&gt;
+  &lt;li&gt;-gccapacity 显示gc容量信息&lt;/li&gt;
+  &lt;li&gt;-gccause 显示垃圾回收相关信息，同时显示最后一次或者当前正在发生的垃圾回收的诱发原因&lt;/li&gt;
+  &lt;li&gt;-gcnew 显示新生代信息&lt;/li&gt;
+  &lt;li&gt;-gcnewcapacity 显示新生代容量和大小情况&lt;/li&gt;
+  &lt;li&gt;-gcold 显示老年代和永久代情况&lt;/li&gt;
+  &lt;li&gt;-gcoldcapacity 显示老年代大小和容量信息&lt;/li&gt;
+  &lt;li&gt;-gcpermcapacity 显示永久代大小和容量信息&lt;/li&gt;
+  &lt;li&gt;-gcutil 显示垃圾收集信息（这个用的最多）&lt;/li&gt;
+  &lt;li&gt;-printcompilation 输出JIT编辑的方法信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-nametcyjstat--gcutil-a&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jstat -gcutil 输出解释&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;更多解释请看http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstat.html&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我们这里介绍一下用的最多的命令的输出&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+Timestamp         S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT   
+       413446.8  40.62   0.00  58.40  36.91      -      -    174   17.153     1    1.798   18.952
+       413447.8  40.62   0.00  58.51  36.91      -      -    174   17.153     1    1.798   18.952
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;S0 S0占对应分配空间的利用百分比（理解S0,S1需要关注一下垃圾回收算法）&lt;/li&gt;
+  &lt;li&gt;S1 S1占对应分配空间的利用百分比&lt;/li&gt;
+  &lt;li&gt;E	新生代占对应分配空间的利用百分比&lt;/li&gt;
+  &lt;li&gt;O	老年代占对应分配空间的利用百分比&lt;/li&gt;
+  &lt;li&gt;P	永久代占对应分配空间的利用百分比&lt;/li&gt;
+  &lt;li&gt;YGC	young gc的次数&lt;/li&gt;
+  &lt;li&gt;YGCT	young gc花费的时间&lt;/li&gt;
+  &lt;li&gt;FGC	full gc次数&lt;/li&gt;
+  &lt;li&gt;FGCT	full gc花费的时间&lt;/li&gt;
+  &lt;li&gt;GCT	Total garbage collection time.&lt;/li&gt;
 &lt;/ul&gt;
 
 </description>
-        <pubDate>Mon, 01 Aug 2016 02:58:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/08/01/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/01/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</guid>
+        <pubDate>Tue, 02 Aug 2016 02:58:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D3/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D3/</guid>
         
         <category>JVM</category>
         
@@ -231,6 +803,111 @@ jmap -dump:live,format=b,file=test 7124
         <guid isPermaLink="true">http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</guid>
         
         <category>JVM</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Jdk 命令行工具介绍2</title>
+        <description>
+&lt;hr /&gt;
+&lt;p&gt;layout:     post
+title:      “JDK-命令行工具介绍2”
+subtitle:   “ &quot;了解jstack的用法&quot;”
+date:       2016-07-31 18:58:00
+author:     “Dunno”
+header-img: “img/post-bg-2015.jpg”
+tags:
+    - JVM
+—&lt;/p&gt;
+
+&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
+&lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
+&lt;/p&gt;
+&lt;p&gt;这次我们介绍非常非常常用的命令：jstack&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/
+https://dzone.com/articles/how-analyze-java-thread-dumps
+https://gist.github.com/rednaxelafx/843622&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namexkdjstacka&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jstack命令介绍&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;jstack 根据指定的端口或者远程debug服务打印出线程栈跟踪信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;jstack--l-7124-pid7124&quot;&gt;jstack -l 7124 打出pid为7124的线程栈跟踪信息&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+部分输出
+2016-07-31 22:24:21
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
+
+&quot;Thread-11-EventThread&quot; daemon prio=5 tid=0x00007f8e9d8e0000 nid=0x32327 waiting on condition [0x0000700013bca000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  &amp;lt;0x00000007eef76740&amp;gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:494)
+
+   Locked ownable synchronizers:
+	- None
+
+&quot;Thread-11-SendThread(10.4.241.128:2181)&quot; daemon prio=5 tid=0x00007f8e9d857000 nid=0x2a33f runnable [0x0000700013ac7000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
+	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:200)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:87)
+	- locked &amp;lt;0x00000007eef75488&amp;gt; (a sun.nio.ch.Util$2)
+	- locked &amp;lt;0x00000007eef75478&amp;gt; (a java.util.Collections$UnmodifiableSet)
+	- locked &amp;lt;0x00000007eef75358&amp;gt; (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:98)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:349)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
+
+   Locked ownable synchronizers:
+	- None
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-nametcyjstack--l-a&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jstack -l 输出解释&lt;/a&gt;&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;“Thread-11-EventThread”&lt;/strong&gt; 线程名字，当使用Thread类生成的线程，thread会被命名成Thread-(Number)，而使用ThreadFactory类生成的线程会被命名成pool-(number)-thread-(number)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;daemon&lt;/strong&gt; 如果有这一列代表是守护线程，没有则说明不是&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;prio=5&lt;/strong&gt; 代表该线程的权值&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;tid=0x00007f8e9d857000&lt;/strong&gt; 代表该线程唯一的id（线程id），这个id是java层面的id&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;nid=0x2a33f&lt;/strong&gt; 本地线程id(Native thread ID)，这个id的值依赖于系统平台层面。
+    &lt;ul&gt;
+      &lt;li&gt;windows下，就是操作系统级别的线程id&lt;/li&gt;
+      &lt;li&gt;Linux下，nid是线程的pid （这里多提一句，我们大多场景是在linux上，当出现问题时，我们先可以利用 top -Hp 找出不正常的线程pid，把pid转成16进制（因为nid是16进制），然后根据这个转好的pid立马找到线程在干嘛，通常就能发现问题，top的用法，可以回滚之前的top使用的总结。 ）&lt;/li&gt;
+      &lt;li&gt;Solaris下，nid是thr_self()的返回值&lt;/li&gt;
+      &lt;li&gt;在Mac OS下，可以认为是本地pthread_t的值&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;waiting on condition [0x0000700013bca000] / runnable [0x0000700013ac7000]&lt;/strong&gt; 线程此时的状态&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;最后一栏&lt;/strong&gt; 代表线程调用的完整的堆栈信息&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 28 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</guid>
         
         
       </item>
@@ -1335,676 +2012,6 @@ Bob     2415    40      62      72
         <pubDate>Tue, 17 May 2016 01:00:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#sml&quot;&gt;sed命令&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#smlth&quot;&gt;s命令替换&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#dgth&quot;&gt;多个替换&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#ykhpp&quot;&gt;圆括号匹配&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#scyml&quot;&gt;sed常用命令&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#cml&quot;&gt;c命令&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#dml&quot;&gt;d命令&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#pml&quot;&gt;p命令&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#mldb&quot;&gt;命令打包&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#zh&quot;&gt;最后再来个工作中最常用的，sed截取日志中某个时间段的文本&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
-
-&lt;p&gt;之前了解了常用的几个统计读取日志的命令以及正则表达式,这节了解一下非常强大的两个命令,一个是sed,一个是awk,这两个命令能够完成绝大部分的关键词的取用和统计。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;http://coolshell.cn/articles/9104.html#more-9104&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;大量的例子都是从这里搬运的，推荐大家看酷壳，个人觉得帮助到我很多。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-namesmlseda&quot;&gt;&lt;a name=&quot;sml&quot;&gt;sed命令&lt;/a&gt;&lt;/h1&gt;
-
-&lt;h3 id=&quot;a-namesmlthsa&quot;&gt;&lt;a name=&quot;smlth&quot;&gt;s命令替换&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;功能：管道流编辑器,它可以读指定的文件或者标准输入流,通过一系列的命名可以去修改读到的输入,然后再将修改后的输入进行输出。它可以对匹配的每行都进行处理，比如同时加上什么东西，替换什么东西，减少什么东西。&lt;br /&gt;
-直接看例子：&lt;br /&gt;
-测试文本：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ cat pets.txt
-This is my cat
-  my cat&#39;s name is betty
-This is my dog
-  my dog&#39;s name is frank
-This is my fish
-  my fish&#39;s name is george
-This is my goat
-  my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;把匹配到my的地方全部换成Hao Chen’s
-** （s表示替换命令，/my/表示匹配my，/Hao Chen’s/表示把匹配替换成Hao Chen’s，/g 表示一行上的替换所有的匹配)**&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &quot;s/my/Hao Chen&#39;s/g&quot; pets.txt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;每一行最前面加点东西：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/^/#/g&#39; pets.txt
-#This is my cat
-#  my cat&#39;s name is betty
-#This is my dog
-#  my dog&#39;s name is frank
-#This is my fish
-#  my fish&#39;s name is george
-#This is my goat
-#  my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;每一行最后面加点东西：
-** 可以看到sed 支持正则表达式，前一篇文章已经介绍了正则表达式，可以复习一下**&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/$/ --- /g&#39; pets.txt
-This is my cat ---
-  my cat&#39;s name is betty ---
-This is my dog ---
-  my dog&#39;s name is frank ---
-This is my fish ---
-  my fish&#39;s name is george ---
-This is my goat ---
-  my goat&#39;s name is adam ---
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;只替换第3到第6行的文本&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &quot;3,6s/my/your/g&quot; pets.txt
-This is my cat
-  my cat&#39;s name is betty
-This is your dog
-  your dog&#39;s name is frank
-This is your fish
-  your fish&#39;s name is george
-This is my goat
-  my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;只替换每一行的第一个s：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/s/S/1&#39; my.txt
-ThiS is my cat, my cat&#39;s name is betty
-ThiS is my dog, my dog&#39;s name is frank
-ThiS is my fish, my fish&#39;s name is george
-ThiS is my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;只替换每一行的第二个s：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/s/S/2&#39; my.txt
-This iS my cat, my cat&#39;s name is betty
-This iS my dog, my dog&#39;s name is frank
-This iS my fish, my fish&#39;s name is george
-This iS my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;只替换第一行的第3个以后的s：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/s/S/3g&#39; my.txt
-This is my cat, my cat&#39;S name iS betty
-This is my dog, my dog&#39;S name iS frank
-This is my fiSh, my fiSh&#39;S name iS george
-This is my goat, my goat&#39;S name iS adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namedgtha&quot;&gt;&lt;a name=&quot;dgth&quot;&gt;多个匹配&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;如果我们需要一次替换多个模式，可参看下面的示例：（第一个模式把第一行到第三行的my替换成your，第二个则把第3行以后的This替换成了That）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;1,3s/my/your/g; 3,$s/This/That/g&#39; my.txt
-This is your cat, your cat&#39;s name is betty
-This is your dog, your dog&#39;s name is frank
-That is your fish, your fish&#39;s name is george
-That is my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;上面的命令等价于：（注：下面使用的是sed的-e命令行参数）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-sed -e &#39;1,3s/my/your/g&#39; -e &#39;3,$s/This/That/g&#39; my.txt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;我们可以使用&amp;amp;来当做被匹配的变量，然后可以在基本左右加点东西。如下所示：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/my/[&amp;amp;]/g&#39; my.txt
-This is [my] cat, [my] cat&#39;s name is betty
-This is [my] dog, [my] dog&#39;s name is frank
-This is [my] fish, [my] fish&#39;s name is george
-This is [my] goat, [my] goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-nameykhppa&quot;&gt;&lt;a name=&quot;ykhpp&quot;&gt;圆括号匹配&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;使用圆括号匹配的示例：（圆括号括起来的正则表达式所匹配的字符串会可以当成变量来使用，sed中使用的是\1,\2…）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;s/This is my \([^,]*\),.*is \(.*\)/\1:\2/g&#39; my.txt
-cat:betty
-dog:frank
-fish:george
-goat:adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;上面这个例子中的正则表达式有点复杂，解开如下（去掉转义字符）：
-正则为：This is my ([^,]&lt;em&gt;),.&lt;/em&gt;is (.*)
-匹配为：This is my (cat),……….is (betty)
-然后：\1就是cat，\2就是betty&lt;/p&gt;
-
-&lt;h3 id=&quot;a-namescymlseda&quot;&gt;&lt;a name=&quot;scyml&quot;&gt;sed常用命令&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;a命令和i命令
-a命令就是append， i命令就是insert，它们是用来添加行的。如：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-# 其中的1i表明，其要在第1行前插入一行（insert）
-$ sed &quot;1 i This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my monkey, my monkey&#39;s name is wukong
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
-This is my goat, my goat&#39;s name is adam
-
-# 其中的1a表明，其要在最后一行后追加一行（append）
-$ sed &quot;$ a This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my monkey, my monkey&#39;s name is wukong
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
-This is my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们可以运用匹配来添加文本：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-# 注意其中的/fish/a，这意思是匹配到/fish/后就追加一行
-$ sed &quot;/fish/a This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
-This is my monkey, my monkey&#39;s name is wukong
-This is my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;下面这个例子是对每一行都挺插入：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-# 注意其中的/fish/a，这意思是匹配到/fish/后就追加一行
-$ sed &quot;/my/a ----&quot; my.txt
-This is my cat, my cat&#39;s name is betty
-----
-This is my dog, my dog&#39;s name is frank
-----
-This is my fish, my fish&#39;s name is george
-----
-This is my goat, my goat&#39;s name is adam
-----
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namecmlca&quot;&gt;&lt;a name=&quot;cml&quot;&gt;c命令&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;c 命令是替换匹配行&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-第二行替换匹配行
-$ sed &quot;2 c This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my cat, my cat&#39;s name is bettyThis is my monkey, my monkey&#39;s name is wukong
-This is my fish, my fish&#39;s name is george
-This is my goat, my goat&#39;s name is adam
- 
-$ sed &quot;/fish/c This is my monkey, my monkey&#39;s name is wukong&quot; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my monkey, my monkey&#39;s name is wukong
-This is my goat, my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namedmlda&quot;&gt;&lt;a name=&quot;dml&quot;&gt;d命令&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;删除匹配行&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ sed &#39;/fish/d&#39; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my goat, my goat&#39;s name is adam
- 
-$ sed &#39;2d&#39; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my fish, my fish&#39;s name is george
-This is my goat, my goat&#39;s name is adam
-第2行到结束都删除
-$ sed &#39;2,$d&#39; my.txt
-This is my cat, my cat&#39;s name is betty
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namepmlpa&quot;&gt;&lt;a name=&quot;pml&quot;&gt;p命令&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;打印命令&lt;/p&gt;
-
-&lt;p&gt;你可以把这个命令当成grep式的命令&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-# 匹配fish并输出，可以看到fish的那一行被打了两遍，
-# 这是因为sed处理时会把处理的信息输出
-$ sed &#39;/fish/p&#39; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
-This is my fish, my fish&#39;s name is george
-This is my goat, my goat&#39;s name is adam
- 
-# 使用n参数就好了
-$ sed -n &#39;/fish/p&#39; my.txt
-This is my fish, my fish&#39;s name is george
- 
-# 从一个模式到另一个模式
-$ sed -n &#39;/dog/,/fish/p&#39; my.txt
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
- 
-#从第一行打印到匹配fish成功的那一行
-$ sed -n &#39;1,/fish/p&#39; my.txt
-This is my cat, my cat&#39;s name is betty
-This is my dog, my dog&#39;s name is frank
-This is my fish, my fish&#39;s name is george
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namemldba&quot;&gt;&lt;a name=&quot;mldb&quot;&gt;命令打包&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;第二个是cmd可以是多个，它们可以用分号分开，可以用大括号括起来作为嵌套命令。下面是几个例子：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ cat pets.txt
-This is my cat
-  my cat&#39;s name is betty
-This is my dog
-  my dog&#39;s name is frank
-This is my fish
-  my fish&#39;s name is george
-This is my goat
-  my goat&#39;s name is adam
- 
-# 对3行到第6行，执行命令/This/d
-$ sed &#39;3,6 {/This/d}&#39; pets.txt
-This is my cat
-  my cat&#39;s name is betty
-  my dog&#39;s name is frank
-  my fish&#39;s name is george
-This is my goat
-  my goat&#39;s name is adam
- 
-# 对3行到第6行，匹配/This/成功后，再匹配/fish/，成功后执行d命令
-$ sed &#39;3,6 {/This/{/fish/d}}&#39; pets.txt
-This is my cat
-  my cat&#39;s name is betty
-This is my dog
-  my dog&#39;s name is frank
-  my fish&#39;s name is george
-This is my goat
-  my goat&#39;s name is adam
- 
-# 从第一行到最后一行，如果匹配到This，则删除之；如果前面有空格，则去除空格
-$ sed &#39;1,${/This/d;s/^ *//g}&#39; pets.txt
-my cat&#39;s name is betty
-my dog&#39;s name is frank
-my fish&#39;s name is george
-my goat&#39;s name is adam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namezhseda&quot;&gt;&lt;a name=&quot;zh&quot;&gt;最后再来个工作中最常用的，sed截取日志中某个时间段的文本&lt;/a&gt;&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;
-sed -n &#39;/15:32:30/,/16:12:09/p&#39; access_log &amp;gt;log.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-</description>
-        <pubDate>Tue, 17 May 2016 01:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A73/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#cc&quot;&gt;字符类操作系统字符分类&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#xbds&quot;&gt;[xxx]表达式&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#bsbh&quot;&gt;表示变化&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#hy&quot;&gt;还有一些tips&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#zyzf&quot;&gt;转义字符&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#dwd&quot;&gt;定位点&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#xdf&quot;&gt;限定符（修饰数量）&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#fwxs&quot;&gt;范围修饰&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#fdyzf&quot;&gt;非打印字符&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#mspp&quot;&gt;模式匹配&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#yxjsx&quot;&gt;优先级顺序&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
-&lt;p&gt;之前介绍了查看文件过程中经常使用到的命令，但是我们在某些精细化的场景中也不能满足要求，比如单扣出某个字符，id等，所以这里我们要学习一个很重要的东西-正则表达式。我们先来了解一些正则表达式的语法。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;http://www.delorie.com/gnu/docs/grep/grep_toc.html#SEC_Contents&lt;/p&gt;
-
-  &lt;p&gt;https://msdn.microsoft.com/zh-cn/library/az24scfc(v=vs.110).aspx&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-namecca&quot;&gt;&lt;a name=&quot;cc&quot;&gt;字符类操作系统字符分类&lt;/a&gt;&lt;/h1&gt;
-
-&lt;h3 id=&quot;a-namexbdsxxx-a&quot;&gt;&lt;a name=&quot;xbds&quot;&gt;[xxx] 表达式&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;有一类表达式通过 &lt;strong&gt;[&lt;/strong&gt; 和 &lt;strong&gt;]&lt;/strong&gt; 将一系列字符包含在其中，如[a2],它的意思是匹配出 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 包含的任意一个字符，比如[a2]就能匹配出含有a或2的数据。如果[]中包含的第一个字符是  &lt;strong&gt;^&lt;/strong&gt; ,就代表匹配任何不在 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 中包含的字符。比如[^a2]就能匹配出任何不含有a或者不含有2的数据。&lt;/p&gt;
-
-&lt;h3 id=&quot;a-namebsbha&quot;&gt;&lt;a name=&quot;bsbh&quot;&gt;表示变化&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;当表达一种区间时，我们才用连接符 &lt;strong&gt;-&lt;/strong&gt; 来连接字符表达，它可以匹配到范围中的任何一个字符，比如&lt;strong&gt;[&lt;/strong&gt;a-c&lt;strong&gt;]&lt;/strong&gt;可以匹配到a或者b或者c。
-最后我们了解一些已经预先为我们考虑而设定好的一些特殊字符类：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;[:alnum:]
-    &lt;ul&gt;
-      &lt;li&gt;匹配英文大小写字符和数字(0-9,a-z.A-Z),等效于[:alpha:]和[:digit:]结果合集。&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;pre&gt;&lt;code&gt;
-  命令
-  echo &quot;a\nB\nf\n1\n\!\n\t\n#&quot; |  grep --color=auto -e &quot;[[:alnum:]]&quot;
-  结果：
-      a
-      B
-      f
-      1
-  &lt;/code&gt;&lt;/pre&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:alpha:]
-    &lt;ul&gt;
-      &lt;li&gt;代表任何英文大小写字符（A-Z, a-z）,等效于[:lower:]和[:upper:]结果合集。&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;pre&gt;&lt;code&gt;
-  命令
-  echo &quot;a\nB\nf\n1\n\!\n\t\n#&quot; |  grep --color=auto -e &quot;[[:alpha:]]&quot;
-  结果：
-      a
-      B
-      f
-  &lt;/code&gt;&lt;/pre&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:blank:]
-    &lt;ul&gt;
-      &lt;li&gt;代表空白字符,代表空格键与[Tab]按键两者。&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;pre&gt;&lt;code&gt;
-  命令
-  echo &quot;a\nB\nf\n1\n\!\n\t\n#&quot; |  grep --color=auto -e &quot;[[:blank:]]&quot;
-  结果：
-      \t
-  &lt;/code&gt;&lt;/pre&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:cntrl:]
-    &lt;ul&gt;
-      &lt;li&gt;代表键盘上面的控制按键,亦即包括 CR, LF, Tab, Del.. 等等&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:digit:]
-    &lt;ul&gt;
-      &lt;li&gt;代表数字:0,1,2,3,4,5,6,7,8,9&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:graph:]
-    &lt;ul&gt;
-      &lt;li&gt;代表除了空格符合tab键之外的所有按键，实际就是等效于[:alnum:]和[:punct:]结果合集。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:lower:]
-    &lt;ul&gt;
-      &lt;li&gt;代表所有小写英文字母。a-z&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:print:]
-    &lt;ul&gt;
-      &lt;li&gt;代表任何可以被打印出来的字符,等效于[:alnum:]和[:punct]和空格&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:space:]
-    &lt;ul&gt;
-      &lt;li&gt;代表任何会产生空白的字符，包括空格键, [Tab], CR , 回车，换行等等&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:upper:]
-    &lt;ul&gt;
-      &lt;li&gt;代表所有大写英文字母，A-Z&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;[:xdigit:]
-    &lt;ul&gt;
-      &lt;li&gt;代表16进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;a-namehytipsa&quot;&gt;&lt;a name=&quot;hy&quot;&gt;还有一些tips&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;如果你使用 &lt;strong&gt;[&lt;/strong&gt; &lt;strong&gt;]&lt;/strong&gt; 中包含的字符有&lt;strong&gt;]&lt;/strong&gt;,那么一定把它放在首位，比如&lt;strong&gt;[]ab]&lt;/strong&gt;,会匹配&lt;strong&gt;]或者a或者b&lt;/strong&gt;,&lt;strong&gt;[][ab]&lt;/strong&gt;,会匹配&lt;strong&gt;]或者[或者a或者b&lt;/strong&gt;,&lt;strong&gt;[^]]&lt;/strong&gt;会匹配&lt;strong&gt;]&lt;/strong&gt;之外的所有字符。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-namezyzfa&quot;&gt;&lt;a name=&quot;zyzf&quot;&gt;转义符号&lt;/a&gt;&lt;/h1&gt;
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;字符类别&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\c&lt;/td&gt;&lt;td&gt;控制字符&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\s&lt;/td&gt;&lt;td&gt;代表空格&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\S&lt;/td&gt;&lt;td&gt;代表不是空格&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\d&lt;/td&gt;&lt;td&gt;代表数字&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\D&lt;/td&gt;&lt;td&gt;代表不是数字&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\w&lt;/td&gt;&lt;td&gt;代表是单词,等价于[[:alnum]]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\W&lt;/td&gt;&lt;td&gt;代表不是单词,等价于[^[:alnum]]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\xhh&lt;/td&gt;&lt;td&gt;代表 16 进位的数字类型,因此包括: 0-9, A-F, a-f 的数字与字符&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\Oxxx&lt;/td&gt;&lt;td&gt;代表八进制的字符,亦即0-7&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-&lt;p&gt;# &lt;a name=&quot;dwd&quot;&gt;定位点&lt;/a&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;锚标记&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;^&lt;/td&gt;&lt;td&gt;行首,比如:echo &quot;a\nB\nf\n1\n\!\n\t\n#\n \nba&quot; | grep --color=auto -e &quot;^a&quot; 只会匹配到a这一行&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\A&lt;/td&gt;&lt;td&gt;字符串的开始&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;$&lt;/td&gt;&lt;td&gt;行尾,比如:echo &quot;a\nB\nf\n1\n\!\n\t\n#\n \nba&quot; | grep --color=auto -e &quot;a$&quot;会匹配到a,ba这两行&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\Z&lt;/td&gt;&lt;td&gt;字符串的结束&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\b&lt;/td&gt;&lt;td&gt;单词的边界,比如&quot;\brat\b&quot;只能匹配&quot;rat&quot;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\B&lt;/td&gt;&lt;td&gt;不是单词的边界,比如&quot;c\Breat\Be&quot;能匹配&quot;create&quot;,但是&quot;dirty \Brat&quot;不能匹配&quot;dirty rat&quot;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\&amp;lt;&lt;/td&gt;&lt;td&gt;单词的开头&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;\&amp;gt;&lt;/td&gt;&lt;td&gt;单词的结尾&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;a-namexdfa&quot;&gt;&lt;a name=&quot;xdf&quot;&gt;限定符（修饰数量）&lt;/a&gt;&lt;/h1&gt;
-
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;量词&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;{3}&lt;/td&gt;&lt;td&gt;只出现3次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;{3,}&lt;/td&gt;&lt;td&gt;出现3次以上&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;{3,5}&lt;/td&gt;&lt;td&gt;出现3次,4次或者5次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;{3,5}?&lt;/td&gt;&lt;td&gt;单词的开头&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;?&lt;/td&gt;&lt;td&gt;等效于{0,1}&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;??&lt;/td&gt;&lt;td&gt;?的非贪心模式&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;*&lt;/td&gt;&lt;td&gt;出现0次或者多次,等价于{0,}&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;*?&lt;/td&gt;&lt;td&gt;*的非贪心模式&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;+&lt;/td&gt;&lt;td&gt;出现1次或者多次,等价于{1,}&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;+?&lt;/td&gt;&lt;td&gt;+的非贪心模式&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-&lt;p&gt;我们看到表中有几行解释是飞贪心模式，什么是非贪心模式呢？&lt;/p&gt;
-&lt;p&gt;当 ? 紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-namefwxsa&quot;&gt;&lt;a name=&quot;fwxs&quot;&gt;范围修饰&lt;/a&gt;&lt;/h1&gt;
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt; . &lt;/td&gt;&lt;td&gt;代表任何字符除开换行符(\n)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(a|b)&lt;/td&gt;&lt;td&gt;a或者b&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(?:...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[abc]&lt;/td&gt;&lt;td&gt;a或者b或者c，只能匹配其中一个&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[^abc]&lt;/td&gt;&lt;td&gt;不是a或者不是b或者不是c，只能匹配其中一个&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[a-q]&lt;/td&gt;&lt;td&gt;代表小写字母a~q,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[A-Q]&lt;/td&gt;&lt;td&gt;代表大写字母A~Q,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[0-7]&lt;/td&gt;&lt;td&gt;代表数字0~7,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;a-namefdyzfa&quot;&gt;&lt;a name=&quot;fdyzf&quot;&gt;非打印字符&lt;/a&gt;&lt;/h1&gt;
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt; . &lt;/td&gt;&lt;td&gt;代表任何字符除开换行符(\n)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(a|b)&lt;/td&gt;&lt;td&gt;a或者b&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(?:...)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[abc]&lt;/td&gt;&lt;td&gt;a或者b或者c，只能匹配其中一个&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[^abc]&lt;/td&gt;&lt;td&gt;不是a或者不是b或者不是c，只能匹配其中一个&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[a-q]&lt;/td&gt;&lt;td&gt;代表小写字母a~q,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[A-Q]&lt;/td&gt;&lt;td&gt;代表大写字母A~Q,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;[0-7]&lt;/td&gt;&lt;td&gt;代表数字0~7,只出现一次&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;a-namemsppa&quot;&gt;&lt;a name=&quot;mspp&quot;&gt;模式匹配&lt;/a&gt;&lt;/h1&gt;
-
-&lt;table&gt;
-	&lt;tr&gt;&lt;th&gt;模式匹配&lt;/th&gt;&lt;th&gt;代表意义&lt;/th&gt;&lt;/tr&gt;
-	&lt;tr&gt;&lt;td&gt;(?:模式)&lt;/td&gt;&lt;td&gt;	
-与模式 匹配，但不保存匹配项；即不会存储匹配项以备将来之用。 这对于用“or”字符 (|) 组合模式部件的情况很有用。&lt;/td&gt;&lt;/tr&gt;
-	&lt;tr&gt;&lt;td&gt;(?=模式)&lt;/td&gt;&lt;td&gt;	
-正预测先行。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。&lt;/td&gt;&lt;/tr&gt;
-	&lt;tr&gt;&lt;td&gt;(?!模式)&lt;/td&gt;&lt;td&gt;	
-负预测先行。 匹配与模式 不匹配的搜索字符串。 找到一个匹配项后，将在匹配文本之前开始搜索下一个匹配项。 不会保存匹配项以备将来之用。&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;a-nameyxjsxa&quot;&gt;&lt;a name=&quot;yxjsx&quot;&gt;优先级顺序&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;正则表达式的计算方式与算术表达式非常类似；即从左到右进行计算，并遵循优先级顺序。
-下表按从高到低的顺序包含了正则表达式运算符的优先级顺序。&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;
-	&lt;th&gt;运算符&lt;/th&gt;&lt;th&gt;说明&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt; \ &lt;/td&gt;&lt;td&gt;转义符&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;(), (?:), (?=), []&lt;/td&gt;&lt;td&gt;括号和中括号&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;*、+、?、{n}、{n,}、{n,m}&lt;/td&gt;&lt;td&gt;限定符&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;^、$、\任何元字符&lt;/td&gt;&lt;td&gt;定位点和序列&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-	&lt;td&gt;|&lt;/td&gt;&lt;td&gt;替换&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-</description>
-        <pubDate>Mon, 09 May 2016 21:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/09/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A72/</guid>
         
         <category>Linux</category>
         
