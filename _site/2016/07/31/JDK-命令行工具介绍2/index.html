@@ -20,12 +20,14 @@ tags:
 </ul>
 
 <h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+
 <p>线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。</p>
 <p>jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
 </p>
 <p>这次我们介绍非常非常常用的命令：jstack</p>
 
 <h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+
 <blockquote>
   <p>http://docs.oracle.com/javase/7/docs/technotes/tools/
 https://dzone.com/articles/how-analyze-java-thread-dumps
@@ -37,7 +39,9 @@ https://gist.github.com/rednaxelafx/843622</p>
 <p>jstack 根据指定的端口或者远程debug服务打印出线程栈跟踪信息。</p>
 
 <h2 id="jstack--l-7124-pid7124">jstack -l 7124 打出pid为7124的线程栈跟踪信息</h2>
+
 <p>部分输出:</p>
+
 <pre>
 <code>
 Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
