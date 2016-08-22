@@ -5,9 +5,85 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 08 Aug 2016 10:51:05 +0800</pubDate>
-    <lastBuildDate>Mon, 08 Aug 2016 10:51:05 +0800</lastBuildDate>
+    <pubDate>Mon, 22 Aug 2016 10:56:11 +0800</pubDate>
+    <lastBuildDate>Mon, 22 Aug 2016 10:56:11 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>Spring源码了解</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;下载源码&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;安装项目&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;常用的jvm options&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;之前一直停留在应用的阶段，了解的部分也不够全面，这次希望能对spring项目有一个全面的了解。&lt;/p&gt;
+&lt;p&gt;spring的项目搭建起来很方便，由于spring依赖gradle,但是你不用事先去下，因为项目下下来之后里面有一键安装的脚本。但是spring4依赖jdk8，如果你想研究spring4的源码，需要事先安装好，我这里介绍的是搭建spring3的，但是后来我还是决定学习spring4的代码，搭建方法是一样的。不影响。&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;下载源码&lt;/a&gt;&lt;/h1&gt;
+&lt;pre&gt;
+&lt;code&gt;
+git clone git@github.com:spring-projects/spring-framework.git
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;a-namexkda&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;安装项目&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;下下来默认是spring4,spring4默认依赖jdk8,（如果你没有jdk8的话）你用里面脚本安装的时候会通不过，因为JVM参数不支持。
+你可以选择切换的低版本的分支，或者安装JDK8，我这里选择切换分支。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;查看远程分支&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/showbranch.png&quot; alt=&quot;查看远程分支&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;切换分支&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/switchbranch.png&quot; alt=&quot;切换远程分支&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;你会看到这样的目录&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/list.png&quot; alt=&quot;切换远程分支&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;好，由于我的IDE环境使用的是idea，我们看下import-into-idea.md里面的介绍。eclipse的项目看对应介绍，步骤几乎一致。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/readme.png&quot; alt=&quot;readme&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;好，步骤很清楚了，我们先来执行第一步：&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+./gradlew :spring-oxm:compileTestJava cleanIdea idea
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这一步执行起来比较久，得1个多小时，我们慢慢等...&lt;/p&gt;
+&lt;p&gt;执行完成，我们open项目&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/import.png&quot; alt=&quot;readme&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;选择build.gradle&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/build.png&quot; alt=&quot;readme&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;点击ok&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/ok.png&quot; alt=&quot;readme&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;点击 open existing project&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/1/exist.png&quot; alt=&quot;readme&quot; /&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 16 Aug 2016 17:30:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61/</guid>
+        
+        <category>JVM</category>
+        
+        
+      </item>
     
       <item>
         <title>JDK-命令行工具介绍4</title>
@@ -1734,286 +1810,6 @@ I think this nice value is not too important for a simple user, this is more use
         <pubDate>Mon, 20 Jun 2016 21:18:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>linux下文件查看技巧</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#aml&quot;&gt;awk命令&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#qb&quot;&gt;起步&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#nzbl&quot;&gt;内置变量&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#zfcpp&quot;&gt;字符串的匹配&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#cfwj&quot;&gt;拆分文件&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#tj&quot;&gt;统计&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#dybg&quot;&gt;打印表格&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#hjbl&quot;&gt;环境变量&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;在工作中我们经常需要查看日志来迅速的定位问题,同时发生故障时我们要经常的统计日志中相关的内容，那么掌握一些常用的日志操作命令就非常必要了。&lt;/p&gt;
-
-&lt;p&gt;之前了解了常用的几个统计读取日志的命令以及正则表达式,这节了解一下非常强大的两个命令,一个是sed,一个是awk,这两个命令能够完成绝大部分的关键词的取用和统计。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;http://coolshell.cn/articles/9070.html#more-9070&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;大量的例子都是从这里搬运的，推荐大家看酷壳，个人觉得帮助到我很多。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-nameamlawka&quot;&gt;&lt;a name=&quot;aml&quot;&gt;awk命令&lt;/a&gt;&lt;/h1&gt;
-
-&lt;h3 id=&quot;a-nameqba&quot;&gt;&lt;a name=&quot;qb&quot;&gt;起步&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;功能：管道流编辑器,它可以读指定的文件或者标准输入流,通过一系列的命名可以去修改读到的输入,然后再将修改后的输入进行输出。它可以对匹配的每行都进行处理，比如同时加上什么东西，替换什么东西，减少什么东西。&lt;br /&gt;
-直接看例子：&lt;br /&gt;
-测试文本：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ cat test
-1-2-3-4-5
-2-2-3-4-5
-3-2-3-4-5
-4-2-3-4-5
-5-2-3-4-5
-6-2-3-4-5
-7-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;取出部分字段&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;{print $1 &quot; lalala &quot; $4}&#39; test 
-1 lalala 4
-2 lalala 4
-3 lalala 4
-4 lalala 4
-5 lalala 4
-6 lalala 4
-7 lalala 4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;前面加上判断条件&lt;br /&gt;
-&lt;strong&gt;其中的“==”为比较运算符。其他比较运算符：!=, &amp;gt;, &amp;lt;, &amp;gt;=, &amp;lt;=&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1==2 || $1==3 {print $1 &quot; lalala &quot; $4}&#39; test 
-2 lalala 4
-3 lalala 4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;再来一个吧&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1&amp;gt;3 {print $1 &quot; lalala &quot; $4}&#39; test 
-4 lalala 4
-5 lalala 4
-6 lalala 4
-7 lalala 4
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namenzbla&quot;&gt;&lt;a name=&quot;nzbl&quot;&gt;内置变量&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;我们可以来了解一下awk的一些内建变量,然后直接来使用看看:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$0	当前记录（这个变量中存放着整个行的内容）
-$1~$n	当前记录的第n个字段，字段间由FS分隔
-FS	输入字段分隔符 默认是空格或Tab
-NF	当前记录中的字段个数，就是有多少列
-NR	已经读出的记录数，就是行号，从1开始，如果有多个文件话，这个值也是不断累加中。
-FNR	当前记录数，与NR不同的是，这个值会是各个文件自己的行号
-RS	输入的记录分隔符， 默认为换行符
-OFS	输出字段分隔符， 默认也是空格
-ORS	输出的记录分隔符，默认为换行符
-FILENAME	当前输入文件的名字
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;试试NR，把第一行打出来&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1&amp;gt;3 || NR==1 {print $1 &quot; lalala &quot; $4}&#39; test
-1 lalala 4
-4 lalala 4
-5 lalala 4
-6 lalala 4
-7 lalala 4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;指定分隔符&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk &#39;BEGIN{FS=&quot;:&quot;} {print $1 &quot; lalala &quot; $4}&#39; test
-等价于
-→ awk -F &quot;-&quot; &#39;{print $1 &quot; lalala &quot; $4}&#39; test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;如果你要指定多个分隔符&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &#39;[;:]&#39;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;OFS的使用&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1&amp;gt;3 || NR==1 {print $1,$2,$3}&#39; OFS=&quot;输出记录分隔符&quot; test 
-1输出记录分隔符2输出记录分隔符3
-4输出记录分隔符2输出记录分隔符3
-5输出记录分隔符2输出记录分隔符3
-6输出记录分隔符2输出记录分隔符3
-7输出记录分隔符2输出记录分隔符3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namezfcppa&quot;&gt;&lt;a name=&quot;zfcpp&quot;&gt;字符串匹配&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;匹配第一列有1的这一行&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1 ~ /1/ &#39; test 
-1-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;匹配第一列没有1的这一行&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F &quot;-&quot; &#39;$1 !~ /1/ &#39; test 
-2-2-3-4-5
-3-2-3-4-5
-4-2-3-4-5
-5-2-3-4-5
-6-2-3-4-5
-7-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;匹配这一行有1的数据&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk &#39;/1/&#39; test  
-1-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;匹配这一行没有1的数据&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk &#39;!/1/&#39; test 
-2-2-3-4-5
-3-2-3-4-5
-4-2-3-4-5
-5-2-3-4-5
-6-2-3-4-5
-7-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namecfwja&quot;&gt;&lt;a name=&quot;cfwj&quot;&gt;拆分文件&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;匹配第一列有1的这一行&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F&quot;-&quot; &#39;{print &amp;gt; $1}&#39; test
-
-→ ll
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 1
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 2
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 3
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 4
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 5
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 6
--rw-r--r--   1 lianghe  staff         10  6 16 12:20 7
-
-→ cat 1
-1-2-3-4-5
-
-→ cat 2
-2-2-3-4-5
-
-→ cat 3
-3-2-3-4-5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;你也可以把指定的列输出到文件：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-→ awk -F&quot;-&quot; &#39;{print $1,$2 &amp;gt; $1}&#39; test
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-nametja&quot;&gt;&lt;a name=&quot;tj&quot;&gt;统计&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;下面的命令计算所有的C文件，CPP文件和H文件的文件大小总和。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ ls -l  *.cpp *.c *.h | awk &#39;{sum+=$5} END {print sum}&#39;
-2511401
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namedybga&quot;&gt;&lt;a name=&quot;dybg&quot;&gt;打印表格&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;在上面我们可以看到一个END关键字。END的意思是“处理完所有的行的标识”，即然说到了END就有必要介绍一下BEGIN，这两个关键字意味着执行前和执行后的意思，语法如下：&lt;/p&gt;
-
-&lt;p&gt;BEGIN{ 这里面放的是执行前的语句 }
-END {这里面放的是处理完所有的行后要执行的语句 }
-{这里面放的是处理每一行时要执行的语句}
-为了说清楚这个事，我们来看看下面的示例：&lt;/p&gt;
-
-&lt;p&gt;假设有这么一个文件（学生成绩表）：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ cat score.txt
-Marry   2143 78 84 77
-Jack    2321 66 78 45
-Tom     2122 48 77 71
-Mike    2537 87 97 95
-Bob     2415 40 57 62
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们的awk脚本如下（我没有写有命令行上是因为命令行上不易读，另外也在介绍另一种用法）：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ cat cal.awk
-#!/bin/awk -f
-#运行前
-BEGIN {
-    math = 0
-    english = 0
-    computer = 0
- 
-    printf &quot;NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL\n&quot;
-    printf &quot;---------------------------------------------\n&quot;
-}
-#运行中
-{
-    math+=$3
-    english+=$4
-    computer+=$5
-    printf &quot;%-6s %-6s %4d %8d %8d %8d\n&quot;, $1, $2, $3,$4,$5, $3+$4+$5
-}
-#运行后
-END {
-    printf &quot;---------------------------------------------\n&quot;
-    printf &quot;  TOTAL:%10d %8d %8d \n&quot;, math, english, computer
-    printf &quot;AVERAGE:%10.2f %8.2f %8.2f\n&quot;, math/NR, english/NR, computer/NR
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们来看一下执行结果：（也可以这样运行 ./cal.awk score.txt）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ awk -f cal.awk score.txt
-NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL
----------------------------------------------
-Marry  2143     78       84       77      239
-Jack   2321     66       78       45      189
-Tom    2122     48       77       71      196
-Mike   2537     87       97       95      279
-Bob    2415     40       57       62      159
----------------------------------------------
-  TOTAL:       319      393      350
-AVERAGE:     63.80    78.60    70.00
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;a-namehjbla&quot;&gt;&lt;a name=&quot;hjbl&quot;&gt;环境变量&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;即然说到了脚本，我们来看看怎么和环境变量交互：（使用-v参数和ENVIRON，使用ENVIRON的环境变量需要export）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-$ x=5
- 
-$ y=10
-$ export y
- 
-$ echo $x $y
-5 10
- 
-$ awk -v val=$x &#39;{print $1, $2, $3, $4+val, $5+ENVIRON[&quot;y&quot;]}&#39; OFS=&quot;\t&quot; score.txt
-Marry   2143    78      89      87
-Jack    2321    66      83      55
-Tom     2122    48      82      81
-Mike    2537    87      102     105
-Bob     2415    40      62      72
-&lt;/code&gt;&lt;/pre&gt;
-
-</description>
-        <pubDate>Tue, 17 May 2016 01:00:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/05/17/Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E6%8A%80%E5%B7%A74/</guid>
         
         <category>Linux</category>
         
