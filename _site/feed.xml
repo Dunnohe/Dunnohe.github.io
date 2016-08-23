@@ -5,9 +5,178 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 22 Aug 2016 10:56:11 +0800</pubDate>
-    <lastBuildDate>Mon, 22 Aug 2016 10:56:11 +0800</lastBuildDate>
+    <pubDate>Tue, 23 Aug 2016 21:40:54 +0800</pubDate>
+    <lastBuildDate>Tue, 23 Aug 2016 21:40:54 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>Spring源码了解</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dmlj&quot;&gt;代码了解&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;安装项目&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;在大多数使用spring的项目场景来说，都是web项目。那我们先从入口开始学习，了解spring是如何启动的。&lt;/p&gt;
+&lt;p&gt;我这里学习的spring4的代码，和spring3的有些出入。可以checkout 4.x版本观看&lt;/p&gt;
+
+&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/ 7.15.4&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;a-namedmlja&quot;&gt;&lt;a name=&quot;dmlj&quot;&gt;代码了解&lt;/a&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;application&quot;&gt;注册Application&lt;/h2&gt;
+
+&lt;p&gt;首先web 项目应用是通过ContextLoaderListener来注册Applicationcontext的。代码如下:&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+&amp;lt;context-param&amp;gt;
+    &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+    &amp;lt;param-value&amp;gt;/WEB-INF/daoContext.xml /WEB-INF/applicationContext.xml&amp;lt;/param-value&amp;gt;
+&amp;lt;/context-param&amp;gt;
+
+&amp;lt;listener&amp;gt;
+    &amp;lt;listener-class&amp;gt;org.springframework.web.context.ContextLoaderListener&amp;lt;/listener-class&amp;gt;
+&amp;lt;/listener&amp;gt;
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;contextloaderlistener&quot;&gt;ContextLoaderListener代码&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
+	public ContextLoaderListener() {
+	}
+
+	public ContextLoaderListener(WebApplicationContext context) {
+		super(context);
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		//初始化根上下文信息
+		initWebApplicationContext(event.getServletContext());
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		//关闭根上下文信息
+		closeWebApplicationContext(event.getServletContext());
+		//清除初始化过程中种下的一些属性
+		ContextCleanupListener.cleanupAttributes(event.getServletContext());
+	}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;ioc&quot;&gt;具体初始化IOC容器代码&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+public WebApplicationContext initWebApplicationContext(ServletContext servletContext) {
+		
+		//判断是否已经种下了根上下文，没有就抛出异常
+		if (servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null) {
+			throw new IllegalStateException(
+					&quot;Cannot initialize context because there is already a root application context present - &quot; +
+					&quot;check whether you have multiple ContextLoader* definitions in your web.xml!&quot;);
+		}
+
+		Log logger = LogFactory.getLog(ContextLoader.class);
+		servletContext.log(&quot;Initializing Spring root WebApplicationContext&quot;);
+		if (logger.isInfoEnabled()) {
+			logger.info(&quot;Root WebApplicationContext: initialization started&quot;);
+		}
+		long startTime = System.currentTimeMillis();
+
+		try {
+			
+			//创建上下文信息
+			if (this.context == null) {
+				//该方法逻辑：这里不贴具体代码了，太多了
+				//1，从servletcontext上下文中拿到对应初始化参数
+				//2，生成实例类
+				//3，确保该实例类来源于ConfigurableWebApplicationContext,否则抛出异常
+				//4，将这个类转成webapplicationcontext并且返回出去
+				this.context = createWebApplicationContext(servletContext);
+			}
+
+			//确保上下文信息来源了ConfigurableWebApplicationContext
+			if (this.context instanceof ConfigurableWebApplicationContext) {
+				ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) this.context;
+				if (!cwac.isActive()) {
+					// The context has not yet been refreshed -&amp;gt; provide services such as
+					// setting the parent context, setting the application context id, etc
+					if (cwac.getParent() == null) {
+						// The context instance was injected without an explicit parent -&amp;gt;
+						// determine parent for root web application context, if any.
+						//获得双亲上下文，并且设置进来
+						ApplicationContext parent = loadParentContext(servletContext);
+						cwac.setParent(parent);
+					}
+
+					//逻辑：这里不贴具体代码了，太多了
+					//1，里面设置了webApplicationContext的相关属性
+					//2，调用webapplicationContext的refresh方法，refresh方法就是启动容器的方法
+					configureAndRefreshWebApplicationContext(cwac, servletContext);
+				}
+			}
+
+			//种下上下文信息
+			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
+
+
+			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+			if (ccl == ContextLoader.class.getClassLoader()) {
+				currentContext = this.context;
+			}
+			else if (ccl != null) {
+				currentContextPerThread.put(ccl, this.context);
+			}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug(&quot;Published root WebApplicationContext as ServletContext attribute with name [&quot; +
+						WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE + &quot;]&quot;);
+			}
+			if (logger.isInfoEnabled()) {
+				long elapsedTime = System.currentTimeMillis() - startTime;
+				logger.info(&quot;Root WebApplicationContext: initialization completed in &quot; + elapsedTime + &quot; ms&quot;);
+			}
+
+			return this.context;
+		}
+		catch (RuntimeException ex) {
+			logger.error(&quot;Context initialization failed&quot;, ex);
+			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, ex);
+			throw ex;
+		}
+		catch (Error err) {
+			logger.error(&quot;Context initialization failed&quot;, err);
+			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, err);
+			throw err;
+		}
+	}
+}
+
+&lt;/code&gt;
+&lt;/pre&gt;
+
+</description>
+        <pubDate>Mon, 22 Aug 2016 17:30:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/08/22/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A62%E4%BB%8E%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E5%BC%80%E5%A7%8B%E4%BA%86%E8%A7%A3/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/22/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A62%E4%BB%8E%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E5%BC%80%E5%A7%8B%E4%BA%86%E8%A7%A3/</guid>
+        
+        <category>JVM</category>
+        
+        
+      </item>
     
       <item>
         <title>Spring源码了解</title>
@@ -17,7 +186,6 @@
   &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;下载源码&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;安装项目&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;常用的jvm options&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
@@ -77,8 +245,8 @@ git clone git@github.com:spring-projects/spring-framework.git
 
 </description>
         <pubDate>Tue, 16 Aug 2016 17:30:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61/</guid>
+        <link>http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
         
         <category>JVM</category>
         
@@ -1637,179 +1805,6 @@ init      1 root  txt    REG      253,0   145180 147164 /sbin/init
         <pubDate>Thu, 21 Jul 2016 04:20:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Linux命令学习-top命令</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#bj&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;先看懂top的输出吧&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;top常用的一些命令&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namebja&quot;&gt;&lt;a name=&quot;bj&quot;&gt;背景&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;top命令是Linux下常用的性能分析工具,特别是应用性能报警的时候，我们经常会用到这个命令&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;https://linuxaria.com/howto/understanding-the-top-command-on-linux&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;http://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/top.html?highlight=top&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-namexkdtopa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;先看懂top的输出吧&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;我们先运行一下top命令&lt;/p&gt;
-&lt;pre&gt;
-&lt;code&gt;
-top - 13:26:40 up 188 days, 20:28,  1 user,  load average: 0.07, 0.05, 0.05
-Tasks: 145 total,   1 running, 144 sleeping,   0 stopped,   0 zombie
-Cpu(s):  0.7%us,  0.3%sy,  0.0%ni, 99.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
-Mem:   8059416k total,  7374232k used,   685184k free,   288420k buffers
-Swap:  2096440k total,        0k used,  2096440k free,  5570192k cached
-
-  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND     
- 8182 sankuai   20   0  981m  40m 3420 S  3.0  0.5 180:24.71 sg_agent 
-17939 sankuai   20   0 3612m 996m  17m S  1.7 12.7 639:16.22 java 
- 8193 sankuai   20   0 1045m  29m 3152 S  1.3  0.4  84:28.97 sg_agent_worker   
-10107 sankuai   20   0  268m 6724 3616 S  0.3  0.1   7:05.65 log_agent_file    
-    1 root      20   0 23500 1552 1212 S  0.0  0.0   0:05.93 init 
-    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd 
-    3 root      RT   0     0    0    0 S  0.0  0.0   0:54.01 migration/0       
-    4 root      20   0     0    0    0 S  0.0  0.0   3:28.67 ksoftirqd/0       
-    5 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/0
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;第一行内容-top
-    &lt;ul&gt;
-      &lt;li&gt;13:26:40 &lt;strong&gt;系统当前时间&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;188 days, 20:28, &lt;strong&gt;系统开机到现在经过了多少时间&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;1 user, &lt;strong&gt;当前1个用户在线&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;load average: 0.07, 0.05, 0.05 &lt;strong&gt;系统1分钟、5分钟、15分钟的CPU负载信息&lt;/strong&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第二行内容-task
-    &lt;ul&gt;
-      &lt;li&gt;Tasks &lt;strong&gt;任务,右边的数字也就是一个对任务的统计信息&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;145 total, &lt;strong&gt;任务总数&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;1 running, &lt;strong&gt;运行的任务总数&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;144 sleeping, &lt;strong&gt;休眠的任务总数&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;0 stopped, &lt;strong&gt;停止的任务总数&lt;/strong&gt;&lt;/li&gt;
-      &lt;li&gt;0 zombie, &lt;strong&gt;等待父进程来停止的任务总数&lt;/strong&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第三行内容-cpu
-    &lt;ul&gt;
-      &lt;li&gt;0.7%us (&lt;em&gt;user processes&lt;/em&gt;)用户进程的CPU百分比,不包含renice值为负的任务。&lt;/li&gt;
-      &lt;li&gt;0.3%sy (&lt;em&gt;system processes&lt;/em&gt;)系统进程的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%ni (processes with priority &lt;em&gt;upgrade nice&lt;/em&gt;)改变过优先级的进程的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;99.0%id 没被利用的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%wa (processes &lt;em&gt;waiting&lt;/em&gt; for I/O operations)等待I/O的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%hi (&lt;em&gt;hardware interrupts&lt;/em&gt;)硬中断的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%si (&lt;em&gt;software interrupts&lt;/em&gt;)软终端的CPU百分比。&lt;/li&gt;
-      &lt;li&gt;0.0%st (&lt;em&gt;Steal Time&lt;/em&gt;)通常我们服务器是一个虚拟机，这个指标就代表宿主机上其他虚拟机实例偷取的CPU时间&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第四行内容-内存利用
-    &lt;ul&gt;
-      &lt;li&gt;8059416k total, 物理内存总量&lt;/li&gt;
-      &lt;li&gt;7374232k used, 使用的物理内存量&lt;/li&gt;
-      &lt;li&gt;685184k free, 空闲的物理内存量&lt;/li&gt;
-      &lt;li&gt;288420k buffers, 用作内核缓存的物理内存量&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第五行内容-交换空间
-    &lt;ul&gt;
-      &lt;li&gt;2096440k total, 交换区总量&lt;/li&gt;
-      &lt;li&gt;0k used, 使用的交换区量&lt;/li&gt;
-      &lt;li&gt;2096440k free, 空闲的交换区量&lt;/li&gt;
-      &lt;li&gt;5570192k cached, 缓冲交换区总量&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;大于第六行内容-进程列表
-    &lt;ul&gt;
-      &lt;li&gt;PID：进程的ID&lt;/li&gt;
-      &lt;li&gt;USER：进程所有者&lt;/li&gt;
-      &lt;li&gt;PR：进程的优先级别，越小越优先被执行&lt;/li&gt;
-      &lt;li&gt;NI：The “NICE” value of the process，&lt;a href=&quot;#niv&quot;&gt;关于nice value of process的解释&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;VIRT：进程占用的虚拟内存&lt;/li&gt;
-      &lt;li&gt;RES：进程占用的物理内存&lt;/li&gt;
-      &lt;li&gt;SHR：进程使用的共享内存&lt;/li&gt;
-      &lt;li&gt;S：进程的状态。S表示休眠，R表示正在运行，Z表示僵死状态，N表示该进程优先值为负数&lt;/li&gt;
-      &lt;li&gt;%CPU：进程占用CPU的使用率&lt;/li&gt;
-      &lt;li&gt;%MEM：进程使用的物理内存和总内存的百分比&lt;/li&gt;
-      &lt;li&gt;TIME+：该进程启动后占用的总的CPU时间，即占用CPU使用时间的累加值。&lt;/li&gt;
-      &lt;li&gt;COMMAND：进程启动命令名称&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-nametcytopa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;top常用的一些命令&lt;/a&gt;&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;命令行命令
-    &lt;ul&gt;
-      &lt;li&gt;a 根据内存利用率排序&lt;/li&gt;
-      &lt;li&gt;b 在“批量模式”启动top,这种模式很利于把输出top的结果，这种模式下，top不再接受你输入的&lt;strong&gt;界面命令&lt;/strong&gt;，同时它会运行至 -n 命令设置的时间或者手动kill掉&lt;/li&gt;
-      &lt;li&gt;H 线程开关（这个经常用于排查故障，找出有问题的线程pid），使用这个命令会把进程私有的线程也都输出出来。&lt;/li&gt;
-      &lt;li&gt;n 用法 -n (number)，top每隔一段时间就会输出一次，这个-n就是指定top输出的次数&lt;/li&gt;
-      &lt;li&gt;p 指定pid输出对应的进程&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;界面命令 （输入top之后可以输入的命令）
-    &lt;ul&gt;
-      &lt;li&gt;q 退出&lt;/li&gt;
-      &lt;li&gt;space 立即刷新&lt;/li&gt;
-      &lt;li&gt;s 设置刷新时间&lt;/li&gt;
-      &lt;li&gt;c COMMAND 显示完整的命令 等效于 top -c&lt;/li&gt;
-      &lt;li&gt;k kill 进程&lt;/li&gt;
-      &lt;li&gt;u 指定用户&lt;/li&gt;
-      &lt;li&gt;t 显示或隐藏进程和CPU状态信息&lt;/li&gt;
-      &lt;li&gt;m 显示或隐藏内存状态信息&lt;/li&gt;
-      &lt;li&gt;l 显示或隐藏uptime信息&lt;/li&gt;
-      &lt;li&gt;1 监控每个逻辑CPU的状况&lt;/li&gt;
-      &lt;li&gt;P 按%CPU使用率排行&lt;/li&gt;
-      &lt;li&gt;T 按MITE+排行&lt;/li&gt;
-      &lt;li&gt;M 按%MEM排行&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;其他命令请使用 man top&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namenivnice-value-of-processa&quot;&gt;&lt;a name=&quot;niv&quot;&gt;nice value of process&lt;/a&gt;&lt;/h1&gt;
-
-&lt;p&gt;http://askubuntu.com/questions/399357/what-does-the-nice-value-mean-in-cpu-utilization-statistics&lt;/p&gt;
-
-&lt;p&gt;The nice value for the processor is&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;the time the CPU has spent running users’ processes that have been “niced”.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;(from man top) A “niced” process is one with a positive nice value. So if the processor’s nice value is high, that means it is working with some low priority processes. So this indicator is useful when you see high CPU utilization and you are afraid that this high load will have bad effect on your system:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;High CPU utilization with high nice value: Nothing to worry, not so important tasks doing their job, important processes will easily get CPU time if they need. This situation is not a real bottleneck.&lt;/li&gt;
-  &lt;li&gt;High CPU utilization with low nice value: Something to worry because the CPU is stressed with important processes so these or new processes will have to wait. This situation is a real bottleneck.
-I think this nice value is not too important for a simple user, this is more useful in a server environment.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;结论：nice value值越高的时候，被cpu执行的机会越少，如果进程占用cpu比较高，同时nice value也比较高的话，你就需要担心了。说明此时cpu比较紧张&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 20 Jun 2016 21:18:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/</guid>
         
         <category>Linux</category>
         
