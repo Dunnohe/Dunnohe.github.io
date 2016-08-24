@@ -12,7 +12,7 @@
 
     <title>Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/">
+    <link rel="canonical" href="http://dunnohe.github.io/page3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -156,356 +156,68 @@
             ">
     			
 <div class="post-preview">
-    <a href="/2016/08/22/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A63%E4%BA%86%E8%A7%A3IOC%E5%AE%B9%E5%99%A8/">
+    <a href="/2016/01/23/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A02-%E6%89%93%E6%96%AD%E7%BA%BF%E7%A8%8B/">
         <h2 class="post-title">
-            Spring源码了解
+            Java多线程学习系列
         </h2>
         
         <h3 class="post-subtitle">
-             "3，了解IOC容器"
+             "2-打断线程&等待线程的终止"
         </h3>
         
         <div class="post-content-preview">
-            目录
+            打断线程&amp;等待线程的终止
+##打断线程demo
 
+/**
+ * Created by liang.he on 16/1/12.
+ * 测试打断一个线程
+ */
+public class TestInterruptThread extends Thread{
 
-  背景介绍
-  参考资料
-  代码了解
+	private boolean flag = true;
 
-
-背景介绍
-我们学习一下容器具体是怎么启动的
-我这里学习的spring4的代码，和spring3的有些出入。可以checkout 4.x版本观看
-
-参考资料
-
-
-  http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/
-
-
-
-  s...
+	@Override
+	public void run() {
+...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno on August 22, 2016
+        Posted by Dunno on January 23, 2016
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2016/08/22/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A62%E4%BB%8E%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E5%BC%80%E5%A7%8B%E4%BA%86%E8%A7%A3/">
+    <a href="/2016/01/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A01-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/">
         <h2 class="post-title">
-            Spring源码了解
+            Java多线程学习系列
         </h2>
         
         <h3 class="post-subtitle">
-             "2，从项目启动开始了解"
+             "1-创建线程"
         </h3>
         
         <div class="post-content-preview">
-            目录
+            创建线程
 
+创建一个线程
 
-  背景介绍
-  参考资料
-  代码了解
-  安装项目
-
-
-背景介绍
-在大多数使用spring的项目场景来说，都是web项目。那我们先从入口开始学习，了解spring是如何启动的。
-我这里学习的spring4的代码，和spring3的有些出入。可以checkout 4.x版本观看
-
-参考资料
-
-
-  http://docs.spring.io/spring/docs/current...
+  实现Runnable接口
+    
+  public TestRunnable implements implements Runnable {
+      @Override
+      public void run() {
+      }
+  }
+  new Thread(new TestRunnable()).start();
+  
+  
+  继承Th...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Dunno on August 22, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/08/16/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A61%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/">
-        <h2 class="post-title">
-            Spring源码了解
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "1，搭建spring源码项目"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  下载源码
-  安装项目
-
-
-背景介绍
-之前一直停留在应用的阶段，了解的部分也不够全面，这次希望能对spring项目有一个全面的了解。
-spring的项目搭建起来很方便，由于spring依赖gradle,但是你不用事先去下，因为项目下下来之后里面有一键安装的脚本。但是spring4依赖jdk8，如果你想研究spring4的源码，需要事先安装好，我这里介绍的是搭建sp...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on August 16, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D4/">
-        <h2 class="post-title">
-            JDK-命令行工具介绍4
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解jinfo的用法以及常用的JVM参数"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  参考资料
-  jstat命令介绍
-  常用的jvm options
-
-
-背景介绍
-线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。
-jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
-
-这一次总结的...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on August 2, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/08/02/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D3/">
-        <h2 class="post-title">
-            JDK-命令行工具介绍3
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解jstat的用法"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  参考资料
-  jstat命令介绍
-  jstat -l 输出解释
-
-
-背景介绍
-线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。
-jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
-
-这次我们介绍非...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on August 2, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/07/31/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/">
-        <h2 class="post-title">
-            Jdk 命令行工具介绍2
-        </h2>
-        
-        <div class="post-content-preview">
-            
-
-layout:     post
-title:      “JDK-命令行工具介绍2”
-subtitle:   “ "了解jstack的用法"”
-date:       2016-07-31 18:58:00
-author:     “Dunno”
-header-img: “img/post-bg-2015.jpg”
-tags:
-    - JVM
-—
-
-目录
-
-
-  背景介绍
-  参考...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno Blog on July 31, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/">
-        <h2 class="post-title">
-            JDK-命令行工具介绍
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解jps,jmap,jhat的用法"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  参考资料
-  jps命令介绍
-  jhat命令介绍
-  jmap命令介绍
-
-
-背景介绍
-线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。
-jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
-
-这里我...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on July 28, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/">
-        <h2 class="post-title">
-            Linux命令学习-找到大文件的目录
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解du命令的使用"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  参考资料
-  du命令介绍
-  例子
-  多提一句，删除文件
-
-
-背景介绍
-之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。
-
-参考资料
-
-  http://man.linuxde.net/du
-
-
-du命令介绍
-du 预估文件空间使用情况
-
-
-  -a,–all 输出所有文件大小，不仅...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on July 25, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/">
-        <h2 class="post-title">
-            Linux命令学习-找到大文件的目录
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解du命令的使用"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  背景介绍
-  参考资料
-  du命令介绍
-  例子
-  多提一句，删除文件
-
-
-背景介绍
-之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。
-
-参考资料
-
-  http://man.linuxde.net/du
-
-
-du命令介绍
-du 预估文件空间使用情况
-
-
-  -a,–all 输出所有文件大小，不仅...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on July 25, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/">
-        <h2 class="post-title">
-            Java-mybatis generator返回主键的用法
-        </h2>
-        
-        <h3 class="post-subtitle">
-             "了解mybatis generator返回主键的用法"
-        </h3>
-        
-        <div class="post-content-preview">
-            目录
-
-
-  用法介绍
-  附：我的generatorConfig全部配置
-  附：mybatis主键的用法
-
-
-用法介绍
-使用mybatis plugin,配置如下：
-
-
-&lt;plugin&gt;
-    &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
-    &lt;artifactId&gt;mybatis-generato...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Dunno on July 23, 2016
+        Posted by Dunno on January 16, 2016
     </p>
 </div>
 <hr>
@@ -515,10 +227,10 @@ du 预估文件空间使用情况
 
 <ul class="pager">
     
-    
-    <li class="next">
-        <a href="/page2">Older Posts &rarr;</a>
+    <li class="previous">
+        <a href="/page2">&larr; Newer Posts</a>
     </li>
+    
     
 </ul>
 
