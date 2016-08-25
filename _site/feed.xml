@@ -5,8 +5,8 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 24 Aug 2016 20:03:47 +0800</pubDate>
-    <lastBuildDate>Wed, 24 Aug 2016 20:03:47 +0800</lastBuildDate>
+    <pubDate>Thu, 25 Aug 2016 23:22:26 +0800</pubDate>
+    <lastBuildDate>Thu, 25 Aug 2016 23:22:26 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
     
       <item>
@@ -16,7 +16,13 @@
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#dmlj&quot;&gt;代码了解&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dmlj&quot;&gt;IOC容器的设计&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#bean&quot;&gt;xxxBeanFactory&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#res&quot;&gt;ResourceLoader&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#app&quot;&gt;xxxApplicationContext&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
@@ -35,145 +41,106 @@
 
 &lt;h1 id=&quot;a-namedmljioca&quot;&gt;&lt;a name=&quot;dmlj&quot;&gt;IOC容器结构&lt;/a&gt;&lt;/h1&gt;
 
-&lt;p&gt;拿FileSystemXmlApplicationContext做例子，我们来看一下它的类图&lt;/p&gt;
+&lt;p&gt;拿FileSystemXmlApplicationContext做例子，我们来看一下它的类图:
+&lt;br /&gt;
+图片如果不清楚，可以右键保存下来看。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/3/applicationcontext.png&quot; alt=&quot;IOC容器结构&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;application&quot;&gt;注册Application&lt;/h2&gt;
+&lt;p&gt;通常我们使用spring时，最直接的感受就是不用new对象了，spring已经直接帮我们实现new好了，然后放到一个容器里面，我们每次注入的时候实际就是去容器里面去拿。&lt;/p&gt;
 
-&lt;p&gt;首先web 项目应用是通过ContextLoaderListener来注册Applicationcontext的。代码如下:&lt;/p&gt;
-&lt;pre&gt;
-&lt;code&gt;
-&amp;lt;context-param&amp;gt;
-    &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
-    &amp;lt;param-value&amp;gt;/WEB-INF/daoContext.xml /WEB-INF/applicationContext.xml&amp;lt;/param-value&amp;gt;
-&amp;lt;/context-param&amp;gt;
+&lt;p&gt;上面的图主要有三大部分，一个是xxxBeanFactory,一个是xxxApplicationContext,一个是ResourceLoader，还有一些其他的接口,比如ApplicationEventPublisher(事件发布)，我们后面再学习。&lt;/p&gt;
 
-&amp;lt;listener&amp;gt;
-    &amp;lt;listener-class&amp;gt;org.springframework.web.context.ContextLoaderListener&amp;lt;/listener-class&amp;gt;
-&amp;lt;/listener&amp;gt;
-&lt;/code&gt;
-&lt;/pre&gt;
+&lt;h2 id=&quot;a-namebeanxxxbeanfactorya&quot;&gt;&lt;a name=&quot;bean&quot;&gt;xxxBeanFactory&lt;/a&gt;&lt;/h2&gt;
 
-&lt;h2 id=&quot;contextloaderlistener&quot;&gt;ContextLoaderListener代码&lt;/h2&gt;
+&lt;p&gt;beanFactory bean的工厂，顾名思义，这个xxxBeanFactory就是容器了。我们其实就可以理解成装实体的桶子就行了，那么beanFactory里面封装的方法都是和&lt;strong&gt;[容器属性]&lt;/strong&gt;相关的方法。比如如果我们设计，我们可以第一想到：容器多大啊，能装多少东西啊，装了啥啊之类的东西。&lt;/p&gt;
+
+&lt;h3 id=&quot;beanfactory&quot;&gt;BeanFactory&lt;/h3&gt;
 
 &lt;pre&gt;
 &lt;code&gt;
-public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
-	public ContextLoaderListener() {
-	}
+//封装了一些基本的访问bean的方法
+public interface BeanFactory {
+	//&amp;amp;xxxbean对象拿到的是xxxbean对应的factorybean
+	String FACTORY_BEAN_PREFIX = &amp;quot;&amp;amp;&amp;quot;;
 
-	public ContextLoaderListener(WebApplicationContext context) {
-		super(context);
-	}
+	Object getBean(String name) throws BeansException;
 
-	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		//初始化根上下文信息
-		initWebApplicationContext(event.getServletContext());
-	}
+	&amp;lt;T&amp;gt; T getBean(String name, Class&amp;lt;T&amp;gt; requiredType) throws BeansException;
 
-	@Override
-	public void contextDestroyed(ServletContextEvent event) {
-		//关闭根上下文信息
-		closeWebApplicationContext(event.getServletContext());
-		//清除初始化过程中种下的一些属性
-		ContextCleanupListener.cleanupAttributes(event.getServletContext());
-	}
-&lt;/code&gt;
-&lt;/pre&gt;
+	&amp;lt;T&amp;gt; T getBean(Class&amp;lt;T&amp;gt; requiredType) throws BeansException;
 
-&lt;h2 id=&quot;ioc&quot;&gt;具体初始化IOC容器代码&lt;/h2&gt;
+	Object getBean(String name, Object... args) throws BeansException;
 
-&lt;pre&gt;
-&lt;code&gt;
-public WebApplicationContext initWebApplicationContext(ServletContext servletContext) {
-		
-		//判断是否已经种下了根上下文，没有就抛出异常
-		if (servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null) {
-			throw new IllegalStateException(
-					&quot;Cannot initialize context because there is already a root application context present - &quot; +
-					&quot;check whether you have multiple ContextLoader* definitions in your web.xml!&quot;);
-		}
+	&amp;lt;T&amp;gt; T getBean(Class&amp;lt;T&amp;gt; requiredType, Object... args) throws BeansException;
 
-		Log logger = LogFactory.getLog(ContextLoader.class);
-		servletContext.log(&quot;Initializing Spring root WebApplicationContext&quot;);
-		if (logger.isInfoEnabled()) {
-			logger.info(&quot;Root WebApplicationContext: initialization started&quot;);
-		}
-		long startTime = System.currentTimeMillis();
+	boolean containsBean(String name);
 
-		try {
-			
-			//创建上下文信息
-			if (this.context == null) {
-				//该方法逻辑：这里不贴具体代码了，太多了
-				//1，从servletcontext上下文中拿到对应初始化参数
-				//2，生成实例类
-				//3，确保该实例类来源于ConfigurableWebApplicationContext,否则抛出异常
-				//4，将这个类转成webapplicationcontext并且返回出去
-				this.context = createWebApplicationContext(servletContext);
-			}
+	boolean isSingleton(String name) throws NoSuchBeanDefinitionException;
 
-			//确保上下文信息来源了ConfigurableWebApplicationContext
-			if (this.context instanceof ConfigurableWebApplicationContext) {
-				ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) this.context;
-				if (!cwac.isActive()) {
-					// The context has not yet been refreshed -&amp;gt; provide services such as
-					// setting the parent context, setting the application context id, etc
-					if (cwac.getParent() == null) {
-						// The context instance was injected without an explicit parent -&amp;gt;
-						// determine parent for root web application context, if any.
-						//获得双亲上下文，并且设置进来
-						ApplicationContext parent = loadParentContext(servletContext);
-						cwac.setParent(parent);
-					}
+	boolean isPrototype(String name) throws NoSuchBeanDefinitionException;
 
-					//逻辑：这里不贴具体代码了，太多了
-					//1，里面设置了webApplicationContext的相关属性
-					//2，调用webapplicationContext的refresh方法，refresh方法就是启动容器的方法
-					configureAndRefreshWebApplicationContext(cwac, servletContext);
-				}
-			}
+	boolean isTypeMatch(String name, ResolvableType typeToMatch) throws NoSuchBeanDefinitionException;
 
-			//种下上下文信息
-			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
+	boolean isTypeMatch(String name, Class&amp;lt;?&amp;gt; typeToMatch) throws NoSuchBeanDefinitionException;
 
+	Class&amp;lt;?&amp;gt; getType(String name) throws NoSuchBeanDefinitionException;
 
-			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-			if (ccl == ContextLoader.class.getClassLoader()) {
-				currentContext = this.context;
-			}
-			else if (ccl != null) {
-				currentContextPerThread.put(ccl, this.context);
-			}
+	String[] getAliases(String name);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug(&quot;Published root WebApplicationContext as ServletContext attribute with name [&quot; +
-						WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE + &quot;]&quot;);
-			}
-			if (logger.isInfoEnabled()) {
-				long elapsedTime = System.currentTimeMillis() - startTime;
-				logger.info(&quot;Root WebApplicationContext: initialization completed in &quot; + elapsedTime + &quot; ms&quot;);
-			}
-
-			return this.context;
-		}
-		catch (RuntimeException ex) {
-			logger.error(&quot;Context initialization failed&quot;, ex);
-			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, ex);
-			throw ex;
-		}
-		catch (Error err) {
-			logger.error(&quot;Context initialization failed&quot;, err);
-			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, err);
-			throw err;
-		}
-	}
 }
-
 &lt;/code&gt;
 &lt;/pre&gt;
+
+&lt;h3 id=&quot;hierarchicalbeanfactory&quot;&gt;HierarchicalBeanFactory&lt;/h3&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+//在BeanFactory基础上加了获得父BeanFactory的方法
+public interface HierarchicalBeanFactory extends BeanFactory {
+
+	BeanFactory getParentBeanFactory();
+
+	boolean containsLocalBean(String name);
+
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h3 id=&quot;configurablebeanfactory&quot;&gt;ConfigurableBeanFactory&lt;/h3&gt;
+&lt;p&gt;在HierarchicalBeanFactory的基础上增加了一些对BeanFactory的配置功能，比如setParentBeanFactory()设置双亲IOC容器。&lt;/p&gt;
+
+&lt;h3 id=&quot;listablebeanfactory&quot;&gt;ListableBeanFactory&lt;/h3&gt;
+&lt;p&gt;在BeanFactory基础上增加了对容器bean的各种属性查询方法。&lt;/p&gt;
+
+&lt;h2 id=&quot;a-nameresresourceloadera&quot;&gt;&lt;a name=&quot;res&quot;&gt;ResourceLoader&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;ResourceLoader,顾名思义：资源加载者。前面讲到了把beanFactory理解成装实体的桶子，那么我们到怎么装呢？到哪里去装呢？这就是ResourceLoader负责的了。&lt;/p&gt;
+&lt;pre&gt;
+&lt;code&gt;
+public interface ResourceLoader {
+	//这个值是classpath:  方便classpathresource时使用
+	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
+	//获得资源，也就是告诉你装东西的地址
+	Resource getResource(String location);
+	//
+	ClassLoader getClassLoader();
+
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;a-nameappxxxapplicationcontexta&quot;&gt;&lt;a name=&quot;app&quot;&gt;xxxApplicationContext&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;它是一个更高级的容器，容器只是它的一个子功能，同时它还支持其他特性：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;支持国际化 多语言版本的支持(MessageSource)&lt;/li&gt;
+  &lt;li&gt;访问资源 容器加载bean是要有一个加载源的，这个resource就是加载源。&lt;/li&gt;
+  &lt;li&gt;支持应用事件 在整个bean的声明周期中，需要引入应用事件，便于更好的管理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;applicationContext怎么理解呢，你就把它理解成一个工具箱，里面放了桶子（xxBeanFactory），还放了给桶子装东西的方法(resourcesLoader),还有中英文说明书（MessageSource）,还有遥控器可以遥控桶子（ApplicationEventPublisher）。有了这些大工具箱，你能想到的启动容器的条件是不是就都具备了！&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 22 Aug 2016 17:30:00 +0800</pubDate>
