@@ -31,11 +31,11 @@ tags:
 
 ![IOC容器结构](http://dunnohe.github.io/img/spring/3/applicationcontext.png)
 
-<p>这个关系是这样的：FileSystemXmlApplicationContext --》 AbstractXmlApplicationContext --》 AbstractRefreshableConfigApplicationContext --》 AbstractApplicationContext --》 AbstractApplicationContext --》 DefaultResourceLoader</p>
+<p>这个关系是这样的：FileSystemXmlApplicationContext --》 AbstractXmlApplicationContext --》 AbstractRefreshableConfigApplicationContext --》 AbstractApplicationContext --》  DefaultResourceLoader</p>
 
 <p>下面我们从FileSystemXmlApplicationContext代码开始看起：</p>
 
-## FileSystemXmlApplicationContext
+## 容器使用的入口
 
 <pre>
 <code>
@@ -46,8 +46,10 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 	public FileSystemXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent) throws BeansException {
 		
 		super(parent);
+		//设置配置以及解析
 		setConfigLocations(configLocations);
 		if (refresh) {
+			//启动容器
 			refresh();
 		}
 	}
@@ -59,94 +61,223 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 		}
 		return new FileSystemResource(path);
 	}
+	
+	public void setConfigLocations(String... locations) {
+		if (locations != null) {
+			Assert.noNullElements(locations, "Config locations must not be null");
+			//深复制配置文件到自身属性
+			this.configLocations = new String[locations.length];
+			for (int i = 0; i < locations.length; i++) {
+				//挨个解析配置文件引入的占位符properties
+				this.configLocations[i] = resolvePath(locations[i]).trim();
+			}
+		}
+		else {
+			this.configLocations = null;
+		}
+	}
 }
 </code>
 </pre>
 
-### BeanFactory
+## 设置配置以及解析
 
 <pre>
 <code>
-//封装了一些基本的访问bean的方法
-public interface BeanFactory {
-	//&amp;xxxbean对象拿到的是xxxbean对应的factorybean
-	String FACTORY_BEAN_PREFIX = &quot;&amp;&quot;;
-
-	Object getBean(String name) throws BeansException;
-
-	&lt;T&gt; T getBean(String name, Class&lt;T&gt; requiredType) throws BeansException;
-
-	&lt;T&gt; T getBean(Class&lt;T&gt; requiredType) throws BeansException;
-
-	Object getBean(String name, Object... args) throws BeansException;
-
-	&lt;T&gt; T getBean(Class&lt;T&gt; requiredType, Object... args) throws BeansException;
-
-	boolean containsBean(String name);
-
-	boolean isSingleton(String name) throws NoSuchBeanDefinitionException;
-
-	boolean isPrototype(String name) throws NoSuchBeanDefinitionException;
-
-	boolean isTypeMatch(String name, ResolvableType typeToMatch) throws NoSuchBeanDefinitionException;
-
-	boolean isTypeMatch(String name, Class&lt;?&gt; typeToMatch) throws NoSuchBeanDefinitionException;
-
-	Class&lt;?&gt; getType(String name) throws NoSuchBeanDefinitionException;
-
-	String[] getAliases(String name);
-
+//这里只贴出部分核心的代码
+public abstract class AbstractRefreshableConfigApplicationContext extends AbstractRefreshableApplicationContext
+		implements BeanNameAware, InitializingBean {
+	
+	public void setConfigLocations(String... locations) {
+		if (locations != null) {
+			Assert.noNullElements(locations, "Config locations must not be null");
+			//深复制配置文件到自身属性
+			this.configLocations = new String[locations.length];
+			for (int i = 0; i < locations.length; i++) {
+				//挨个解析配置文件引入的占位符properties
+				this.configLocations[i] = resolvePath(locations[i]).trim();
+			}
+		}
+		else {
+			this.configLocations = null;
+		}
+	}
 }
 </code>
 </pre>
 
-### HierarchicalBeanFactory
+## 启动容器
 
 <pre>
 <code>
-//在BeanFactory基础上加了获得父BeanFactory的方法
-public interface HierarchicalBeanFactory extends BeanFactory {
+//这里只贴出部分核心的代码
+public abstract class AbstractApplicationContext extends DefaultResourceLoader
+		implements ConfigurableApplicationContext, DisposableBean {
+	
+	@Override
+	public void refresh() throws BeansException, IllegalStateException {
+		synchronized (this.startupShutdownMonitor) {
+			// 为容器的启动做一些准备：设置对应状态属性。如果是web应用，同时会加载对应的属性。
+			prepareRefresh();
 
-	BeanFactory getParentBeanFactory();
+			// 通知实现方去刷新内置的bean容器。前面我们讲到beanfactory的作用就是用来“装东西”的，那我们来看看这个里面的实现。
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-	boolean containsLocalBean(String name);
+			// Prepare the bean factory for use in this context.
+			prepareBeanFactory(beanFactory);
 
+			try {
+				// Allows post-processing of the bean factory in context subclasses.
+				postProcessBeanFactory(beanFactory);
+
+				// Invoke factory processors registered as beans in the context.
+				invokeBeanFactoryPostProcessors(beanFactory);
+
+				// Register bean processors that intercept bean creation.
+				registerBeanPostProcessors(beanFactory);
+
+				// Initialize message source for this context.
+				initMessageSource();
+
+				// Initialize event multicaster for this context.
+				initApplicationEventMulticaster();
+
+				// Initialize other special beans in specific context subclasses.
+				onRefresh();
+
+				// Check for listener beans and register them.
+				registerListeners();
+
+				// Instantiate all remaining (non-lazy-init) singletons.
+				finishBeanFactoryInitialization(beanFactory);
+
+				// Last step: publish corresponding event.
+				finishRefresh();
+			}
+
+			catch (BeansException ex) {
+				if (logger.isWarnEnabled()) {
+					logger.warn("Exception encountered during context initialization - " +
+							"cancelling refresh attempt: " + ex);
+				}
+
+				// Destroy already created singletons to avoid dangling resources.
+				destroyBeans();
+
+				// Reset 'active' flag.
+				cancelRefresh(ex);
+
+				// Propagate exception to caller.
+				throw ex;
+			}
+
+			finally {
+				// Reset common introspection caches in Spring's core, since we
+				// might not ever need metadata for singleton beans anymore...
+				resetCommonCaches();
+			}
+		}
+	}
 }
 </code>
 </pre>
 
-### ConfigurableBeanFactory
-在HierarchicalBeanFactory的基础上增加了一些对BeanFactory的配置功能，比如setParentBeanFactory()设置双亲IOC容器。
+## 通知子类刷新内置的beanfactory
 
-### ListableBeanFactory
-在BeanFactory基础上增加了对容器bean的各种属性查询方法。
-
-## <a name="res">ResourceLoader</a>
-
-ResourceLoader,顾名思义：资源加载者。前面讲到了把beanFactory理解成装实体的桶子，那么我们到怎么装呢？到哪里去装呢？这就是ResourceLoader负责的了。
 <pre>
 <code>
-public interface ResourceLoader {
-	//这个值是classpath:  方便classpathresource时使用
-	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
-	//获得资源，也就是告诉你装东西的地址
-	Resource getResource(String location);
-	//
-	ClassLoader getClassLoader();
+protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//步骤1：刷新beanFactory
+		refreshBeanFactory();
+		
+		//步骤2：获得beanfactory，这里的实现很简单，直接返回xxxapplicationcontext的beanfactory的属性。beanfactory属性的设置实在步骤1完成的。
+		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);
+		}
+		return beanFactory;
+	}
+</code>
+</pre>
 
+
+## 刷新内置的beanfactory具体实现
+
+<pre>
+<code>
+//这里只贴出部分核心的代码
+public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
+
+	@Override
+	protected final void refreshBeanFactory() throws BeansException {
+		//如果已经创建的bean容器
+		if (hasBeanFactory()) {
+			//清除已经创建的beans
+			destroyBeans();
+			//关闭beanfactory容器
+			closeBeanFactory();
+		}
+		try {
+			//创建beanfactory，可见默认使用的beanfactory容器是这个啊。
+			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			beanFactory.setSerializationId(getId());
+			//这里面设置beanfactory是否支持“bean覆盖”和“循环引用”两种选项
+			customizeBeanFactory(beanFactory);
+			//加载bean resource
+			loadBeanDefinitions(beanFactory);
+			//设置beanfactory属性
+			synchronized (this.beanFactoryMonitor) {
+				this.beanFactory = beanFactory;
+			}
+		}
+		catch (IOException ex) {
+			throw new ApplicationContextException("I/O error parsing bean definition source for " + getDisplayName(), ex);
+		}
+	}
+	
 }
 </code>
 </pre>
 
-## <a name="app">xxxApplicationContext</a>
+## 资源的定位以及加载配置文件
 
-它是一个更高级的容器，容器只是它的一个子功能，同时它还支持其他特性：
+<pre>
+<code>
+//这里只贴出部分核心的代码
+public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
 
-- 支持国际化 多语言版本的支持(MessageSource)
-- 访问资源 容器加载bean是要有一个加载源的，这个resource就是加载源。
-- 支持应用事件 在整个bean的声明周期中，需要引入应用事件，便于更好的管理。
+	@Override
+	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
+		// 由这里可以看到默认读取Xml的reader是这个
+		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
-applicationContext怎么理解呢，你就把它理解成一个工具箱，里面放了桶子（xxBeanFactory），还放了给桶子装东西的方法(resourcesLoader),还有中英文说明书（MessageSource）,还有遥控器可以遥控桶子（ApplicationEventPublisher）。有了这些大工具箱，你能想到的启动容器的条件是不是就都具备了！
+		// Configure the bean definition reader with this context's
+		// resource loading environment.
+		beanDefinitionReader.setEnvironment(this.getEnvironment());
+		beanDefinitionReader.setResourceLoader(this);
+		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
+
+		initBeanDefinitionReader(beanDefinitionReader);
+		//具体加载beanDefinition的方法
+		loadBeanDefinitions(beanDefinitionReader);
+	}
+	
+}
+
+protected DefaultListableBeanFactory createBeanFactory() {
+		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
+	}
+	
+//如果双亲上下文实现了ConfigurableApplicationContext，那么返回双亲上下文的beanfactory，否则直接返回双亲上下文	
+protected BeanFactory getInternalParentBeanFactory() {
+		return (getParent() instanceof ConfigurableApplicationContext) ?
+				((ConfigurableApplicationContext) getParent()).getBeanFactory() : getParent();
+	}
+	
+</code>
+</pre>
+
+
 
 
 
