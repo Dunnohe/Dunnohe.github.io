@@ -10,9 +10,9 @@
     <meta name="keyword"  content="java | linux ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Linux命令学习-lsof命令 - Dunno Blog</title>
+    <title>spring源码了解 - Dunno Blog</title>
 
-    <link rel="canonical" href="http://dunnohe.github.io/2016/07/21/Linux-lsof%E5%91%BD%E4%BB%A4/">
+    <link rel="canonical" href="http://dunnohe.github.io/2016/08/27/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A64%E4%BA%86%E8%A7%A3BeanDefition%E7%9A%84Resource%E5%AE%9A%E4%BD%8D/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,15 +142,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        <a class="tag" href="/tags/#Spring" title="Spring">Spring</a>
                         
                     </div>
-                    <h1>Linux命令学习-lsof命令</h1>
+                    <h1>spring源码了解</h1>
                     
                     
-                    <h2 class="subheading"> "了解lsof的用法"</h2>
+                    <h2 class="subheading"> "4，了解BeanDefition的Resource定位"</h2>
                     
-                    <span class="meta">Posted by Dunno on July 21, 2016</span>
+                    <span class="meta">Posted by Dunno on August 27, 2016</span>
                 </div>
             </div>
         </div>
@@ -171,200 +171,306 @@
 				<h1 id="section">目录</h1>
 
 <ul>
-  <li><a href="#js">介绍</a></li>
+  <li><a href="#js">背景介绍</a></li>
   <li><a href="#ckzl">参考资料</a></li>
-  <li><a href="#xkd">先看懂top的输出吧</a></li>
-  <li><a href="#tcy">lsof常用的一些命令</a></li>
+  <li><a href="#dmlj">BeanDefition的Resource定位</a></li>
 </ul>
 
-<h1 id="a-namejsa"><a name="js">介绍</a></h1>
-<p>lsof（“list open files”）命令名称很容易记住，把它看成“ls + of”, 在linux下面，一切都是文件，lsof则可以查看这些文件。</p>
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>之前我们了解了IOC初略的一个结构，这里我们开始学习一下spring是如何定位资源的。（桶子到哪里装水）</p>
 
 <h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+
 <blockquote>
-  <p>http://www.tecmint.com/10-lsof-command-examples-in-linux/</p>
+  <p>http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/</p>
 </blockquote>
 
 <blockquote>
-  <p>http://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/lsof.html?highlight=lsof</p>
+  <p>spring 技术内幕</p>
 </blockquote>
 
-<h1 id="a-namexkda"><a name="xkd">先了解输出吧</a></h1>
-<p>我们先运行一下lsof -R(加-R 可以打出ppid)命令</p>
+<h1 id="a-namedmljbeandefitionresourcea"><a name="dmlj">BeanDefition的Resource定位</a></h1>
+
+<p>我们以FileSystemXmlApplicationContext为例，看一下它的类图（图片如果不清楚，可以右键保存下来看），我们主要观察蓝色线条的部分：
+<br /></p>
+
+<p><img src="http://dunnohe.github.io/img/spring/3/applicationcontext.png" alt="IOC容器结构" /></p>
+
+<p>这个关系是这样的：FileSystemXmlApplicationContext --》 AbstractXmlApplicationContext --》 AbstractRefreshableConfigApplicationContext --》 AbstractApplicationContext --》  DefaultResourceLoader</p>
+
+<p>下面我们从FileSystemXmlApplicationContext代码开始看起：</p>
+
+<h2 id="section-1">容器使用的入口</h2>
+
 <pre>
 <code>
-# lsof -R
-COMMAND     PID  PPID      USER   FD      TYPE             DEVICE SIZE/OFF      NODE NAME
-init          1     0      root  cwd   unknown                                       /proc/1/cwd (readlink: Permission denied)
-init          1     0      root  rtd   unknown                                       /proc/1/root (readlink: Permission denied)
-init          1     0      root  txt   unknown                                       /proc/1/exe (readlink: Permission denied)
-init          1     0      root NOFD                                                 /proc/1/fd (opendir: Permission denied)
+//这里只贴出部分核心的代码
+public class FileSystemXmlApplicationContext extends AbstractXmlApplicationContext {
+	
+	//其他构造方法最终的都是调用这个方法
+	public FileSystemXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent) throws BeansException {
+		
+		super(parent);
+		//设置配置以及解析
+		setConfigLocations(configLocations);
+		if (refresh) {
+			//启动容器
+			refresh();
+		}
+	}
+
+	@Override
+	protected Resource getResourceByPath(String path) {
+		if (path != null &amp;&amp; path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		return new FileSystemResource(path);
+	}
+	
+	public void setConfigLocations(String... locations) {
+		if (locations != null) {
+			Assert.noNullElements(locations, "Config locations must not be null");
+			//深复制配置文件到自身属性
+			this.configLocations = new String[locations.length];
+			for (int i = 0; i &lt; locations.length; i++) {
+				//挨个解析配置文件引入的占位符properties
+				this.configLocations[i] = resolvePath(locations[i]).trim();
+			}
+		}
+		else {
+			this.configLocations = null;
+		}
+	}
+}
 </code>
 </pre>
 
-<ul>
-  <li>COMMAND 进程名称</li>
-  <li>PID 进程id</li>
-  <li>PPID 进程父id</li>
-  <li>USER 进程所有者</li>
-  <li>FD 文件描述符
-    <pre>
-  <code>
-  （1）cwd：表示current work dirctory，即：应用程序的当前工作目录，这是该应用程序启动的目录，除非它本身对这个目录进行更改
-  （2）txt ：该类型的文件是程序代码，如应用程序二进制文件本身或共享库，如上列表中显示的 /sbin/init 程序
-  （3）lnn：library references (AIX);
-  （4）er：FD information error (see NAME column);
-  （5）jld：jail directory (FreeBSD);
-  （6）ltx：shared library text (code and data);
-  （7）mxx ：hex memory-mapped type number xx.
-  （8）m86：DOS Merge mapped file;
-  （9）mem：memory-mapped file;
-  （10）mmap：memory-mapped device;
-  （11）pd：parent directory;
-  （12）rtd：root directory;
-  （13）tr：kernel trace file (OpenBSD);
-  （14）v86  VP/ix mapped file;
-  （15）0：表示标准输出
-  （16）1：表示标准输入
-  （17）2：表示标准错误
-  一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等
-  （1）u：表示该文件被打开并处于读取/写入模式
-  （2）r：表示该文件被打开并处于只读模式
-  （3）w：表示该文件被打开并处于
-  （4）空格：表示该文件的状态模式为unknow，且没有锁定
-  （5）-：表示该文件的状态模式为unknow，且被锁定
-  同时在文件状态模式后面，还跟着相关的锁
-  （1）N：for a Solaris NFS lock of unknown type;
-  （2）r：for read lock on part of the file;
-  （3）R：for a read lock on the entire file;
-  （4）w：for a write lock on part of the file;（文件的部分写锁）
-  （5）W：for a write lock on the entire file;（整个文件的写锁）
-  （6）u：for a read and write lock of any length;
-  （7）U：for a lock of unknown type;
-  （8）x：for an SCO OpenServer Xenix lock on part      of the file;
-  （9）X：for an SCO OpenServer Xenix lock on the      entire file;
-  （10）space：if there is no lock.
-  </code>
-  </pre>
-  </li>
-  <li>TYPE 文件类型
-    <pre>
-  <code>
-  （1）DIR：表示目录
-  （2）CHR：表示字符类型
-  （3）BLK：块设备类型
-  （4）UNIX： UNIX 域套接字
-  （5）FIFO：先进先出 (FIFO) 队列
-  （6）IPv4：网际协议 (IP) 套接字
-  </code>
-  </pre>
-  </li>
-  <li>DEVICE 指定磁盘的名称</li>
-  <li>SIZE 文件大小</li>
-  <li>NODE 索引节点</li>
-  <li>NAME 打开文件的确切名称</li>
-</ul>
+<h2 id="section-2">设置配置以及解析</h2>
 
-<h1 id="a-nametcylsofa"><a name="tcy">lsof常用的一些命令</a></h1>
-
-<ul>
-  <li>查询指定用户打开的文件</li>
-</ul>
 <pre>
 <code>
-lsof -u heliang05
-COMMAND  PID      USER   FD      TYPE             DEVICE SIZE/OFF      NODE NAME
-sshd    3126 heliang05  cwd   unknown                                       /proc/3126/cwd (readlink: Permission denied)
-sshd    3126 heliang05  rtd   unknown                                       /proc/3126/root (readlink: Permission denied)
-sshd    3126 heliang05  txt   unknown                                       /proc/3126/exe (readlink: Permission denied)
-sshd    3126 heliang05 NOFD                                                 /proc/3126/fd (opendir: Permission denied)
-</code>
-</pre>
-<ul>
-  <li>找到在特定TCP端口上运行的进程</li>
-</ul>
-<pre>
-<code>
-# lsof -i TCP:22
-COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-sshd    1471    root    3u  IPv4  12683      0t0  TCP *:ssh (LISTEN)
-sshd    1471    root    4u  IPv6  12685      0t0  TCP *:ssh (LISTEN)
-</code>
-</pre>
-<ul>
-  <li>找到特定TCP端口范围上的进程</li>
-</ul>
-<pre>
-<code>
-# lsof -i TCP:0-1024
-COMMAND    PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
-Google     258 lianghe  153u  IPv4 0x8bc54911385f362b      0t0  TCP 172.30.30.61:57712-&gt;10.32.255.116:http (ESTABLISHED)
-Google     258 lianghe  156u  IPv4 0x8bc5491133dc4d23      0t0  TCP 172.30.30.61:57819-&gt;103.37.152.63:https (CLOSE_WAIT)
-</code>
-</pre>
-<ul>
-  <li>查询所有的网络连接</li>
-</ul>
-<pre>
-<code>
-# lsof -i
-COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-rpcbind   1203     rpc    6u  IPv4  11326      0t0  UDP *:sunrpc
-rpcbind   1203     rpc    7u  IPv4  11330      0t0  UDP *:954
-rpcbind   1203     rpc   11u  IPv6  11336      0t0  TCP *:sunrpc (LISTEN)
-avahi-dae 1241   avahi   13u  IPv4  11579      0t0  UDP *:mdns
-avahi-dae 1241   avahi   14u  IPv4  11580      0t0  UDP *:58600
-</code>
-</pre>
-<ul>
-  <li>查询所有的ipv4连接</li>
-</ul>
-<pre>
-<code>
-# lsof -i 4
-COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-rpcbind   1203     rpc    6u  IPv4  11326      0t0  UDP *:sunrpc
-rpcbind   1203     rpc    7u  IPv4  11330      0t0  UDP *:954
-rpcbind   1203     rpc    8u  IPv4  11331      0t0  TCP *:sunrpc (LISTEN)
-avahi-dae 1241   avahi   13u  IPv4  11579      0t0  UDP *:mdns
-avahi-dae 1241   avahi   14u  IPv4  11580      0t0  UDP *:58600
-</code>
-</pre>
-<ul>
-  <li>查询所有的ipv6连接</li>
-</ul>
-<pre>
-<code>
-# lsof -i 6
-COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-rpcbind   1203     rpc    9u  IPv6  11333      0t0  UDP *:sunrpc
-rpcbind   1203     rpc   10u  IPv6  11335      0t0  UDP *:954
-rpcbind   1203     rpc   11u  IPv6  11336      0t0  TCP *:sunrpc (LISTEN)
-rpc.statd 1277 rpcuser   10u  IPv6  11858      0t0  UDP *:55800
-</code>
-</pre>
-<ul>
-  <li>根据指定的pid查找</li>
-</ul>
-<pre>
-<code>
-# lsof -p 1
-COMMAND PID USER   FD   TYPE     DEVICE SIZE/OFF   NODE NAME
-init      1 root  cwd    DIR      253,0     4096      2 /
-init      1 root  rtd    DIR      253,0     4096      2 /
-init      1 root  txt    REG      253,0   145180 147164 /sbin/init
-</code>
-</pre>
-<ul>
-  <li>列出谁在使用某个端口</li>
-</ul>
-<pre>
-<code>
-# lsof -i :3306
+//这里只贴出部分核心的代码
+public abstract class AbstractRefreshableConfigApplicationContext extends AbstractRefreshableApplicationContext
+		implements BeanNameAware, InitializingBean {
+	
+	public void setConfigLocations(String... locations) {
+		if (locations != null) {
+			Assert.noNullElements(locations, "Config locations must not be null");
+			//深复制配置文件到自身属性
+			this.configLocations = new String[locations.length];
+			for (int i = 0; i &lt; locations.length; i++) {
+				//挨个解析配置文件引入的占位符properties
+				this.configLocations[i] = resolvePath(locations[i]).trim();
+			}
+		}
+		else {
+			this.configLocations = null;
+		}
+	}
+}
 </code>
 </pre>
 
-<p>这些参数也可以互相组合使用</p>
+<h2 id="section-3">启动容器</h2>
+
+<pre>
+<code>
+//这里只贴出部分核心的代码
+public abstract class AbstractApplicationContext extends DefaultResourceLoader
+		implements ConfigurableApplicationContext, DisposableBean {
+	
+	@Override
+	public void refresh() throws BeansException, IllegalStateException {
+		synchronized (this.startupShutdownMonitor) {
+			// 为容器的启动做一些准备：设置对应状态属性。如果是web应用，同时会加载对应的属性。
+			prepareRefresh();
+
+			// 通知实现方去刷新内置的bean容器。前面我们讲到beanfactory的作用就是用来“装东西”的，那我们来看看这个里面的实现。
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+			// Prepare the bean factory for use in this context.
+			prepareBeanFactory(beanFactory);
+
+			try {
+				// Allows post-processing of the bean factory in context subclasses.
+				postProcessBeanFactory(beanFactory);
+
+				// Invoke factory processors registered as beans in the context.
+				invokeBeanFactoryPostProcessors(beanFactory);
+
+				// Register bean processors that intercept bean creation.
+				registerBeanPostProcessors(beanFactory);
+
+				// Initialize message source for this context.
+				initMessageSource();
+
+				// Initialize event multicaster for this context.
+				initApplicationEventMulticaster();
+
+				// Initialize other special beans in specific context subclasses.
+				onRefresh();
+
+				// Check for listener beans and register them.
+				registerListeners();
+
+				// Instantiate all remaining (non-lazy-init) singletons.
+				finishBeanFactoryInitialization(beanFactory);
+
+				// Last step: publish corresponding event.
+				finishRefresh();
+			}
+
+			catch (BeansException ex) {
+				if (logger.isWarnEnabled()) {
+					logger.warn("Exception encountered during context initialization - " +
+							"cancelling refresh attempt: " + ex);
+				}
+
+				// Destroy already created singletons to avoid dangling resources.
+				destroyBeans();
+
+				// Reset 'active' flag.
+				cancelRefresh(ex);
+
+				// Propagate exception to caller.
+				throw ex;
+			}
+
+			finally {
+				// Reset common introspection caches in Spring's core, since we
+				// might not ever need metadata for singleton beans anymore...
+				resetCommonCaches();
+			}
+		}
+	}
+}
+</code>
+</pre>
+
+<h2 id="beanfactory">通知子类刷新内置的beanfactory</h2>
+
+<pre>
+<code>
+protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//步骤1：刷新beanFactory
+		refreshBeanFactory();
+		
+		//步骤2：获得beanfactory，这里的实现很简单，直接返回xxxapplicationcontext的beanfactory的属性。beanfactory属性的设置实在步骤1完成的。
+		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);
+		}
+		return beanFactory;
+	}
+</code>
+</pre>
+
+<h2 id="beanfactory-1">刷新内置的beanfactory具体实现</h2>
+
+<pre>
+<code>
+//这里只贴出部分核心的代码
+public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
+
+	@Override
+	protected final void refreshBeanFactory() throws BeansException {
+		//如果已经创建的bean容器
+		if (hasBeanFactory()) {
+			//清除已经创建的beans
+			destroyBeans();
+			//关闭beanfactory容器
+			closeBeanFactory();
+		}
+		try {
+			//创建beanfactory，可见默认使用的beanfactory容器是这个啊。
+			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			beanFactory.setSerializationId(getId());
+			//这里面设置beanfactory是否支持“bean覆盖”和“循环引用”两种选项
+			customizeBeanFactory(beanFactory);
+			//加载bean resource
+			loadBeanDefinitions(beanFactory);
+			//设置beanfactory属性
+			synchronized (this.beanFactoryMonitor) {
+				this.beanFactory = beanFactory;
+			}
+		}
+		catch (IOException ex) {
+			throw new ApplicationContextException("I/O error parsing bean definition source for " + getDisplayName(), ex);
+		}
+	}
+	
+}
+
+//看看容器是怎么创建的
+protected DefaultListableBeanFactory createBeanFactory() {
+		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
+	}
+	
+//如果双亲上下文实现了ConfigurableApplicationContext，那么返回双亲上下文的beanfactory，否则直接返回双亲上下文	
+protected BeanFactory getInternalParentBeanFactory() {
+		return (getParent() instanceof ConfigurableApplicationContext) ?
+				((ConfigurableApplicationContext) getParent()).getBeanFactory() : getParent();
+	}
+</code>
+</pre>
+
+<h2 id="section-4">资源的定位以及加载配置文件</h2>
+
+<pre>
+<code>
+//这里只贴出部分核心的代码
+public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
+
+	@Override
+	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
+		// 由这里可以看到默认读取Xml的reader是这个
+		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+
+		// Configure the bean definition reader with this context's
+		// resource loading environment.
+		beanDefinitionReader.setEnvironment(this.getEnvironment());
+		beanDefinitionReader.setResourceLoader(this);
+		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
+
+		initBeanDefinitionReader(beanDefinitionReader);
+		//具体加载beanDefinition的方法
+		loadBeanDefinitions(beanDefinitionReader);
+	}
+}
+
+//我们先来看看XmlBeanDefinitionReader里面干了什么？
+public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
+		super(registry);
+	}
+//进入super方法看看，这个方法逻辑是根据beanFactory创建一个reader
+//如果这个beanFactory不仅实现了BeanDefinitionRegistry，还实现了ResourceLoader的话，就把他设置成
+//resourceloader，否则就创建一个默认的resourceloader。
+//这个默认的resourceloader就是DefaultResourceLoader()。
+//environment用了类似的逻辑
+protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
+		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
+		this.registry = registry;
+
+		// Determine ResourceLoader to use.
+		if (this.registry instanceof ResourceLoader) {
+			this.resourceLoader = (ResourceLoader) this.registry;
+		}
+		else {
+			this.resourceLoader = new PathMatchingResourcePatternResolver();
+		}
+
+		// Inherit Environment if possible
+		if (this.registry instanceof EnvironmentCapable) {
+			this.environment = ((EnvironmentCapable) this.registry).getEnvironment();
+		}
+		else {
+			this.environment = new StandardEnvironment();
+		}
+	}	
+}
+	
+</code>
+</pre>
 
 
 
@@ -376,13 +482,9 @@ init      1 root  txt    REG      253,0   145180 147164 /sbin/init
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/06/20/Linux-Top%E5%91%BD%E4%BB%A4/" data-toggle="tooltip" data-placement="top" title="Linux命令学习-top命令">&larr; Previous Post</a>
+                        <a href="/2016/08/22/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A63%E4%BA%86%E8%A7%A3IOC%E5%AE%B9%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="Spring源码了解">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/07/23/Java-mybatis%E8%BF%94%E5%9B%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%9D%91/" data-toggle="tooltip" data-placement="top" title="Java-mybatis generator返回主键的用法">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 

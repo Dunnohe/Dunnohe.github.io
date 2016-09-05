@@ -1,0 +1,131 @@
+<h1 id="section">目录</h1>
+
+<ul>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">参考资料</a></li>
+  <li><a href="#dmlj">IOC容器的设计</a>
+    <ul>
+      <li><a href="#bean">xxxBeanFactory</a></li>
+      <li><a href="#res">ResourceLoader</a></li>
+      <li><a href="#app">xxxApplicationContext</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>我们学习一下容器具体是怎么启动的</p>
+<p>我这里学习的spring4的代码，和spring3的有些出入。可以checkout 4.x版本观看</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">参考资料</a></h1>
+
+<blockquote>
+  <p>http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/</p>
+</blockquote>
+
+<blockquote>
+  <p>spring 技术内幕</p>
+</blockquote>
+
+<h1 id="a-namedmljioca"><a name="dmlj">IOC容器结构</a></h1>
+
+<p>拿FileSystemXmlApplicationContext做例子，我们来看一下它的类图:
+<br />
+图片如果不清楚，可以右键保存下来看。</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/3/applicationcontext.png" alt="IOC容器结构" /></p>
+
+<p>通常我们使用spring时，最直接的感受就是不用new对象了，spring已经直接帮我们实现new好了，然后放到一个容器里面，我们每次注入的时候实际就是去容器里面去拿。</p>
+
+<p>上面的图主要有三大部分，一个是xxxBeanFactory,一个是xxxApplicationContext,一个是ResourceLoader，还有一些其他的接口,比如ApplicationEventPublisher(事件发布)，我们后面再学习。</p>
+
+<h2 id="a-namebeanxxxbeanfactorya"><a name="bean">xxxBeanFactory</a></h2>
+
+<p>beanFactory bean的工厂，顾名思义，这个xxxBeanFactory就是容器了。我们其实就可以理解成装实体的桶子就行了，那么beanFactory里面封装的方法都是和<strong>[容器属性]</strong>相关的方法。比如如果我们设计，我们可以第一想到：容器多大啊，能装多少东西啊，装了啥啊之类的东西。</p>
+
+<h3 id="beanfactory">BeanFactory</h3>
+
+<pre>
+<code>
+//封装了一些基本的访问bean的方法
+public interface BeanFactory {
+	//&amp;xxxbean对象拿到的是xxxbean对应的factorybean
+	String FACTORY_BEAN_PREFIX = &quot;&amp;&quot;;
+
+	Object getBean(String name) throws BeansException;
+
+	&lt;T&gt; T getBean(String name, Class&lt;T&gt; requiredType) throws BeansException;
+
+	&lt;T&gt; T getBean(Class&lt;T&gt; requiredType) throws BeansException;
+
+	Object getBean(String name, Object... args) throws BeansException;
+
+	&lt;T&gt; T getBean(Class&lt;T&gt; requiredType, Object... args) throws BeansException;
+
+	boolean containsBean(String name);
+
+	boolean isSingleton(String name) throws NoSuchBeanDefinitionException;
+
+	boolean isPrototype(String name) throws NoSuchBeanDefinitionException;
+
+	boolean isTypeMatch(String name, ResolvableType typeToMatch) throws NoSuchBeanDefinitionException;
+
+	boolean isTypeMatch(String name, Class&lt;?&gt; typeToMatch) throws NoSuchBeanDefinitionException;
+
+	Class&lt;?&gt; getType(String name) throws NoSuchBeanDefinitionException;
+
+	String[] getAliases(String name);
+
+}
+</code>
+</pre>
+
+<h3 id="hierarchicalbeanfactory">HierarchicalBeanFactory</h3>
+
+<pre>
+<code>
+//在BeanFactory基础上加了获得父BeanFactory的方法
+public interface HierarchicalBeanFactory extends BeanFactory {
+
+	BeanFactory getParentBeanFactory();
+
+	boolean containsLocalBean(String name);
+
+}
+</code>
+</pre>
+
+<h3 id="configurablebeanfactory">ConfigurableBeanFactory</h3>
+<p>在HierarchicalBeanFactory的基础上增加了一些对BeanFactory的配置功能，比如setParentBeanFactory()设置双亲IOC容器。</p>
+
+<h3 id="listablebeanfactory">ListableBeanFactory</h3>
+<p>在BeanFactory基础上增加了对容器bean的各种属性查询方法。</p>
+
+<h2 id="a-nameresresourceloadera"><a name="res">ResourceLoader</a></h2>
+
+<p>ResourceLoader,顾名思义：资源加载者。前面讲到了把beanFactory理解成装实体的桶子，那么我们到怎么装呢？到哪里去装呢？这就是ResourceLoader负责的了。</p>
+<pre>
+<code>
+public interface ResourceLoader {
+	//这个值是classpath:  方便classpathresource时使用
+	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
+	//获得资源，也就是告诉你装东西的地址
+	Resource getResource(String location);
+	//
+	ClassLoader getClassLoader();
+
+}
+</code>
+</pre>
+
+<h2 id="a-nameappxxxapplicationcontexta"><a name="app">xxxApplicationContext</a></h2>
+
+<p>它是一个更高级的容器，容器只是它的一个子功能，同时它还支持其他特性：</p>
+
+<ul>
+  <li>支持国际化 多语言版本的支持(MessageSource)</li>
+  <li>访问资源 容器加载bean是要有一个加载源的，这个resource就是加载源。</li>
+  <li>支持应用事件 在整个bean的声明周期中，需要引入应用事件，便于更好的管理。</li>
+</ul>
+
+<p>applicationContext怎么理解呢，你就把它理解成一个工具箱，里面放了桶子（xxBeanFactory），还放了给桶子装东西的方法(resourcesLoader),还有中英文说明书（MessageSource）,还有遥控器可以遥控桶子（ApplicationEventPublisher）。有了这些大工具箱，你能想到的启动容器的条件是不是就都具备了！</p>
+
