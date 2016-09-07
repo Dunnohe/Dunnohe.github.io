@@ -1,0 +1,63 @@
+<h1 id="section">目录</h1>
+
+<ul>
+  <li><a href="#js">背景介绍</a></li>
+  <li><a href="#ckzl">下载源码</a></li>
+  <li><a href="#xkd">安装项目</a></li>
+</ul>
+
+<h1 id="a-namejsa"><a name="js">背景介绍</a></h1>
+<p>之前一直停留在应用的阶段，了解的部分也不够全面，这次希望能对spring项目有一个全面的了解。</p>
+<p>spring的项目搭建起来很方便，由于spring依赖gradle,但是你不用事先去下，因为项目下下来之后里面有一键安装的脚本。但是spring4依赖jdk8，如果你想研究spring4的源码，需要事先安装好，我这里介绍的是搭建spring3的，但是后来我还是决定学习spring4的代码，搭建方法是一样的。不影响。</p>
+
+<h1 id="a-nameckzla"><a name="ckzl">下载源码</a></h1>
+<pre>
+<code>
+git clone git@github.com:spring-projects/spring-framework.git
+</code>
+</pre>
+
+<h1 id="a-namexkda"><a name="xkd">安装项目</a></h1>
+
+<p>下下来默认是spring4,spring4默认依赖jdk8,（如果你没有jdk8的话）你用里面脚本安装的时候会通不过，因为JVM参数不支持。
+你可以选择切换的低版本的分支，或者安装JDK8，我这里选择切换分支。</p>
+
+<h2 id="section-1">查看远程分支</h2>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/showbranch.png" alt="查看远程分支" /></p>
+
+<h2 id="section-2">切换分支</h2>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/switchbranch.png" alt="切换远程分支" /></p>
+<p>你会看到这样的目录</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/list.png" alt="切换远程分支" /></p>
+
+<p>好，由于我的IDE环境使用的是idea，我们看下import-into-idea.md里面的介绍。eclipse的项目看对应介绍，步骤几乎一致。</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/readme.png" alt="readme" /></p>
+
+<p>好，步骤很清楚了，我们先来执行第一步：</p>
+<pre>
+<code>
+./gradlew :spring-oxm:compileTestJava cleanIdea idea
+</code>
+</pre>
+
+<p>这一步执行起来比较久，得1个多小时，我们慢慢等...</p>
+<p>执行完成，我们open项目</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/import.png" alt="readme" /></p>
+
+<p>选择build.gradle</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/build.png" alt="readme" /></p>
+
+<p>点击ok</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/ok.png" alt="readme" /></p>
+
+<p>点击 open existing project</p>
+
+<p><img src="http://dunnohe.github.io/img/spring/1/exist.png" alt="readme" /></p>
+
