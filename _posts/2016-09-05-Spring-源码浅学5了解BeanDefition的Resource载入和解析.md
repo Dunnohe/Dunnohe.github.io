@@ -52,7 +52,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			}
 		}
 		catch (IOException ex) {
-			throw new ApplicationContextException("I/O error parsing bean definition source for " + getDisplayName(), ex);
+			throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + getDisplayName(), ex);
 		}
 	}
 	
@@ -111,15 +111,15 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 <pre>
 <code>
 public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable, BeanDefinitionReader {
-	public int loadBeanDefinitions(String location, Set<Resource> actualResources) throws BeanDefinitionStoreException {
+	public int loadBeanDefinitions(String location, Set&lt;Resource&gt; actualResources) throws BeanDefinitionStoreException {
 		//获得resourceloader，获得不到抛异常	
 		ResourceLoader resourceLoader = getResourceLoader();
 		if (resourceLoader == null) {
 			throw new BeanDefinitionStoreException(
-					"Cannot import bean definitions from location [" + location + "]: no ResourceLoader available");
+					&quot;Cannot import bean definitions from location [&quot; + location + &quot;]: no ResourceLoader available&quot;);
 		}
 
-		//如果resourceloader是ResourcePatternResolver（支持把通配符配置解析成多个resource，比如"/WEB-INF/*-context.xml"），则获得对应解析出的多个resource
+		//如果resourceloader是ResourcePatternResolver（支持把通配符配置解析成多个resource，比如&quot;/WEB-INF/*-context.xml&quot;），则获得对应解析出的多个resource
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
 			try {
@@ -134,13 +134,13 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 					}
 				}
 				if (logger.isDebugEnabled()) {
-					logger.debug("Loaded " + loadCount + " bean definitions from location pattern [" + location + "]");
+					logger.debug(&quot;Loaded &quot; + loadCount + &quot; bean definitions from location pattern [&quot; + location + &quot;]&quot;);
 				}
 				return loadCount;
 			}
 			catch (IOException ex) {
 				throw new BeanDefinitionStoreException(
-						"Could not resolve bean definition resource pattern [" + location + "]", ex);
+						&quot;Could not resolve bean definition resource pattern [&quot; + location + &quot;]&quot;, ex);
 			}
 		}
 		//反之获得对应解析的单个resource
@@ -152,7 +152,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 				actualResources.add(resource);
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("Loaded " + loadCount + " bean definitions from location [" + location + "]");
+				logger.debug(&quot;Loaded &quot; + loadCount + &quot; bean definitions from location [&quot; + location + &quot;]&quot;);
 			}
 			return loadCount;
 		}
@@ -161,7 +161,8 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 </code>
 </pre>
 
-## 3,最终底层调用的单个解析resource的方法
+
+## 4,最终底层调用的单个解析resource的方法
 
 <pre>
 <code>
@@ -174,21 +175,21 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	
 	//从指定的resource文件中加载bean
 	public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
-		Assert.notNull(encodedResource, "EncodedResource must not be null");
+		Assert.notNull(encodedResource, &quot;EncodedResource must not be null&quot;);
 		if (logger.isInfoEnabled()) {
-			logger.info("Loading XML bean definitions from " + encodedResource.getResource());
+			logger.info(&quot;Loading XML bean definitions from &quot; + encodedResource.getResource());
 		}
 
 		//resourcesCurrentlyBeingLoaded用来存放“正在加载中”的配置文件，通过threadlocal实现的。
 		//放资源的时候，没有就创建并且放进去，有就直接放
-		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
+		Set&lt;EncodedResource&gt; currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
-			currentResources = new HashSet<EncodedResource>(4);
+			currentResources = new HashSet&lt;EncodedResource&gt;(4);
 			this.resourcesCurrentlyBeingLoaded.set(currentResources);
 		}
 		if (!currentResources.add(encodedResource)) {
 			throw new BeanDefinitionStoreException(
-					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
+					&quot;Detected cyclic loading of &quot; + encodedResource + &quot; - check your import definitions!&quot;);
 		}
 		try {
 			InputStream inputStream = encodedResource.getResource().getInputStream();
@@ -206,7 +207,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		}
 		catch (IOException ex) {
 			throw new BeanDefinitionStoreException(
-					"IOException parsing XML document from " + encodedResource.getResource(), ex);
+					&quot;IOException parsing XML document from &quot; + encodedResource.getResource(), ex);
 		}
 		finally {
 			//加载流程结束，移除“正在被加载”的配置文件
@@ -221,7 +222,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 </code>
 </pre>
 
-## 4,具体去单个加载一个配置文件的实现
+## 5,具体去单个加载一个配置文件的实现
 
 <pre>
 <code>
@@ -274,7 +275,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 </pre>
 
 
-## 5,BeanDefinitionDocumentReader（负责将解析好的document注册到容器中）
+## 6,BeanDefinitionDocumentReader（负责将解析好的document注册到容器中）
 
 <pre>
 <code>
