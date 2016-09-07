@@ -302,6 +302,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
+				//
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
 						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
@@ -311,6 +312,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
+		//这里面就是具体的载入配置的逻辑代码了，感兴趣的可以去研究具体怎么载入解析的
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
