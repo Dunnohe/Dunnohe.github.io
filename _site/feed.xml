@@ -5,9 +5,335 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 05 Sep 2016 13:25:00 +0800</pubDate>
-    <lastBuildDate>Mon, 05 Sep 2016 13:25:00 +0800</lastBuildDate>
+    <pubDate>Wed, 07 Sep 2016 11:06:35 +0800</pubDate>
+    <lastBuildDate>Wed, 07 Sep 2016 11:06:35 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>spring源码了解</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dmlj&quot;&gt;BeanDefition的Resource定位&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;这里我们一起了解一下IOC容器是如何载入和解析bean的&lt;/p&gt;
+
+&lt;h1 id=&quot;a-namedmljbeandefitionresourcea&quot;&gt;&lt;a name=&quot;dmlj&quot;&gt;了解BeanDefition的Resource载入和解析&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;我们继续从refreshBeanFactory开始看起，它的作用是通知子类去刷新自己的bean容器。&lt;/p&gt;
+
+&lt;h2 id=&quot;refreshbeanfactorybeanfactory&quot;&gt;1,refreshBeanFactory方法（刷新beanFactory）&lt;/h2&gt;
+&lt;p&gt;这里可以把refresh理解成xxapplicationcontext的重启方法，refreshBeanFactory理解成bean容器的重启方法。&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+//这里只贴出部分核心的代码
+public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
+
+	@Override
+	protected final void refreshBeanFactory() throws BeansException {
+		//如果已经创建的bean容器
+		if (hasBeanFactory()) {
+			//清除已经创建的beans
+			destroyBeans();
+			//关闭beanfactory容器
+			closeBeanFactory();
+		}
+		try {
+			//创建beanfactory，可见默认使用的beanfactory容器是这个啊。
+			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			beanFactory.setSerializationId(getId());
+			//这里面设置beanfactory是否支持“bean覆盖”和“循环引用”两种选项
+			customizeBeanFactory(beanFactory);
+			//加载bean resource
+			loadBeanDefinitions(beanFactory);
+			//设置beanfactory属性
+			synchronized (this.beanFactoryMonitor) {
+				this.beanFactory = beanFactory;
+			}
+		}
+		catch (IOException ex) {
+			throw new ApplicationContextException(&amp;quot;I/O error parsing bean definition source for &amp;quot; + getDisplayName(), ex);
+		}
+	}
+	
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;loadbeandefinitions&quot;&gt;2,loadBeanDefinitions（加载以及解析配置文件）&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+//这里只贴出部分核心的代码
+public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
+
+	@Override
+	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
+		// 由这里可以看到默认读取Xml的reader是这个
+		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+
+		// Configure the bean definition reader with this context&#39;s
+		// resource loading environment.
+		beanDefinitionReader.setEnvironment(this.getEnvironment());
+		beanDefinitionReader.setResourceLoader(this);
+		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
+
+		initBeanDefinitionReader(beanDefinitionReader);
+		//具体加载beanDefinition的方法
+		loadBeanDefinitions(beanDefinitionReader);
+	}
+	
+	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		
+		//通过resource方法加载bean	
+		Resource[] configResources = getConfigResources();
+		if (configResources != null) {
+			reader.loadBeanDefinitions(configResources);
+		}
+		
+		//通过string的形式加载bean
+		String[] configLocations = getConfigLocations();
+		if (configLocations != null) {
+			reader.loadBeanDefinitions(configLocations);
+		}
+	}
+}
+	
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;bean&quot;&gt;3,bean的加载和解析&lt;/h2&gt;
+
+&lt;h3 id=&quot;string-pathbean&quot;&gt;我们先来看看通过String path来加载bean的实现&lt;/h3&gt;
+
+&lt;p&gt;因为最终他和resource加载bean的方式一样，都是通过resource加载。只不过String加载bean多了一步，把String解析成resource。&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable, BeanDefinitionReader {
+	public int loadBeanDefinitions(String location, Set&amp;lt;Resource&amp;gt; actualResources) throws BeanDefinitionStoreException {
+		//获得resourceloader，获得不到抛异常	
+		ResourceLoader resourceLoader = getResourceLoader();
+		if (resourceLoader == null) {
+			throw new BeanDefinitionStoreException(
+					&amp;quot;Cannot import bean definitions from location [&amp;quot; + location + &amp;quot;]: no ResourceLoader available&amp;quot;);
+		}
+
+		//如果resourceloader是ResourcePatternResolver（支持把通配符配置解析成多个resource，比如&amp;quot;/WEB-INF/*-context.xml&amp;quot;），则获得对应解析出的多个resource
+		if (resourceLoader instanceof ResourcePatternResolver) {
+			// Resource pattern matching available.
+			try {
+				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+				//这里面是for循环去加载和解析，实际就是调用下面的“单个解析resource的方法”。
+				//同时在通过resource 来解析bean的实现中也是调用“单个解析resource的方法”。
+				//所以，我们最终看这个调用单个resource方法的实现就行了。
+				int loadCount = loadBeanDefinitions(resources);
+				if (actualResources != null) {
+					for (Resource resource : resources) {
+						actualResources.add(resource);
+					}
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug(&amp;quot;Loaded &amp;quot; + loadCount + &amp;quot; bean definitions from location pattern [&amp;quot; + location + &amp;quot;]&amp;quot;);
+				}
+				return loadCount;
+			}
+			catch (IOException ex) {
+				throw new BeanDefinitionStoreException(
+						&amp;quot;Could not resolve bean definition resource pattern [&amp;quot; + location + &amp;quot;]&amp;quot;, ex);
+			}
+		}
+		//反之获得对应解析的单个resource
+		else {
+			Resource resource = resourceLoader.getResource(location);
+			//调用单个解析resource的方法，这个方法就是最终加载解析bean的底层公用方法
+			int loadCount = loadBeanDefinitions(resource);
+			if (actualResources != null) {
+				actualResources.add(resource);
+			}
+			if (logger.isDebugEnabled()) {
+				logger.debug(&amp;quot;Loaded &amp;quot; + loadCount + &amp;quot; bean definitions from location [&amp;quot; + location + &amp;quot;]&amp;quot;);
+			}
+			return loadCount;
+		}
+	}
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;resource&quot;&gt;4,最终底层调用的单个解析resource的方法&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+	@Override
+	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		//EncodedResource 多了一些对编码属性的设置
+		return loadBeanDefinitions(new EncodedResource(resource));
+	}
+	
+	//从指定的resource文件中加载bean
+	public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
+		Assert.notNull(encodedResource, &amp;quot;EncodedResource must not be null&amp;quot;);
+		if (logger.isInfoEnabled()) {
+			logger.info(&amp;quot;Loading XML bean definitions from &amp;quot; + encodedResource.getResource());
+		}
+
+		//resourcesCurrentlyBeingLoaded用来存放“正在加载中”的配置文件，通过threadlocal实现的。
+		//放资源的时候，没有就创建并且放进去，有就直接放
+		Set&amp;lt;EncodedResource&amp;gt; currentResources = this.resourcesCurrentlyBeingLoaded.get();
+		if (currentResources == null) {
+			currentResources = new HashSet&amp;lt;EncodedResource&amp;gt;(4);
+			this.resourcesCurrentlyBeingLoaded.set(currentResources);
+		}
+		if (!currentResources.add(encodedResource)) {
+			throw new BeanDefinitionStoreException(
+					&amp;quot;Detected cyclic loading of &amp;quot; + encodedResource + &amp;quot; - check your import definitions!&amp;quot;);
+		}
+		try {
+			InputStream inputStream = encodedResource.getResource().getInputStream();
+			try {
+				InputSource inputSource = new InputSource(inputStream);
+				if (encodedResource.getEncoding() != null) {
+					inputSource.setEncoding(encodedResource.getEncoding());
+				}
+				//具体去单个加载一个配置文件的实现（这个层级好深啊。。。。）
+				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
+			}
+			finally {
+				inputStream.close();
+			}
+		}
+		catch (IOException ex) {
+			throw new BeanDefinitionStoreException(
+					&amp;quot;IOException parsing XML document from &amp;quot; + encodedResource.getResource(), ex);
+		}
+		finally {
+			//加载流程结束，移除“正在被加载”的配置文件
+			currentResources.remove(encodedResource);
+			//移除threadlocal里面的hashset
+			if (currentResources.isEmpty()) {
+				this.resourcesCurrentlyBeingLoaded.remove();
+			}
+		}
+	}
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;5,具体去单个加载一个配置文件的实现&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+
+	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
+			throws BeanDefinitionStoreException {
+		try {
+			//解析配置文件，同时验证document的语法，得到document
+			Document doc = doLoadDocument(inputSource, resource);
+			//注册bean
+			return registerBeanDefinitions(doc, resource);
+		}
+		catch (BeanDefinitionStoreException ex) {
+			throw ex;
+		}
+		catch (SAXParseException ex) {
+			throw new XmlBeanDefinitionStoreException(resource.getDescription(),
+					&quot;Line &quot; + ex.getLineNumber() + &quot; in XML document from &quot; + resource + &quot; is invalid&quot;, ex);
+		}
+		catch (SAXException ex) {
+			throw new XmlBeanDefinitionStoreException(resource.getDescription(),
+					&quot;XML document from &quot; + resource + &quot; is invalid&quot;, ex);
+		}
+		catch (ParserConfigurationException ex) {
+			throw new BeanDefinitionStoreException(resource.getDescription(),
+					&quot;Parser configuration exception parsing XML from &quot; + resource, ex);
+		}
+		catch (IOException ex) {
+			throw new BeanDefinitionStoreException(resource.getDescription(),
+					&quot;IOException parsing XML document from &quot; + resource, ex);
+		}
+		catch (Throwable ex) {
+			throw new BeanDefinitionStoreException(resource.getDescription(),
+					&quot;Unexpected exception parsing XML document from &quot; + resource, ex);
+		}
+	}
+	
+	//注册bean
+	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		int countBefore = getRegistry().getBeanDefinitionCount();
+		//具体注册bean的方法（按照spring的尿性肯定还有好几层，而且名字相似）
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		return getRegistry().getBeanDefinitionCount() - countBefore;
+	}
+	
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;beandefinitiondocumentreaderdocument&quot;&gt;6,BeanDefinitionDocumentReader（负责将解析好的document注册到容器中）&lt;/h2&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+//注册接口
+public interface BeanDefinitionDocumentReader {
+	void registerBeanDefinitions(Document doc, XmlReaderContext readerContext)
+			throws BeanDefinitionStoreException;
+}
+
+public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
+
+	@Override
+	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
+		this.readerContext = readerContext;
+		logger.debug(&quot;Loading bean definitions&quot;);
+		Element root = doc.getDocumentElement();
+		doRegisterBeanDefinitions(root);
+	}
+	
+	protected void doRegisterBeanDefinitions(Element root) {
+
+		BeanDefinitionParserDelegate parent = this.delegate;
+		this.delegate = createDelegate(getReaderContext(), root, parent);
+
+		if (this.delegate.isDefaultNamespace(root)) {
+			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
+			if (StringUtils.hasText(profileSpec)) {
+				//
+				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
+						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
+					return;
+				}
+			}
+		}
+
+		preProcessXml(root);
+		//这里面就是具体的载入配置的逻辑代码了，感兴趣的可以去研究具体怎么载入解析的
+		parseBeanDefinitions(root, this.delegate);
+		postProcessXml(root);
+
+		this.delegate = parent;
+	}
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+</description>
+        <pubDate>Tue, 06 Sep 2016 07:43:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/09/06/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A65%E4%BA%86%E8%A7%A3BeanDefition%E7%9A%84Resource%E8%BD%BD%E5%85%A5%E5%92%8C%E8%A7%A3%E6%9E%90/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/09/06/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A65%E4%BA%86%E8%A7%A3BeanDefition%E7%9A%84Resource%E8%BD%BD%E5%85%A5%E5%92%8C%E8%A7%A3%E6%9E%90/</guid>
+        
+        <category>Spring</category>
+        
+        
+      </item>
     
       <item>
         <title>spring源码了解</title>
@@ -1613,161 +1939,6 @@ jmap -dump:live,format=b,file=test 7124
         <guid isPermaLink="true">http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</guid>
         
         <category>JVM</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Linux命令学习-找到大文件的目录</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;之前公司线下环境碰到过一个场景，运维通知某台机器磁盘快满了，需要尽快上去清理磁盘。但是我不知道如何快速的找到一些大文件的命令。&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;http://man.linuxde.net/du&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-namexkddua&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;du命令介绍&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;du 预估文件空间使用情况&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;-a,–all 输出所有文件大小，不仅仅是目录&lt;/li&gt;
-  &lt;li&gt;-b,–bytes 按照bytes大小输出&lt;/li&gt;
-  &lt;li&gt;-c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。&lt;/li&gt;
-  &lt;li&gt;-k或–kilobytes 以KB(1024bytes)为单位输出。&lt;/li&gt;
-  &lt;li&gt;-m或–megabytes 以MB为单位输出。&lt;/li&gt;
-  &lt;li&gt;-s或–summarize 仅显示总计，只列出最后加总的值。&lt;/li&gt;
-  &lt;li&gt;-h或–human-readable 按照最适合的单位输出，提高信息的可读性，强烈推荐用这个，不需要-b -k -m了。&lt;/li&gt;
-  &lt;li&gt;-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。&lt;/li&gt;
-  &lt;li&gt;-L&lt;符号链接&gt;或--dereference&lt;符号链接&gt; 显示选项中所指定符号链接的源文件大小。&lt;/符号链接&gt;&lt;/符号链接&gt;&lt;/li&gt;
-  &lt;li&gt;-s或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。&lt;/li&gt;
-  &lt;li&gt;-X&lt;文件&gt;或--exclude-from=&lt;文件&gt; 在&lt;文件&gt;指定目录或文件。&lt;/文件&gt;&lt;/文件&gt;&lt;/文件&gt;&lt;/li&gt;
-  &lt;li&gt;–exclude=&lt;目录或文件&gt; 略过指定的目录或文件。&lt;/目录或文件&gt;&lt;/li&gt;
-  &lt;li&gt;-D或–dereference-args 显示指定符号链接的源文件大小。&lt;/li&gt;
-  &lt;li&gt;-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。&lt;/li&gt;
-  &lt;li&gt;-l或–count-links 重复计算硬件链接的文件。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-nametcya&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;例子&lt;/a&gt;&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;查询指定目录或者文件&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-&lt;code&gt;
-# du /home/heliang05
-20	/home/heliang05/bin
-276	/home/heliang05/lib/python/polysh
-284	/home/heliang05/lib/python
-288	/home/heliang05/lib
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;按照指定单位输出大小(建议使用-h就行了)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-&lt;code&gt;
-# du -b /home/heliang05
-16593	/home/heliang05/bin
-204846	/home/heliang05/lib/python/polysh
-209287	/home/heliang05/lib/python
-
-du -k /home/heliang05
-20	/home/heliang05/bin
-276	/home/heliang05/lib/python/polysh
-284	/home/heliang05/lib/python
-
-du -m /home/heliang05
-1	/home/heliang05/bin
-1	/home/heliang05/lib/python/polysh
-1	/home/heliang05/lib/python
-1	/home/heliang05/lib
-
-du -h /home/heliang05
-20K	/home/heliang05/bin
-276K	/home/heliang05/lib/python/polysh
-284K	/home/heliang05/lib/python
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-&lt;code&gt;
-du -sh /home/heliang05
-1.1M	/home/heliang05
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;查询指定目录的大小（并不看其子目录）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-&lt;code&gt;
-du -sh /home/heliang05
-1.1M	/home/heliang05
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;-c 和 -a 和 -s的区别&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;
-&lt;code&gt;
-建立测试数据（先建立一个depth1文件夹，然后在depth1里面建立一个depth的文件，同时在depth1里面简历depth2的文件夹，然后在depth2里面再建立一个depth文件）
-mkdir depth1
-cd depth1/
-echo &quot;depth1&quot; &amp;gt; depth
-mkdir depth2
-cd depth2/
-echo &quot;depth1&quot; &amp;gt; depth
-
-测试不同命令的输出
-
-du -ch depth1/
-8.0K	depth1/depth2
-16K	depth1/
-16K	总用量
-
-du -ah depth1/
-4.0K	depth1/depth2/depth
-8.0K	depth1/depth2
-4.0K	depth1/depth
-16K	depth1/
-
-du -sh depth1/
-16K	depth1/
-
-结论：
--c 只会输出该目录下所有的文件及目录，不会继续输出子目录大小
--a 会输出当前目录以及子目录大小
--s 只会打出当面目录总和大小
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;h1 id=&quot;a-namedta&quot;&gt;&lt;a name=&quot;dt&quot;&gt;多提一句，删除文件&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;回到这次背景本身，我通过du命令找到了大文件时，需要删除无用文件，释放空间。
-使用rm -rf的时候注意，可能无法释放空间，虽然删除了文件，但是文件还被其他应用使用的话，会导致仍然占用空间。
-有一个还不错的方式是采用 &amp;gt; xxfile 来释放空间。&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 25 Jul 2016 20:30:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/25/Linux-%E6%89%BE%E5%88%B0%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95/</guid>
-        
-        <category>Linux</category>
         
         
       </item>
