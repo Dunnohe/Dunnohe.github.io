@@ -462,7 +462,6 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
-				//
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
 						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
@@ -471,9 +470,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			}
 		}
 
+		//空方法，没有实现，也体现了人家先做好设计，再填实现的编码过程
 		preProcessXml(root);
-		//这里面就是具体的载入配置的逻辑代码了，感兴趣的可以去研究具体怎么载入解析的
+		//这里就是最底层载入和解析的入口了，接下来它就会交给BeanDefinitionDocumentReader去做具体的解析过程了。
+		//下一篇学习笔记来总结具体的解析过程。
 		parseBeanDefinitions(root, this.delegate);
+		//空方法没有实现
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -495,6 +497,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
                         <a href="/2016/08/27/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A64%E4%BA%86%E8%A7%A3BeanDefition%E7%9A%84Resource%E5%AE%9A%E4%BD%8D/" data-toggle="tooltip" data-placement="top" title="spring源码了解">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2016/09/06/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A66%E4%BA%86%E8%A7%A3BeanDefition%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E5%88%B0IOC%E5%AE%B9%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="spring源码了解">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -525,7 +531,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
                             
         				
                             
-                				<a href="/tags/#Linux" title="Linux" rel="8">
+                				<a href="/tags/#Linux" title="Linux" rel="7">
                                     Linux
                                 </a>
                             
@@ -539,7 +545,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
                             
         				
                             
-                				<a href="/tags/#Spring" title="Spring" rel="5">
+                				<a href="/tags/#Spring" title="Spring" rel="6">
                                     Spring
                                 </a>
                             
