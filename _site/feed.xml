@@ -5,9 +5,46 @@
     <description>Do not go gentle into that good night.Rage, rage against the dying of the light.</description>
     <link>http://dunnohe.github.io/</link>
     <atom:link href="http://dunnohe.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 30 Sep 2016 17:31:24 +0800</pubDate>
-    <lastBuildDate>Fri, 30 Sep 2016 17:31:24 +0800</lastBuildDate>
+    <pubDate>Sun, 02 Oct 2016 12:50:02 +0800</pubDate>
+    <lastBuildDate>Sun, 02 Oct 2016 12:50:02 +0800</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>spring源码了解</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#dmlj&quot;&gt;加载的入口&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;之前已经简单的总结了spring读取xml配置到注册容器的整个过程。但是实际工作中我们会大量的使用到annotation，annotation注册到容器的过程是如何的呢。&lt;/p&gt;
+
+&lt;h1 id=&quot;a-namedmlja&quot;&gt;&lt;a name=&quot;dmlj&quot;&gt;加载的入口&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;之前我们就了解到，加载的入口在AbstractRefreshableApplicationContext的loadBeanDefinitions方法，我们看一下这个方法的实现，发现有annotation的实现版本。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/spring/7/access.png&quot; alt=&quot;IOC容器结构&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;doregisterbeandefinitionsbean&quot;&gt;1,doRegisterBeanDefinitions方法（具体解析bean的入口）&lt;/h2&gt;
+&lt;p&gt;这里可以把refresh理解成xxapplicationcontext的重启方法，refreshBeanFactory理解成bean容器的重启方法。&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;code&gt;
+	
+&lt;/code&gt;
+&lt;/pre&gt;
+
+</description>
+        <pubDate>Tue, 06 Sep 2016 07:43:00 +0800</pubDate>
+        <link>http://dunnohe.github.io/2016/09/06/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A67%E4%BA%86%E8%A7%A3annotation%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E5%88%B0IOC%E5%AE%B9%E5%99%A8/</link>
+        <guid isPermaLink="true">http://dunnohe.github.io/2016/09/06/Spring-%E6%BA%90%E7%A0%81%E6%B5%85%E5%AD%A67%E4%BA%86%E8%A7%A3annotation%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E5%88%B0IOC%E5%AE%B9%E5%99%A8/</guid>
+        
+        <category>Spring</category>
+        
+        
+      </item>
     
       <item>
         <title>spring源码了解</title>
@@ -2046,137 +2083,6 @@ Full thread dump Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode):
         <pubDate>Sun, 31 Jul 2016 00:00:00 +0800</pubDate>
         <link>http://dunnohe.github.io/2016/07/31/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</link>
         <guid isPermaLink="true">http://dunnohe.github.io/2016/07/31/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D2/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>JDK-命令行工具介绍</title>
-        <description>&lt;h1 id=&quot;section&quot;&gt;目录&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#js&quot;&gt;背景介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#xkd&quot;&gt;jps命令介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#jhat&quot;&gt;jhat命令介绍&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#tcy&quot;&gt;jmap命令介绍&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;a-namejsa&quot;&gt;&lt;a name=&quot;js&quot;&gt;背景介绍&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;线上经常出现各式各样的问题，通过jdk自带的命令行工具，能帮助我们更加快速的定位到故障。&lt;/p&gt;
-&lt;p&gt;jdk 为我们提供了很多命令行工具，其中经常使用到的有监控工具（jps,jstat,statd）和故障排查工具(jinfo,jhat,jmap,jsadebugd,jstack)
-&lt;/p&gt;
-&lt;p&gt;这里我们先介绍用法比较简单的几个命令:jps,jmap,jhat&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nameckzla&quot;&gt;&lt;a name=&quot;ckzl&quot;&gt;参考资料&lt;/a&gt;&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;http://docs.oracle.com/javase/7/docs/technotes/tools/&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;a-namexkdjpsa&quot;&gt;&lt;a name=&quot;xkd&quot;&gt;jps命令介绍&lt;/a&gt;&lt;/h1&gt;
-
-&lt;pre&gt;
-&lt;code&gt;
-jps JVM进程状态工具
-
-→ jps 列出进程id和main函数名称
-7124 AppMain
-10829 Jps
-
-→ jps -q 只输出进程id
-7124
-10807
-
-→ jps -m 输出进程id和主函数参数
-7124 AppMain org.codehaus.classworlds.Launcher -Didea.version=15.0 clean jetty:run -Pperformance
-10857 Jps -m
-
-→ jps -l 只输出进程id和主函数路径
-7124 com.intellij.rt.execution.application.AppMain
-10888 sun.tools.jps.Jps
-
-→ jps -v 输出进程id和给传递给jvm的参数（最常用）
-7124 AppMain -Xms2048m -Xmx2048m -XX:PermSize=1024m -XX:MaxPermSize=1024m -Dmaven.home=/usr/local/apache-maven-3.1.1 -Dclassworlds.conf=/usr/local/apache-maven-3.1.1/bin/m2.conf -Didea.launcher.port=7533 -Didea.launcher.bin.path=/Applications/IntelliJ IDEA 15.app/Contents/bin -Dfile.encoding=UTF-8
-10933 Jps -Dapplication.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home -Xms8m
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;h1 id=&quot;a-namejhatjhata&quot;&gt;&lt;a name=&quot;jhat&quot;&gt;jhat命令介绍&lt;/a&gt;&lt;/h1&gt;
-
-&lt;pre&gt;
-&lt;code&gt;
-jhat 堆dump游览器 - 启动一个web服务在一个堆dump文件上（比如使用jmap -dump产生的&lt;br /&gt;文件），可以在界面来浏览堆数据。
-
-jhat -h 帮助
-
-jhat filename 分析dump文件
-在上面我们使用了jmap -dump:live,format=b,file=test 7124
-现在我们来浏览一下数据
-
-→ jhat test
-Reading from test...
-Dump file created Sun Jul 31 18:20:41 CST 2016
-Snapshot read, resolving...
-Resolving 4317462 objects...
-WARNING:  Failed to resolve object id 0x788fe2078 for field clazz (signature L)
-WARNING:  Failed to resolve object id 0x788f382a8 for field clazz (signature L)
-WARNING:  Failed to resolve object id 0x788f37f40 for field clazz (signature L)
-WARNING:  Failed to resolve object id 0x788f19328 for field clazz (signature L)
-WARNING:  Failed to resolve object id 0x788f191b0 for field clazz (signature L)
-WARNING:  Failed to resolve object id 0x788f18f90 for field clazz (signature L)
-Chasing references, expect 863 dots..................................
-Eliminating duplicate references..................................
-Snapshot resolved.
-Started HTTP server on port 7000
-Server is ready.
-
-输出到这里说明已经ok了，那么接下来我们可以打开游览器，输入127.0.0.1:7000就可以浏览这些数据了
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://dunnohe.github.io/img/jhat/jhat.png&quot; alt=&quot;jhat_输出&quot; /&gt;
-游览器输出&lt;/p&gt;
-
-&lt;h1 id=&quot;a-nametcyjmapa&quot;&gt;&lt;a name=&quot;tcy&quot;&gt;jmap命令介绍&lt;/a&gt;&lt;/h1&gt;
-
-&lt;pre&gt;
-&lt;code&gt;
-jmap java内存图 根据指定的进程id或者核心文件或者远程debug server输出对象或者堆内存的情况
-
-jmap 或者 jmap -help 输出使用帮助 
-
-jmap -histo:7124 打印堆对象柱状图
-下面是部分输出：num:编号 instance:实例数量 byte:大小 class-类名
-
- num     #instances         #bytes  class name
-----------------------------------------------
-   1:       2251207      406535312  [C
-   2:        328187      263542800  [B
-   3:         90692       51871032  [I
-   4:       1922400       46137600  java.lang.String
-   5:       1121773       35896736  java.util.HashMap$Entry
-   6:        237870       32585432  &lt;constmethodklass&gt;
-   7:        783437       31337480  java.util.HashMap$KeyIterator
-   8:        237870       30457760  &lt;methodklass&gt;
-   9:         21767       25312768  &lt;constantpoolklass&gt;
-   
-jmap -dump:&lt;dump-option&gt;
-
-dump-option:
-live  指定了该选择则只dump live object，所有就dump堆中所有对象。
-format=b 二进制格式
-file=&lt;file&gt; 指定dump的具体文件
-比如:
-jmap -dump:live,format=b,file=test 7124
-
-
-&lt;/file&gt;&lt;/dump-option&gt;&lt;/constantpoolklass&gt;&lt;/methodklass&gt;&lt;/constmethodklass&gt;&lt;/code&gt;&lt;/pre&gt;
-</description>
-        <pubDate>Thu, 28 Jul 2016 17:30:00 +0800</pubDate>
-        <link>http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</link>
-        <guid isPermaLink="true">http://dunnohe.github.io/2016/07/28/JDK-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</guid>
-        
-        <category>JVM</category>
         
         
       </item>
