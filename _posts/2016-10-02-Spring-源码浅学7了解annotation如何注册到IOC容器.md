@@ -23,12 +23,84 @@ tags:
 
 ![IOC容器结构](http://dunnohe.github.io/img/spring/7/access.png)
 
-## 1,doRegisterBeanDefinitions方法（具体解析bean的入口）
-这里可以把refresh理解成xxapplicationcontext的重启方法，refreshBeanFactory理解成bean容器的重启方法。
+## 1,Annotation版本对于loadBeanDefinitions方法的实现
 
 <pre>
 <code>
+public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWebApplicationContext
+		implements AnnotationConfigRegistry {
+
+	private BeanNameGenerator beanNameGenerator;
+
+	private ScopeMetadataResolver scopeMetadataResolver;
+
+	private final Set<Class<?>> annotatedClasses = new LinkedHashSet<Class<?>>();
+
+	private final Set<String> basePackages = new LinkedHashSet<String>();
 	
+	@Override
+	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
+		AnnotatedBeanDefinitionReader reader = getAnnotatedBeanDefinitionReader(beanFactory);
+		ClassPathBeanDefinitionScanner scanner = getClassPathBeanDefinitionScanner(beanFactory);
+
+		BeanNameGenerator beanNameGenerator = getBeanNameGenerator();
+		if (beanNameGenerator != null) {
+			reader.setBeanNameGenerator(beanNameGenerator);
+			scanner.setBeanNameGenerator(beanNameGenerator);
+			beanFactory.registerSingleton(AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR, beanNameGenerator);
+		}
+
+		ScopeMetadataResolver scopeMetadataResolver = getScopeMetadataResolver();
+		if (scopeMetadataResolver != null) {
+			reader.setScopeMetadataResolver(scopeMetadataResolver);
+			scanner.setScopeMetadataResolver(scopeMetadataResolver);
+		}
+
+		if (!this.annotatedClasses.isEmpty()) {
+			if (logger.isInfoEnabled()) {
+				logger.info("Registering annotated classes: [" +
+						StringUtils.collectionToCommaDelimitedString(this.annotatedClasses) + "]");
+			}
+			reader.register(this.annotatedClasses.toArray(new Class<?>[this.annotatedClasses.size()]));
+		}
+
+		if (!this.basePackages.isEmpty()) {
+			if (logger.isInfoEnabled()) {
+				logger.info("Scanning base packages: [" +
+						StringUtils.collectionToCommaDelimitedString(this.basePackages) + "]");
+			}
+			scanner.scan(this.basePackages.toArray(new String[this.basePackages.size()]));
+		}
+
+		String[] configLocations = getConfigLocations();
+		if (configLocations != null) {
+			for (String configLocation : configLocations) {
+				try {
+					Class<?> clazz = getClassLoader().loadClass(configLocation);
+					if (logger.isInfoEnabled()) {
+						logger.info("Successfully resolved class for [" + configLocation + "]");
+					}
+					reader.register(clazz);
+				}
+				catch (ClassNotFoundException ex) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Could not load class for config location [" + configLocation +
+								"] - trying package scan. " + ex);
+					}
+					int count = scanner.scan(configLocation);
+					if (logger.isInfoEnabled()) {
+						if (count == 0) {
+							logger.info("No annotated classes found for specified class/package [" + configLocation + "]");
+						}
+						else {
+							logger.info("Found " + count + " annotated classes in package [" + configLocation + "]");
+						}
+					}
+				}
+			}
+		}
+	}
+}
 </code>
 </pre>
 
