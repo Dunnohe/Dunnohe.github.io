@@ -2,7 +2,7 @@
 layout:     post
 title:      "spring源码了解"
 subtitle:   " \"7，了解annotation如何注册到IOC容器\""
-date:       2016-09-05 23:43:00
+date:       2016-10-02 11:10:00
 author:     "Dunno"
 header-img: "img/post-bg-2015.jpg"
 tags:
@@ -148,6 +148,7 @@ public class AnnotatedBeanDefinitionReader {
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public void registerBean(Class&lt;?&gt; annotatedClass, String name, Class&lt;? extends Annotation&gt;... qualifiers) {
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
+		//这个方法大概的意思没有annotation的类会直接跳过
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
@@ -155,7 +156,10 @@ public class AnnotatedBeanDefinitionReader {
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
+		//这一行代码的功能是，判断abd中的metadata是否含有常用的一些注解，比如Lazy啊，Primary啊，DependOn啊，有的话就把对应注解的值设置到abd中。
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+		
+		//设置对应的属性
 		if (qualifiers != null) {
 			for (Class&lt;? extends Annotation&gt; qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
@@ -172,6 +176,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		//这里就是走到了最终注册到容器的方法，这个方法上一篇已经分析过了
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 }
